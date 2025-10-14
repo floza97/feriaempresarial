@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CalmaBit - Bienestar Emocional</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #F5F7FA;
+            min-height: 100vh;
+        }
+
+        .header {
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .brand-icon {
+            font-size: 2rem;
+        }
+
+        .brand-name {
+            color: #2C3E50;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background-color: transparent;
+            color: #2C3E50;
+        }
+
+        .nav-btn.active {
+            background-color: #6BCB77;
+            color: white;
+        }
+
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .hero {
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .logo {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-title {
+            color: #2C3E50;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-subtitle {
+            color: #7F8C8D;
+            font-size: 1.2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            color: #2C3E50;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .emotion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .emotion-btn {
+            padding: 1.5rem 1rem;
+            border: 2px solid #E0E0E0;
+            border-radius: 15px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .emotion-btn.selected {
+            transform: scale(1.1);
+        }
+
+        .emotion-icon {
+            font-size: 2.5rem;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .action-card {
+            background: white;
+            border: none;
+            border-radius: 15px;
+            padding: 2rem;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .action-icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .action-title {
+            color: #2C3E50;
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        .action-desc {
+            color: #7F8C8D;
+            font-size: 0.9rem;
+        }
+
+        .page-title {
+            color: #2C3E50;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #7F8C8D;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .meditation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .meditation-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .meditation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .meditation-icon {
+            font-size: 2rem;
+        }
+
+        .premium-badge {
+            background: #FFD93D;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .play-btn {
+            background: #6BCB77;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .play-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .journal-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 1rem;
+            border: 2px solid #E0E0E0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            margin-bottom: 1rem;
+        }
+
+        .save-btn {
+            background: #6BCB77;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .entry-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            color: #7F8C8D;
+            font-size: 0.9rem;
+        }
+
+        .breathing-container {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .breathing-circle {
+            width: 200px;
+            height: 200px;
+            background: #6BCB77;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem auto;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(107, 203, 119, 0.3);
+            transition: transform 4s ease-in-out;
+        }
+
+        .breathing-circle.breathing {
+            transform: scale(1.3);
+        }
+
+        .breathing-instruction {
+            font-size: 1.2rem;
+            color: #2C3E50;
+            margin: 2rem 0;
+        }
+
+        .breathing-btn {
+            background: #4D96FF;
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+
+        .breathing-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+        }
+
+        .benefits-list li {
+            padding: 0.5rem 0;
+        }
+
+        .sounds-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .sound-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .sound-icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .sound-btn {
+            background: #4D96FF;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .premium-container {
+            display: flex;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+
+        .premium-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid #FFD93D;
+        }
+
+        .premium-icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .premium-price {
+            color: #6BCB77;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .premium-features {
+            list-style: none;
+            padding: 0;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .premium-features li {
+            padding: 0.5rem 0;
+        }
+
+        .upgrade-btn {
+            background: #FFD93D;
+            color: #2C3E50;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .footer {
+            background: #2C3E50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #7F8C8D;
+            padding: 3rem;
+            background: white;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="brand">
+                <span class="brand-icon">🧘</span>
+                <h1 class="brand-name">CalmaBit</h1>
+            </div>
+            <nav class="nav">
+                <button class="nav-btn active" onclick="showPage('home')">Inicio</button>
+                <button class="nav-btn" onclick="showPage('meditation')">Meditación</button>
+                <button class="nav-btn" onclick="showPage('journal')">Diario Emocional</button>
+                <button class="nav-btn" onclick="showPage('breathing')">Respiración</button>
+                <button class="nav-btn" onclick="showPage('sounds')">Sonidos</button>
+                <button class="nav-btn" onclick="showPage('premium')">Premium</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <!-- Página de Inicio -->
+        <div id="home" class="page active">
+            <div class="hero">
+                <div class="logo">🧘</div>
+                <h1 class="hero-title">Bienvenido a CalmaBit</h1>
+                <p class="hero-subtitle">Tu espacio de bienestar emocional</p>
+            </div>
+
+            <div class="card">
+                <p class="section-title">¿Cómo te sientes hoy?</p>
+                <div class="emotion-grid">
+                    <button class="emotion-btn" onclick="selectEmotion(this, 'Feliz', '#FFD93D')">
+                        <span class="emotion-icon">😊</span>
+                        <span>Feliz</span>
+                    </button>
+                    <button class="emotion-btn" onclick="selectEmotion(this, 'Tranquilo', '#6BCB77')">
+                        <span class="emotion-icon">😌</span>
+                        <span>Tranquilo</span>
+                    </button>
+                    <button class="emotion-btn" onclick="selectEmotion(this, 'Ansioso', '#FF6B6B')">
+                        <span class="emotion-icon">😟</span>
+                        <span>Ansioso</span>
+                    </button>
+                    <button class="emotion-btn" onclick="selectEmotion(this, 'Triste', '#4D96FF')">
+                        <span class="emotion-icon">😔</span>
+                        <span>Triste</span>
+                    </button>
+                    <button class="emotion-btn" onclick="selectEmotion(this, 'Cansado', '#9B59B6')">
+                        <span class="emotion-icon">😴</span>
+                        <span>Cansado</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <p class="section-title">Acciones Rápidas</p>
+                <div class="action-grid">
+                    <button class="action-card" onclick="showPage('meditation')">
+                        <span class="action-icon">🧘‍♀️</span>
+                        <h3 class="action-title">Meditar</h3>
+                        <p class="action-desc">Calma tu mente</p>
+                    </button>
+                    <button class="action-card" onclick="showPage('breathing')">
+                        <span class="action-icon">💨</span>
+                        <h3 class="action-title">Respirar</h3>
+                        <p class="action-desc">Ejercicios guiados</p>
+                    </button>
+                    <button class="action-card" onclick="showPage('journal')">
+                        <span class="action-icon">📝</span>
+                        <h3 class="action-title">Escribir</h3>
+                        <p class="action-desc">Diario emocional</p>
+                    </button>
+                    <button class="action-card" onclick="showPage('sounds')">
+                        <span class="action-icon">🎧</span>
+                        <h3 class="action-title">Escuchar</h3>
+                        <p class="action-desc">Sonidos relajantes</p>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Página de Meditación -->
+        <div id="meditation" class="page">
+            <h2 class="page-title">Meditaciones Guiadas</h2>
+            <p class="page-subtitle">Encuentra tu momento de paz interior</p>
+            
+            <div class="meditation-grid">
+                <div class="meditation-card">
+                    <div class="meditation-header">
+                        <span class="meditation-icon">🧘</span>
+                    </div>
+                    <h3>Calma Matutina</h3>
+                    <p style="color: #7F8C8D; margin: 0.5rem 0;">Comienza tu día con paz</p>
+                    <div style="margin: 1rem 0;">
+                        <div style="background: #E0E0E0; height: 4px; border-radius: 2px; overflow: hidden;">
+                            <div id="calm-progress" style="background: #6BCB77; height: 100%; width: 0%; transition: width 0.1s;"></div>
+                        </div>
+                        <p id="calm-time" style="font-size: 0.8rem; color: #7F8C8D; margin-top: 0.5rem; text-align: center;">0:00 / 1:14</p>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                        <span style="color: #7F8C8D;">⏱️ 1:14 min</span>
+                        <button id="calm-btn" class="play-btn" onclick="toggleSound('calm')">▶️ Iniciar</button>
+                     
+                    </div>
+                </div>
+
+                <div class="meditation-card">
+                    <div class="meditation-header">
+                        <span class="meditation-icon">🧘</span>
+                    </div>
+                    <h3>Concentración Escolar</h3>
+                    <p style="color: #7F8C8D; margin: 0.5rem 0;">Mejora tu enfoque para estudiar</p>
+                    <div style="margin: 1rem 0;">
+                        <div style="background: #E0E0E0; height: 4px; border-radius: 2px; overflow: hidden;">
+                            <div id="focus-progress" style="background: #6BCB77; height: 100%; width: 0%; transition: width 0.1s;"></div>
+                        </div>
+                        <p id="focus-time" style="font-size: 0.8rem; color: #7F8C8D; margin-top: 0.5rem; text-align: center;">0:00 / 1:48</p>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                        <span style="color: #7F8C8D;">⏱️ 1:48 min</span>
+                        <button id="focus-btn" class="play-btn" onclick="toggleSound('focus')">▶️ Iniciar</button>
+                    </div>
+                </div>
+
+                <div class="meditation-card">
+                    <div class="meditation-header">
+                        <span class="meditation-icon">🧘</span>
+                        <span class="premium-badge">⭐ Premium</span>
+                    </div>
+                    <h3>Reducción de Ansiedad</h3>
+                    <p style="color: #7F8C8D; margin: 0.5rem 0;">Técnicas avanzadas de relajación</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                        <span style="color: #7F8C8D;">⏱️ 15 min</span>
+                        <button class="play-btn" onclick="showPremiumAlert()" disabled>🔒 Premium</button>
+                    </div>
+                </div>
+
+                <div class="meditation-card">
+                    <div class="meditation-header">
+                        <span class="meditation-icon">🧘</span>
+                        <span class="premium-badge">⭐ Premium</span>
+                    </div>
+                    <h3>Sueño Profundo</h3>
+                    <p style="color: #7F8C8D; margin: 0.5rem 0;">Meditación guiada para dormir mejor</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                        <span style="color: #7F8C8D;">⏱️ 20 min</span>
+                        <button class="play-btn" onclick="showPremiumAlert()" disabled>🔒 Premium</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info de audios -->
+            <div class="card" style="margin-top: 2rem; background: #FFF9E6; border: 2px solid #FFD93D;">
+                <h3 style="color: #2C3E50; margin-bottom: 1rem;">⭐ Plan Premium</h3>
+                <p style="color: #7F8C8D; line-height: 1.6;">
+                    💡 Para estudiantes e instituciones educativas ofrecemos planes especiales con descuentos<strong>  $9.900 COP/mes</strong>
+                </p>
+                <ul style="color: #7F8C8D; margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li><code>✓ Acceso ilimitado a todas las meditaciones</code> (Sin publicidad)</li>
+                    <li><code>✓ Programas personalizados de 21 días</code> (Contenido nuevo cada semana)</li>
+                </ul>
+            </div>
+            
+        </div>
+
+        <!-- Audio elements para meditaciones -->
+        <audio id="calm-audio" loop>
+            <source src="meditations/calma-matutina.mp3" type="audio/mpeg">
+            
+        </audio>
+        <audio id="focus-audio" loop>
+            <source src="meditations/concentracion-escolar.mp3" type="audio/mpeg">
+        </audio>
+
+        <!-- Página de Diario -->
+        <div id="journal" class="page">
+            <h2 class="page-title">Diario Emocional</h2>
+            <p class="page-subtitle">Expresa tus pensamientos y emociones</p>
+            
+            <div class="card">
+                <textarea id="journalText" class="journal-textarea" placeholder="¿Qué emociones experimentaste hoy? Escribe libremente..."></textarea>
+                <button class="save-btn" onclick="saveEntry()">💾 Guardar Entrada</button>
+            </div>
+
+            <div class="card">
+                <h3 style="color: #2C3E50; margin-bottom: 1rem;">Mis entradas</h3>
+                <div id="entriesList">
+                    <p class="empty-state">Aún no tienes entradas. ¡Comienza a escribir!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Página de Respiración -->
+        <div id="breathing" class="page">
+            <h2 class="page-title">Ejercicios de Respiración</h2>
+            <p class="page-subtitle">Respiración consciente 4-4-4</p>
+            
+            <div class="breathing-container">
+                <div id="breathingCircle" class="breathing-circle">💨</div>
+                <p id="breathingText" class="breathing-instruction">Presiona el botón para comenzar</p>
+                <button id="breathingBtn" class="breathing-btn" onclick="startBreathing()">🌬️ Comenzar Ejercicio</button>
+                
+                <div class="card" style="max-width: 500px; margin: 2rem auto; text-align: left;">
+                    <h3>Beneficios:</h3>
+                    <ul class="benefits-list">
+                        <li>✓ Reduce la ansiedad y el estrés</li>
+                        <li>✓ Mejora la concentración</li>
+                        <li>✓ Calma el sistema nervioso</li>
+                        <li>✓ Ayuda antes de exámenes</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Página de Sonidos -->
+        <div id="sounds" class="page">
+            <h2 class="page-title">Sonidos Relajantes</h2>
+            <p class="page-subtitle">Ambiente perfecto para concentrarte o relajarte</p>
+            
+            <div class="sounds-grid">
+                <div class="sound-card">
+                    <span class="sound-icon">🌧️</span>
+                    <h3>Lluvia Suave</h3>
+                    <div style="margin: 1rem 0;">
+                        <div style="background: #E0E0E0; height: 4px; border-radius: 2px; overflow: hidden;">
+                            <div id="rain-progress" style="background: #4D96FF; height: 100%; width: 0%; transition: width 0.1s;"></div>
+                        </div>
+                        <p id="rain-time" style="font-size: 0.8rem; color: #7F8C8D; margin-top: 0.5rem;">0:00 / 0:00</p>
+                    </div>
+                    <button id="rain-btn" class="sound-btn" onclick="toggleSound('rain')">▶️ Reproducir</button>
+                </div>
+                <div class="sound-card">
+                    <span class="sound-icon">🌊</span>
+                    <h3>Olas del Mar</h3>
+                    <div style="margin: 1rem 0;">
+                        <div style="background: #E0E0E0; height: 4px; border-radius: 2px; overflow: hidden;">
+                            <div id="ocean-progress" style="background: #4D96FF; height: 100%; width: 0%; transition: width 0.1s;"></div>
+                        </div>
+                        <p id="ocean-time" style="font-size: 0.8rem; color: #7F8C8D; margin-top: 0.5rem;">0:00 / 0:00</p>
+                    </div>
+                    <button id="ocean-btn" class="sound-btn" onclick="toggleSound('ocean')">▶️ Reproducir</button>
+                </div>
+                <div class="sound-card">
+                    <span class="sound-icon">🌳</span>
+                    <h3>Bosque Tropical</h3>
+                    <span class="premium-badge" style="margin: 0.5rem 0; display: inline-block;">⭐ Premium</span>
+                    <button class="sound-btn" onclick="alert('Actualiza a Premium para acceder a este sonido')" style="opacity: 0.5;">🔒 Reproducir</button>
+                </div>
+                <div class="sound-card">
+                    <span class="sound-icon">🎵</span>
+                    <h3>Música Ambient</h3>
+                    <span class="premium-badge" style="margin: 0.5rem 0; display: inline-block;">⭐ Premium</span>
+                    <button class="sound-btn" onclick="alert('Actualiza a Premium para acceder a este sonido')" style="opacity: 0.5;">🔒 Reproducir</button>
+                </div>
+            </div>
+
+            <!-- Controles de volumen -->
+            <div class="card" style="max-width: 500px; margin: 2rem auto;">
+                <h3 style="margin-bottom: 1rem;">Control de Volumen</h3>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <span>🔊</span>
+                    <input type="range" id="volume-slider" min="0" max="100" value="70" 
+                           style="flex: 1; height: 6px; border-radius: 3px; outline: none;"
+                           onchange="updateVolume(this.value)">
+                    <span id="volume-label">70%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Audio elements (hidden) -->
+        <audio id="rain-audio" loop>
+            <source src="sounds/lluvia-suave.mp3" type="audio/mpeg">
+            Tu navegador no soporta audio HTML5
+        </audio>
+        <audio id="ocean-audio" loop>
+            <source src="sounds/olas-mar.mp3" type="audio/mpeg">
+            Tu navegador no soporta audio HTML5
+        </audio>
+
+        <!-- Página Premium -->
+        <div id="premium" class="page">
+            <h2 class="page-title">CalmaBit Premium</h2>
+            <p class="page-subtitle">Desbloquea todo el potencial de tu bienestar</p>
+            
+            <div class="premium-container">
+                <div class="premium-card">
+                    <div style="text-align: center;">
+                        <span class="premium-icon">⭐</span>
+                        <h3 style="font-size: 1.8rem; margin: 0.5rem 0;">Plan Premium</h3>
+                        <p class="premium-price">$9.900 COP/mes</p>
+                    </div>
+
+                    <ul class="premium-features">
+                        <li>✓ Acceso ilimitado a todas las meditaciones</li>
+                        <li>✓ +50 sonidos relajantes exclusivos</li>
+                        <li>✓ Programas personalizados de 21 días</li>
+                        <li>✓ Estadísticas de progreso detalladas</li>
+                        <li>✓ Modo offline completo</li>
+                        <li>✓ Sin publicidad</li>
+                        <li>✓ Contenido nuevo cada semana</li>
+                    </ul>
+
+                    <button class="upgrade-btn" onclick="upgradePremium()">🚀 Actualizar a Premium</button>
+
+                    <p style="text-align: center; color: #7F8C8D; font-size: 0.9rem; margin-top: 1.5rem; font-style: italic;">
+                        💡 Para estudiantes e instituciones educativas ofrecemos planes especiales con descuentos.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p style="margin: 0.5rem 0; font-size: 1rem;">CalmaBit © 2025 - Evolucionando con el avance tecnológico</p>
+        <p style="margin: 0.5rem 0; font-size: 0.9rem; opacity: 0.8;">Desarrollado con ❤️ para estudiantes y docentes</p>
+    </footer>
+
+    <script>
+        // Estado de la aplicación
+        let currentEmotion = '';
+        let journalEntries = [];
+        let isPremium = false;
+
+        // Cambiar de página
+        function showPage(pageName) {
+            // Ocultar todas las páginas
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Mostrar página seleccionada
+            document.getElementById(pageName).classList.add('active');
+            
+            // Actualizar botones de navegación
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Seleccionar emoción
+        function selectEmotion(element, emotion, color) {
+            document.querySelectorAll('.emotion-btn').forEach(btn => {
+                btn.classList.remove('selected');
+                btn.style.backgroundColor = '#f8f9fa';
+            });
+            
+            element.classList.add('selected');
+            element.style.backgroundColor = color;
+            currentEmotion = emotion;
+        }
+
+        // Guardar entrada de diario
+        function saveEntry() {
+            const text = document.getElementById('journalText').value.trim();
+            if (text) {
+                const entry = {
+                    id: Date.now(),
+                    text: text,
+                    emotion: currentEmotion,
+                    date: new Date().toLocaleDateString('es-CO')
+                };
+                
+                journalEntries.unshift(entry);
+                document.getElementById('journalText').value = '';
+                renderEntries();
+            }
+        }
+
+        // Renderizar entradas
+        function renderEntries() {
+            const container = document.getElementById('entriesList');
+            
+            if (journalEntries.length === 0) {
+                container.innerHTML = '<p class="empty-state">Aún no tienes entradas. ¡Comienza a escribir!</p>';
+            } else {
+                container.innerHTML = journalEntries.map(entry => `
+                    <div class="entry-card">
+                        <div class="entry-header">
+                            <span>${entry.date}</span>
+                            ${entry.emotion ? `<span style="background: #F0F0F0; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.85rem;">${entry.emotion}</span>` : ''}
+                        </div>
+                        <p style="color: #2C3E50; line-height: 1.6;">${entry.text}</p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Ejercicio de respiración
+        let breathingInterval;
+        let breathCount = 0;
+        
+        function startBreathing() {
+            const circle = document.getElementById('breathingCircle');
+            const text = document.getElementById('breathingText');
+            const btn = document.getElementById('breathingBtn');
+            
+            btn.disabled = true;
+            breathCount = 0;
+            
+            breathingInterval = setInterval(() => {
+                breathCount++;
+                
+                if (breathCount % 3 === 1) {
+                    circle.classList.add('breathing');
+                    circle.textContent = 'Inhala';
+                    text.textContent = 'Inhala profundamente por 4 segundos';
+                } else if (breathCount % 3 === 2) {
+                    circle.textContent = 'Sostén';
+                    text.textContent = 'Sostén la respiración por 4 segundos';
+                } else {
+                    circle.classList.remove('breathing');
+                    circle.textContent = 'Exhala';
+                    text.textContent = 'Exhala lentamente por 4 segundos';
+                }
+                
+                btn.textContent = `Ciclo ${Math.floor(breathCount / 3) + 1}/2`;
+                
+                if (breathCount >= 6) {
+                    clearInterval(breathingInterval);
+                    circle.classList.remove('breathing');
+                    circle.textContent = '💨';
+                    text.textContent = '¡Excelente! Presiona el botón para repetir';
+                    btn.textContent = '🌬️ Comenzar Ejercicio';
+                    btn.disabled = false;
+                }
+            }, 4000);
+        }
+
+        // Actualizar a Premium
+        function upgradePremium() {
+            isPremium = true;
+            alert('¡Bienvenido a Premium! 🎉\n\nEn la versión real, aquí procesaríamos el pago de forma segura.\n\nAhora tienes acceso a todo el contenido exclusivo.');
+            
+            // Habilitar contenido premium
+            document.querySelectorAll('.play-btn:disabled').forEach(btn => {
+                btn.disabled = false;
+                btn.textContent = '▶️ Iniciar';
+                btn.style.opacity = '1';
+            });
+        }
+
+        // Sistema de reproducción de audio
+        const audioPlayers = {
+            rain: document.getElementById('rain-audio'),
+            ocean: document.getElementById('ocean-audio'),
+            calm: document.getElementById('calm-audio'),
+            focus: document.getElementById('focus-audio')
+        };
+
+        function toggleSound(soundType) {
+            const audio = audioPlayers[soundType];
+            const btn = document.getElementById(`${soundType}-btn`);
+            
+            if (audio.paused) {
+                // Pausar otros sonidos
+                Object.keys(audioPlayers).forEach(key => {
+                    if (key !== soundType && !audioPlayers[key].paused) {
+                        audioPlayers[key].pause();
+                        document.getElementById(`${key}-btn`).textContent = '▶️ Reproducir';
+                    }
+                });
+                
+                // Reproducir este sonido
+                audio.play().then(() => {
+                    btn.textContent = '⏸️ Pausar';
+                    updateProgress(soundType);
+                }).catch(error => {
+                    alert('Error al reproducir el audio. Asegúrate de que los archivos de sonido estén en la carpeta "sounds/"');
+                    console.error('Error de reproducción:', error);
+                });
+            } else {
+                audio.pause();
+                btn.textContent = '▶️ Reproducir';
+            }
+        }
+
+        function updateProgress(soundType) {
+            const audio = audioPlayers[soundType];
+            const progressBar = document.getElementById(`${soundType}-progress`);
+            const timeLabel = document.getElementById(`${soundType}-time`);
+            
+            const interval = setInterval(() => {
+                if (audio.paused) {
+                    clearInterval(interval);
+                    return;
+                }
+                
+                const progress = (audio.currentTime / audio.duration) * 100;
+                progressBar.style.width = progress + '%';
+                
+                const currentMin = Math.floor(audio.currentTime / 60);
+                const currentSec = Math.floor(audio.currentTime % 60);
+                const durationMin = Math.floor(audio.duration / 60);
+                const durationSec = Math.floor(audio.duration % 60);
+                
+                timeLabel.textContent = `${currentMin}:${currentSec.toString().padStart(2, '0')} / ${durationMin}:${durationSec.toString().padStart(2, '0')}`;
+            }, 100);
+        }
+
+        function updateVolume(value) {
+            const volume = value / 100;
+            Object.values(audioPlayers).forEach(audio => {
+                audio.volume = volume;
+            });
+            document.getElementById('volume-label').textContent = value + '%';
+        }
+
+        // Inicializar volumen
+        window.addEventListener('load', () => {
+            updateVolume(70);
+        });
+    </script>
+</body>
+</html>

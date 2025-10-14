@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VR Batallas por la Paz S.A.S - Virtualizamos el conflicto, humanizamos la solución</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1E3A8A; /* Azul principal */
+            --secondary-color: #3B82F6; /* Azul más claro */
+            --accent-color: #10B981; /* Verde paz */
+            --dark-color: #1F2937;
+            --light-color: #F9FAFB;
+            --white: #FFFFFF;
+            --gradient: linear-gradient(135deg, #1E3A8A, #3B82F6);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background: var(--white);
+        }
+
+        /* Header y Navegación */
+        header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            background: rgba(30, 58, 138, 0.95);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--white);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--gradient);
+            color: var(--white);
+            padding: 120px 2rem 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.1;
+        }
+
+        .hero-content {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero-slogan {
+            font-size: 1.5rem;
+            font-style: italic;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Secciones */
+        section {
+            padding: 80px 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--primary-color);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #6B7280;
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Propuesta de Valor */
+        .value-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .value-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .value-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .value-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--white);
+            margin-bottom: 1rem;
+        }
+
+        /* Productos */
+        .products-section {
+            background: var(--light-color);
+        }
+
+        .product-showcase {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin-top: 3rem;
+        }
+
+        .product-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            flex-shrink: 0;
+        }
+
+        /* Equipo */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .team-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .team-avatar {
+            width: 100px;
+            height: 100px;
+            background: var(--gradient);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--white);
+        }
+
+        /* Contacto */
+        .contact-section {
+            background: var(--gradient);
+            color: var(--white);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .contact-form {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            color: var(--white);
+            font-size: 1rem;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-color);
+            color: var(--white);
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #374151;
+            color: #9CA3AF;
+        }
+
+        /* Animaciones */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Local Storage Indicator */
+        .storage-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent-color);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            z-index: 1000;
+            display: none;
+        }
+
+        .storage-status.show {
+            display: block;
+            animation: fadeInUp 0.5s;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                <div class="logo-icon">🎮</div>
+                VR Batallas por la Paz
+            </div>
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="#productos">Productos</a></li>
+                <li><a href="#equipo">Equipo</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+            <a href="#contacto" class="btn btn-primary">Contáctanos</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="inicio">
+        <div class="hero-content">
+            <h1>VR Batallas por la Paz</h1>
+            <p class="hero-slogan">"Virtualizamos el conflicto, humanizamos la solución"</p>
+            <p>Desarrollamos videojuegos de realidad virtual que transforman escenarios de guerra en espacios de reflexión, aprendizaje y construcción de paz.</p>
+            <div class="hero-buttons">
+                <a href="#productos" class="btn btn-primary">Conoce Nuestros Productos</a>
+                <a href="#contacto" class="btn btn-secondary">Solicita Demo</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Propuesta de Valor -->
+    <section id="nosotros">
+        <div class="container">
+            <h2 class="section-title">Nuestra Propuesta de Valor</h2>
+            <p class="section-subtitle">Transformamos la narrativa de los videojuegos bélicos hacia experiencias educativas que promueven la empatía, la reconciliación y la cultura de paz.</p>
+
+            <div class="value-grid">
+                <div class="value-card">
+                    <div class="value-icon">🕊️</div>
+                    <h3>Educación para la Paz</h3>
+                    <p>Utilizamos la realidad virtual para enseñar sobre las consecuencias humanas de los conflictos y promover soluciones pacíficas.</p>
+                </div>
+
+                <div class="value-card">
+                    <div class="value-icon">🎓</div>
+                    <h3>Herramienta Pedagógica</h3>
+                    <p>Nuestros videojuegos están diseñados para ser implementados en instituciones educativas, ONGs y programas de formación ciudadana.</p>
+                </div>
+
+                <div class="value-card">
+                    <div class="value-icon">🌍</div>
+                    <h3>Impacto Social</h3>
+                    <p>Contribuimos a la formación de ciudadanos más sensibles y comprometidos con la construcción de entornos pacíficos.</p>
+                </div>
+
+                <div class="value-card">
+                    <div class="value-icon">🚀</div>
+                    <h3>Tecnología Innovadora</h3>
+                    <p>Pioneros en Colombia en el uso de realidad virtual aplicada a la educación para la paz y la reconciliación.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Productos -->
+    <section class="products-section" id="productos">
+        <div class="container">
+            <h2 class="section-title">Nuestros Productos VR</h2>
+            <p class="section-subtitle">Experiencias inmersivas que combinan narrativa, pedagogía y tecnología de vanguardia</p>
+
+            <div class="product-showcase">
+                <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Experiencias de Realidad Virtual Educativas</h3>
+                <p style="margin-bottom: 2rem;">Nuestros videojuegos sitúan a los usuarios en escenarios de guerra histórica o ficticia donde, más allá del combate, se enfrentan a dilemas éticos, consecuencias humanas y rutas de solución no violenta.</p>
+
+                <div class="product-features">
+                    <div class="feature-item">
+                        <div class="feature-icon">🎯</div>
+                        <div>
+                            <h4>Narrativas Inmersivas</h4>
+                            <p>Historias basadas en hechos reales con enseñanzas morales profundas</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon">🤝</div>
+                        <div>
+                            <h4>Resolución de Conflictos</h4>
+                            <p>Mecánicas de juego centradas en la mediación y reconciliación</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon">💡</div>
+                        <div>
+                            <h4>Reflexión Crítica</h4>
+                            <p>Espacios de análisis y debate sobre las experiencias vividas</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon">🎮</div>
+                        <div>
+                            <h4>Tecnología VR Avanzada</h4>
+                            <p>Compatible con Oculus Quest, HTC Vive y PlayStation VR</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Equipo -->
+    <section id="equipo">
+        <div class="container">
+            <h2 class="section-title">Nuestro Equipo</h2>
+            <p class="section-subtitle">Profesionales comprometidos con la innovación tecnológica y el impacto social</p>
+
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-avatar">CP</div>
+                    <h4>Cristian Pérez Rambauth</h4>
+                    <p>Gerente y Representante Legal</p>
+                    <small>Liderazgo estratégico y visión empresarial</small>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">JG</div>
+                    <h4>Jhonatan Garay Gamarra</h4>
+                    <p>Director Financiero</p>
+                    <small>Gestión contable y control presupuestal</small>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">IM</div>
+                    <h4>Isaac Mendoza Cuello</h4>
+                    <p>Asistente Administrativo</p>
+                    <small>Coordinación operativa y logística</small>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">IP</div>
+                    <h4>Izan Pérez Tovar</h4>
+                    <p>Director de Marketing</p>
+                    <small>Estrategias digitales y posicionamiento</small>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">JR</div>
+                    <h4>José Ruz García</h4>
+                    <p>Director de Ventas</p>
+                    <small>Relaciones institucionales y comercialización</small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacto -->
+    <section class="contact-section" id="contacto">
+        <div class="container">
+            <h2 class="section-title" style="color: white;">Contáctanos</h2>
+
+            <div class="contact-grid">
+                <div>
+                    <h3>¿Listo para transformar la educación?</h3>
+                    <p style="margin-bottom: 2rem;">Únete a nuestra misión de promover la paz a través de la tecnología. Contáctanos para conocer más sobre nuestros productos y servicios.</p>
+
+                    <div style="margin-bottom: 1rem;">
+                        <strong>📍 Ubicación:</strong> Corozal, Sucre - Colombia
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <strong>🏢 Institución:</strong> SENA - Programación de Software
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <strong>🎯 Sector:</strong> Industrias Creativas y Culturales
+                    </div>
+                    <div>
+                        <strong>💰 Capital Social:</strong> $50.000.000 COP
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <h3 style="margin-bottom: 1.5rem;">Solicita Información</h3>
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="nombre">Nombre Completo</label>
+                            <input type="text" id="nombre" name="nombre" required placeholder="Tu nombre completo">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required placeholder="tu@email.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="institucion">Institución/Organización</label>
+                            <input type="text" id="institucion" name="institucion" placeholder="Nombre de tu institución">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tipoCliente">Tipo de Cliente</label>
+                            <select id="tipoCliente" name="tipoCliente" required>
+                                <option value="">Selecciona una opción</option>
+                                <option value="institucion-educativa">Institución Educativa</option>
+                                <option value="ong">ONG</option>
+                                <option value="entidad-publica">Entidad Pública</option>
+                                <option value="empresa-privada">Empresa Privada</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="mensaje">Mensaje</label>
+                            <textarea id="mensaje" name="mensaje" rows="4" placeholder="Cuéntanos sobre tu proyecto o interés en nuestros productos..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Enviar Solicitud</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>VR Batallas por la Paz S.A.S.</h3>
+                <p>Sociedad por Acciones Simplificada dedicada al desarrollo de videojuegos educativos en realidad virtual con enfoque en paz y reconciliación.</p>
+                <p style="margin-top: 1rem;"><strong>NIT:</strong> En proceso de constitución</p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Servicios</h3>
+                <ul style="list-style: none;">
+                    <li>Desarrollo de experiencias VR educativas</li>
+                    <li>Capacitación docente en tecnología VR</li>
+                    <li>Implementación institucional</li>
+                    <li>Soporte técnico especializado</li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Sectores</h3>
+                <ul style="list-style: none;">
+                    <li>Instituciones Educativas</li>
+                    <li>ONGs y Fundaciones</li>
+                    <li>Entidades Gubernamentales</li>
+                    <li>Programas de Reconciliación</li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Información</h3>
+                <p><strong>Ubicación:</strong> Corozal, Sucre</p>
+                <p><strong>Formación:</strong> SENA - Técnico en Programación de Software</p>
+                <p><strong>Instructor:</strong> Diego Flores</p>
+                <p><strong>Año:</strong> 2025</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 VR Batallas por la Paz S.A.S. - "Virtualizamos el conflicto, humanizamos la solución" | Proyecto SENA Corozal</p>
+        </div>
+    </footer>
+
+    <!-- Storage Status Indicator -->
+    <div id="storageStatus" class="storage-status"></div>
+
+    <!-- JavaScript -->
+    <script>
+        // Sistema de almacenamiento local con exportación a Excel
+        class LocalStorageManager {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                // Verificar si el local storage está disponible
+                this.storageAvailable = this.isStorageAvailable();
+                this.showStorageStatus();
+
+                // Configurar el formulario de contacto
+                this.setupContactForm();
+
+                // Cargar datos existentes
+                this.loadExistingData();
+            }
+
+            isStorageAvailable() {
+                try {
+                    const test = 'test';
+                    localStorage.setItem(test, test);
+                    localStorage.removeItem(test);
+                    return true;
+                } catch(e) {
+                    return false;
+                }
+            }
+
+            showStorageStatus() {
+                const statusDiv = document.getElementById('storageStatus');
+                if (this.storageAvailable) {
+                    statusDiv.textContent = '💾 Local Storage Activo';
+                    statusDiv.className = 'storage-status show';
+                } else {
+                    statusDiv.textContent = '⚠️ Storage No Disponible';
+                    statusDiv.className = 'storage-status show';
+                }
+
+                // Ocultar después de 3 segundos
+                setTimeout(() => {
+                    statusDiv.classList.remove('show');
+                }, 3000);
+            }
+
+            setupContactForm() {
+                const form = document.getElementById('contactForm');
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleFormSubmit(form);
+                });
+            }
+
+            handleFormSubmit(form) {
+                const formData = new FormData(form);
+                const contactData = {
+                    id: Date.now(),
+                    timestamp: new Date().toISOString(),
+                    nombre: formData.get('nombre'),
+                    email: formData.get('email'),
+                    institucion: formData.get('institucion'),
+                    tipoCliente: formData.get('tipoCliente'),
+                    mensaje: formData.get('mensaje')
+                };
+
+                this.saveContactData(contactData);
+                this.showSuccessMessage();
+                form.reset();
+            }
+
+            saveContactData(data) {
+                if (!this.storageAvailable) {
+                    console.warn('Local Storage no disponible');
+                    return;
+                }
+
+                try {
+                    // Obtener datos existentes
+                    const existingData = JSON.parse(localStorage.getItem('vrBatallasContacts') || '[]');
+
+                    // Agregar nuevo contacto
+                    existingData.push(data);
+
+                    // Guardar en localStorage
+                    localStorage.setItem('vrBatallasContacts', JSON.stringify(existingData));
+
+                    console.log('Datos guardados exitosamente:', data);
+
+                    // Generar archivo Excel automáticamente
+                    this.generateExcelFile();
+
+                } catch (e) {
+                    console.error('Error al guardar datos:', e);
+                }
+            }
+
+            loadExistingData() {
+                if (!this.storageAvailable) return;
+
+                try {
+                    const existingData = JSON.parse(localStorage.getItem('vrBatallasContacts') || '[]');
+                    console.log(`Datos cargados: ${existingData.length} registros`);
+                    return existingData;
+                } catch (e) {
+                    console.error('Error al cargar datos:', e);
+                    return [];
+                }
+            }
+
+            generateExcelFile() {
+                const data = this.loadExistingData();
+                if (data.length === 0) return;
+
+                // Crear contenido CSV
+                const csvContent = this.generateCSVContent(data);
+
+                // Crear y descargar archivo
+                this.downloadFile(csvContent, 'vr-batallas-contactos.csv', 'text/csv;charset=utf-8;');
+            }
+
+            generateCSVContent(data) {
+                const headers = ['ID', 'Fecha', 'Nombre', 'Email', 'Institución', 'Tipo Cliente', 'Mensaje'];
+                const csvRows = [headers.join(',')];
+
+                data.forEach(contact => {
+                    const row = [
+                        contact.id,
+                        new Date(contact.timestamp).toLocaleString('es-CO'),
+                        `"${contact.nombre}"`,
+                        contact.email,
+                        `"${contact.institucion || ''}"`,
+                        contact.tipoCliente,
+                        `"${contact.mensaje || ''}"`
+                    ];
+                    csvRows.push(row.join(','));
+                });
+
+                return csvRows.join('\n');
+            }
+
+            downloadFile(content, fileName, contentType) {
+                const blob = new Blob([content], { type: contentType });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+
+                link.setAttribute('href', url);
+                link.setAttribute('download', fileName);
+                link.style.visibility = 'hidden';
+
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            showSuccessMessage() {
+                const statusDiv = document.getElementById('storageStatus');
+                statusDiv.textContent = '✅ Información Enviada y Guardada';
+                statusDiv.className = 'storage-status show';
+                statusDiv.style.background = 'var(--accent-color)';
+
+                setTimeout(() => {
+                    statusDiv.classList.remove('show');
+                    statusDiv.style.background = 'var(--accent-color)';
+                }, 4000);
+            }
+
+            // Método para exportar todos los datos manualmente
+            exportAllData() {
+                this.generateExcelFile();
+            }
+
+            // Método para limpiar todos los datos
+            clearAllData() {
+                if (confirm('¿Estás seguro de que deseas eliminar todos los contactos guardados?')) {
+                    localStorage.removeItem('vrBatallasContacts');
+                    alert('Datos eliminados exitosamente');
+                }
+            }
+        }
+
+        // Inicializar el sistema cuando se carga la página
+        document.addEventListener('DOMContentLoaded', () => {
+            window.storageManager = new LocalStorageManager();
+
+            // Navegación suave
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Header transparente al hacer scroll
+            window.addEventListener('scroll', () => {
+                const header = document.querySelector('header');
+                if (window.scrollY > 100) {
+                    header.style.background = 'rgba(30, 58, 138, 0.98)';
+                } else {
+                    header.style.background = 'rgba(30, 58, 138, 0.95)';
+                }
+            });
+        });
+
+        // Funciones de utilidad para el administrador
+        function exportData() {
+            if (window.storageManager) {
+                window.storageManager.exportAllData();
+            }
+        }
+
+        function clearData() {
+            if (window.storageManager) {
+                window.storageManager.clearAllData();
+            }
+        }
+
+        function showStoredData() {
+            if (window.storageManager) {
+                const data = window.storageManager.loadExistingData();
+                console.table(data);
+                alert(`Se encontraron ${data.length} registros. Revisa la consola para ver los detalles.`);
+            }
+        }
+
+        // Comandos de consola para administradores
+        console.log('%c🎮 VR Batallas por la Paz - Panel Admin', 'color: #1E3A8A; font-size: 16px; font-weight: bold;');
+        console.log('%cComandos disponibles:', 'color: #10B981; font-size: 14px;');
+        console.log('- exportData(): Exportar todos los contactos a CSV');
+        console.log('- clearData(): Eliminar todos los datos guardados');
+        console.log('- showStoredData(): Mostrar datos en consola');
+    </script>
+</body>
+</html>

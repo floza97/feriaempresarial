@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feria Empresarial SENATIC 2025</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top left, #0a192f, #000);
+      background: linear-gradient(rgba(13, 27, 42, 0.8), rgba(13, 27, 42, 0.8)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="10 5 10 10"><rect width="100" height="100" fill="%231a3c8b"/><path d="M0 0L100 100M100 0L0 100" stroke="%232ecc71" stroke-width="6"/></svg>');
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 4rem;
+      backdrop-filter: blur(8px);
+      background-color: rgba(0, 0, 0, 0.5);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 100;
+    }
+
+    header img {
+      height: 50px;
+      margin: 0 10px;
+      filter: brightness(0) invert(1);
+      transition: transform 0.3s;
+    }
+
+    header img:hover {
+      transform: scale(1.1);
+    }
+
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      background: linear-gradient(to bottom right, rgba(0,0,0,0.8), rgba(0,0,0,0.4));
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      color: #00FFAB;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 15px rgba(0,255,171,0.5);
+    }
+
+    .hero h2 {
+      font-size: 1.4rem;
+      color: #E0E0E0;
+      margin-bottom: 2rem;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      max-width: 700px;
+      color: #B0B0B0;
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
+    }
+
+    .btn {
+      background-color: #00FFAB;
+      color: #000;
+      padding: 0.9rem 2.2rem;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.3s;
+      box-shadow: 0 0 20px rgba(0,255,171,0.4);
+    }
+
+    .btn:hover {
+      background-color: #00cc88;
+      box-shadow: 0 0 30px rgba(0,255,171,0.7);
+      transform: scale(1.05);
+    }
+
+    footer {
+      background-color: #0d1b2a;
+      text-align: center;
+      padding: 2rem;
+      color: #9DAAF2;
+      font-size: 0.9rem;
+    }
+
+    .logos {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+      margin-top: 1.5rem;
+    }
+
+    .logos img {
+      height: 60px;
+      opacity: 0.9;
+      filter: brightness(0) invert(1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logos">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Logo_SENA_Colombia.png" alt="SENA">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Logo_MinTIC_Colombia.png" alt="MinTIC">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Emblem_of_the_International_Labour_Organization.svg" alt="OIT">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Logo_de_la_Escuela_Normal_Superior_de_Corozal.png" alt="ENSC">
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1>Feria Empresarial SENATIC 2025</h1>
+    <h2>Programa de Programación de Software – Articulación con la Media ENSC</h2>
+    <p>
+      Bienvenidos a la Feria Empresarial del proyecto <strong>SENATIC</strong>, una iniciativa del 
+      <strong>SENA</strong> en articulación con la <strong>Escuela Normal Superior de Corozal</strong>, 
+      con el apoyo de la <strong>OIT</strong> y el <strong>MinTIC</strong>.  
+      Un espacio para que nuestros aprendices presenten sus <strong>24 proyectos de base tecnológica</strong> que transforman ideas en soluciones digitales.
+    </p>
+    <a href="proyectos.html" class="btn">Ver Proyectos</a>
+
+    <div class="logos">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Logo_SENA_Colombia.png" alt="SENA">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Logo_MinTIC_Colombia.png" alt="MinTIC">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Emblem_of_the_International_Labour_Organization.svg" alt="OIT">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Logo_de_la_Escuela_Normal_Superior_de_Corozal.png" alt="ENSC">
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 Feria Empresarial SENATIC – Escuela Normal Superior de Corozal · SENA · OIT · MinTIC</p>
+    <p>“Transformando ideas en soluciones digitales desde las aulas.”</p>
+  </footer>
+</body>
+</html>

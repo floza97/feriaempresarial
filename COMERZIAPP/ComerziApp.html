@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComerziApp - Tu tienda digital en un clic</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #FF69B4;
+            --secondary-color: #FF1493;
+            --dark-color: #2C3E50;
+            --light-color: #ECF0F1;
+            --success-color: #27AE60;
+            --warning-color: #F39C12;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+        }
+
+        /* Header y Navegación */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: var(--success-color);
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 120px 2rem 80px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Secciones */
+        section {
+            padding: 80px 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--primary-color);
+        }
+
+        /* Características */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* Planes */
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .plan-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            position: relative;
+            transition: transform 0.3s;
+        }
+
+        .plan-card:hover {
+            transform: scale(1.05);
+        }
+
+        .plan-card.featured {
+            border: 3px solid var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .plan-badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .plan-name {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .plan-period {
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .plan-features li {
+            padding: 0.7rem 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .plan-features li:before {
+            content: "✓ ";
+            color: var(--success-color);
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+            background: var(--light-color);
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            margin-top: 0.5rem;
+        }
+
+        /* Gestión de Productos */
+        .products-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .add-product-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--light-color);
+            border-radius: 10px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 0.7rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .products-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: white;
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+        }
+
+        .product-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--success-color);
+            margin: 0.5rem 0;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger {
+            background: #E74C3C;
+            color: white;
+        }
+
+        .btn-edit {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        /* Pedidos */
+        .orders-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .order-card {
+            background: var(--light-color);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .order-status {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .status-pending {
+            background: #FFF3CD;
+            color: #856404;
+        }
+
+        .status-processing {
+            background: #D1ECF1;
+            color: #0C5460;
+        }
+
+        .status-completed {
+            background: #D4EDDA;
+            color: #155724;
+        }
+
+        /* Login/Registro */
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .auth-modal.active {
+            display: flex;
+        }
+
+        .auth-form {
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        .auth-form h2 {
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .auth-form .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-form .btn {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 3rem 2rem 1rem;
+            margin-top: 5rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #34495e;
+            color: #bdc3c7;
+        }
+
+        /* Animaciones */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Tabs para Dashboard */
+        .dashboard-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 1rem 2rem;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                🛍️ ComerziApp
+            </div>
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#caracteristicas">Características</a></li>
+                <li><a href="#planes">Planes</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+            <button class="btn btn-primary" onclick="showAuthModal()">Ingresar</button>
+        </nav>
+    </header>
+
+    <!-- Landing Page -->
+    <div id="landing-page">
+        <!-- Hero Section -->
+        <section class="hero" id="inicio">
+            <h1>Tu tienda digital en un clic</h1>
+            <p>Empodera tu negocio con la plataforma de comercio electrónico más accesible de Colombia</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="showAuthModal('register')">Crear Tienda Gratis</button>
+                <button class="btn btn-secondary" onclick="showAuthModal()">Iniciar Sesión</button>
+            </div>
+        </section>
+
+        <!-- Características -->
+        <section id="caracteristicas">
+            <h2 class="section-title">¿Por qué elegir ComerziApp?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🏪</div>
+                    <h3>Tienda Virtual Profesional</h3>
+                    <p>Crea tu propia tienda en línea personalizada en minutos, sin conocimientos técnicos.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📦</div>
+                    <h3>Gestión de Inventarios</h3>
+                    <p>Controla tus productos, stock y precios desde un solo lugar de forma sencilla.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💳</div>
+                    <h3>Pagos Digitales</h3>
+                    <p>Acepta pagos con Nequi, Daviplata, PSE, tarjetas y contra entrega.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>App Móvil</h3>
+                    <p>Administra tu negocio desde cualquier lugar con nuestra aplicación móvil.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Reportes y Estadísticas</h3>
+                    <p>Analiza tus ventas y toma decisiones informadas con datos en tiempo real.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎓</div>
+                    <h3>Capacitación Incluida</h3>
+                    <p>Acceso a tutoriales, guías y soporte técnico para que crezcas digitalmente.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Planes -->
+        <section id="planes">
+            <h2 class="section-title">Planes y Precios</h2>
+            <div class="plans-grid">
+                <div class="plan-card">
+                    <h3 class="plan-name">Plan Básico</h3>
+                    <div class="plan-price">$0</div>
+                    <div class="plan-period">Gratis para siempre</div>
+                    <ul class="plan-features">
+                        <li>Hasta 20 productos</li>
+                        <li>Tienda virtual personalizada</li>
+                        <li>Gestión de pedidos básica</li>
+                        <li>Pagos digitales integrados</li>
+                        <li>Soporte por email</li>
+                        <li>Tutoriales básicos</li>
+                    </ul>
+                    <button class="btn btn-secondary" onclick="showAuthModal('register')">Comenzar Gratis</button>
+                </div>
+
+                <div class="plan-card featured">
+                    <span class="plan-badge">Más Popular</span>
+                    <h3 class="plan-name">Plan Premium</h3>
+                    <div class="plan-price">$35.000</div>
+                    <div class="plan-period">por mes</div>
+                    <ul class="plan-features">
+                        <li>Productos ilimitados</li>
+                        <li>Diseño personalizado avanzado</li>
+                        <li>Reportes y estadísticas</li>
+                        <li>Herramientas de marketing</li>
+                        <li>Soporte prioritario 24/7</li>
+                        <li>Capacitación personalizada</li>
+                        <li>Sin comisiones por venta</li>
+                        <li>Dominio propio incluido</li>
+                    </ul>
+                    <button class="btn btn-primary" onclick="showAuthModal('register')">Comenzar Ahora</button>
+                </div>
+
+                <div class="plan-card">
+                    <h3 class="plan-name">Plan Empresarial</h3>
+                    <div class="plan-price">Personalizado</div>
+                    <div class="plan-period">Contacta con ventas</div>
+                    <ul class="plan-features">
+                        <li>Todo lo del Plan Premium</li>
+                        <li>Múltiples tiendas</li>
+                        <li>API personalizada</li>
+                        <li>Integración con ERP</li>
+                        <li>Gestor de cuentas dedicado</li>
+                        <li>Capacitación presencial</li>
+                        <li>Desarrollo a medida</li>
+                    </ul>
+                    <button class="btn btn-secondary" onclick="alert('Contacta con nosotros en info@comerziapp.com')">Contactar</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contacto -->
+        <section id="contacto">
+            <h2 class="section-title">¿Listo para transformar tu negocio?</h2>
+            <div style="text-align: center;">
+                <p style="font-size: 1.2rem; margin-bottom: 2rem;">Únete a miles de emprendedores que ya confían en ComerziApp</p>
+                <button class="btn btn-primary" style="padding: 1rem 3rem; font-size: 1.2rem;" onclick="showAuthModal('register')">
+                    Crear Mi Tienda Ahora
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Dashboard (oculto inicialmente) -->
+    <div id="dashboard" class="dashboard">
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <h1>Bienvenido a tu Panel de Control</h1>
+                <p>Gestiona tu tienda digital de manera fácil y eficiente</p>
+                <button class="btn btn-danger" onclick="logout()">Cerrar Sesión</button>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalProducts">0</div>
+                    <div class="stat-label">Productos Activos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalOrders">0</div>
+                    <div class="stat-label">Pedidos Totales</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">$<span id="totalRevenue">0</span></div>
+                    <div class="stat-label">Ingresos del Mes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalCustomers">0</div>
+                    <div class="stat-label">Clientes</div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="dashboard-tabs">
+                <button class="tab-btn active" onclick="switchTab('products')">📦 Productos</button>
+                <button class="tab-btn" onclick="switchTab('orders')">📋 Pedidos</button>
+                <button class="tab-btn" onclick="switchTab('settings')">⚙️ Configuración</button>
+            </div>
+
+            <!-- Tab: Productos -->
+            <div id="tab-products" class="tab-content active">
+                <div class="products-section">
+                    <h2>Gestión de Productos</h2>
+
+                    <div class="add-product-form">
+                        <div class="form-group">
+                            <label>Nombre del Producto</label>
+                            <input type="text" id="productName" placeholder="Ej: Camisa Polo">
+                        </div>
+                        <div class="form-group">
+                            <label>Precio</label>
+                            <input type="number" id="productPrice" placeholder="50000">
+                        </div>
+                        <div class="form-group">
+                            <label>Stock</label>
+                            <input type="number" id="productStock" placeholder="10">
+                        </div>
+                        <div class="form-group">
+                            <label>Categoría</label>
+                            <select id="productCategory">
+                                <option value="ropa">Ropa</option>
+                                <option value="tecnologia">Tecnología</option>
+                                <option value="hogar">Hogar</option>
+                                <option value="alimentos">Alimentos</option>
+                                <option value="otros">Otros</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>Descripción</label>
+                            <textarea id="productDescription" rows="3" placeholder="Describe tu producto..."></textarea>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <button class="btn btn-primary" onclick="addProduct()">Agregar Producto</button>
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 2rem 0 1rem;">Mis Productos</h3>
+                    <div class="products-list" id="productsList">
+                        <!-- Los productos se cargarán dinámicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Pedidos -->
+            <div id="tab-orders" class="tab-content">
+                <div class="orders-section">
+                    <h2>Pedidos Recientes</h2>
+                    <div id="ordersList">
+                        <!-- Los pedidos se cargarán dinámicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Configuración -->
+            <div id="tab-settings" class="tab-content">
+                <div class="products-section">
+                    <h2>Configuración de la Tienda</h2>
+                    <div class="add-product-form">
+                        <div class="form-group">
+                            <label>Nombre de la Tienda</label>
+                            <input type="text" id="storeName" placeholder="Mi Tienda">
+                        </div>
+                        <div class="form-group">
+                            <label>Email de Contacto</label>
+                            <input type="email" id="storeEmail" placeholder="contacto@mitienda.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="tel" id="storePhone" placeholder="3001234567">
+                        </div>
+                        <div class="form-group">
+                            <label>Ciudad</label>
+                            <input type="text" id="storeCity" placeholder="Corozal, Sucre">
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>Dirección</label>
+                            <input type="text" id="storeAddress" placeholder="Calle 10 #20-30">
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>Descripción de la Tienda</label>
+                            <textarea id="storeDescription" rows="3" placeholder="Cuéntanos sobre tu negocio..."></textarea>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <button class="btn btn-primary" onclick="saveSettings()">Guardar Configuración</button>
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 2rem 0 1rem;">Métodos de Pago</h3>
+                    <div class="add-product-form">
+                        <div class="form-group">
+                            <label><input type="checkbox" checked> Nequi</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" checked> Daviplata</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" checked> PSE</label>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" checked> Contra Entrega</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Autenticación -->
+    <div id="authModal" class="auth-modal">
+        <div class="auth-form">
+            <span class="close-modal" onclick="closeAuthModal()">×</span>
+            <h2 id="authTitle">Iniciar Sesión</h2>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="authEmail" placeholder="tu@email.com">
+            </div>
+
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="authPassword" placeholder="••••••••">
+            </div>
+
+            <div id="registerFields" style="display: none;">
+                <div class="form-group">
+                    <label>Nombre del Negocio</label>
+                    <input type="text" id="businessName" placeholder="Mi Tienda">
+                </div>
+                <div class="form-group">
+                    <label>Confirmar Contraseña</label>
+                    <input type="password" id="authPasswordConfirm" placeholder="••••••••">
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="handleAuth()">Continuar</button>
+
+            <p style="text-align: center; margin-top: 1rem;">
+                <a href="#" onclick="toggleAuthMode()" style="color: var(--primary-color);" id="authToggle">
+                    ¿No tienes cuenta? Regístrate
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ComerziApp</h3>
+                <p>Tu tienda digital en un clic</p>
+                <p style="margin-top: 1rem;">Desarrollado por emprendedores para emprendedores colombianos.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Enlaces</h3>
+                <ul>
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#caracteristicas">Características</a></li>
+                    <li><a href="#planes">Planes</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Soporte</h3>
+                <ul>
+                    <li><a href="#">Centro de Ayuda</a></li>
+                    <li><a href="#">Tutoriales</a></li>
+                    <li><a href="#">Documentación</a></li>
+                    <li><a href="#">WhatsApp: 300-123-4567</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">SENA - Corozal, Sucre</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ComerziApp S.A.S. Todos los derechos reservados. | Proyecto SENA - Programación de Software</p>
+        </div>
+    </footer>
+
+    <script>
+        // Variables globales
+        let isLoggedIn = false;
+        let isRegisterMode = false;
+        let products = [];
+        let orders = [];
+
+        // Gestión de autenticación
+        function showAuthModal(mode = 'login') {
+            document.getElementById('authModal').classList.add('active');
+            if (mode === 'register') {
+                toggleAuthMode();
+            }
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.remove('active');
+        }
+
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            const registerFields = document.getElementById('registerFields');
+            const authTitle = document.getElementById('authTitle');
+            const authToggle = document.getElementById('authToggle');
+
+            if (isRegisterMode) {
+                registerFields.style.display = 'block';
+                authTitle.textContent = 'Crear Cuenta';
+                authToggle.textContent = '¿Ya tienes cuenta? Inicia sesión';
+            } else {
+                registerFields.style.display = 'none';
+                authTitle.textContent = 'Iniciar Sesión';
+                authToggle.textContent = '¿No tienes cuenta? Regístrate';
+            }
+        }
+
+        function handleAuth() {
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+
+            if (!email || !password) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            if (isRegisterMode) {
+                const businessName = document.getElementById('businessName').value;
+                const confirmPassword = document.getElementById('authPasswordConfirm').value;
+
+                if (!businessName || password !== confirmPassword) {
+                    alert('Por favor verifica todos los campos');
+                    return;
+                }
+
+                alert('¡Cuenta creada exitosamente!');
+            }
+
+            // Simular login exitoso
+            isLoggedIn = true;
+            closeAuthModal();
+            showDashboard();
+        }
+
+        function logout() {
+            isLoggedIn = false;
+            products = [];
+            orders = [];
+            document.getElementById('landing-page').style.display = 'block';
+            document.getElementById('dashboard').classList.remove('active');
+            updateStats();
+        }
+
+        function showDashboard() {
+            document.getElementById('landing-page').style.display = 'none';
+            document.getElementById('dashboard').classList.add('active');
+            loadSampleData();
+            renderProducts();
+            renderOrders();
+            updateStats();
+        }
+
+        // Gestión de productos
+        function addProduct() {
+            const name = document.getElementById('productName').value;
+            const price = document.getElementById('productPrice').value;
+            const stock = document.getElementById('productStock').value;
+            const category = document.getElementById('productCategory').value;
+            const description = document.getElementById('productDescription').value;
+
+            if (!name || !price || !stock) {
+                alert('Por favor completa los campos obligatorios');
+                return;
+            }
+
+            const product = {
+                id: Date.now(),
+                name,
+                price: parseFloat(price),
+                stock: parseInt(stock),
+                category,
+                description
+            };
+
+            products.push(product);
+
+            // Limpiar formulario
+            document.getElementById('productName').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productStock').value = '';
+            document.getElementById('productDescription').value = '';
+
+            renderProducts();
+            updateStats();
+            alert('¡Producto agregado exitosamente!');
+        }
+
+        function deleteProduct(id) {
+            if (confirm('¿Estás seguro de eliminar este producto?')) {
+                products = products.filter(p => p.id !== id);
+                renderProducts();
+                updateStats();
+            }
+        }
+
+        function renderProducts() {
+            const container = document.getElementById('productsList');
+
+            if (products.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 2rem;">No hay productos aún. ¡Agrega tu primer producto!</p>';
+                return;
+            }
+
+            container.innerHTML = products.map(product => `
+                <div class="product-card">
+                    <h4>${product.name}</h4>
+                    <p style="color: #7f8c8d; font-size: 0.9rem;">${product.category}</p>
+                    <p>${product.description || 'Sin descripción'}</p>
+                    <div class="product-price">$${product.price.toLocaleString()}</div>
+                    <p style="color: #7f8c8d;">Stock: ${product.stock} unidades</p>
+                    <div class="product-actions">
+                        <button class="btn btn-edit btn-small">Editar</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteProduct(${product.id})">Eliminar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Gestión de pedidos
+        function renderOrders() {
+            const container = document.getElementById('ordersList');
+
+            if (orders.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 2rem;">No hay pedidos aún.</p>';
+                return;
+            }
+
+            container.innerHTML = orders.map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div>
+                            <strong>Pedido #${order.id}</strong>
+                            <p style="color: #7f8c8d; font-size: 0.9rem;">${order.date}</p>
+                        </div>
+                        <span class="order-status status-${order.status}">
+                            ${order.statusText}
+                        </span>
+                    </div>
+                    <p><strong>Cliente:</strong> ${order.customer}</p>
+                    <p><strong>Productos:</strong> ${order.items}</p>
+                    <p><strong>Total:</strong> $${order.total.toLocaleString()}</p>
+                    <p><strong>Método de pago:</strong> ${order.paymentMethod}</p>
+                </div>
+            `).join('');
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            document.getElementById('totalProducts').textContent = products.length;
+            document.getElementById('totalOrders').textContent = orders.length;
+
+            const revenue = orders.reduce((sum, order) => sum + order.total, 0);
+            document.getElementById('totalRevenue').textContent = revenue.toLocaleString();
+
+            // Contar clientes únicos
+            const uniqueCustomers = new Set(orders.map(o => o.customer)).size;
+            document.getElementById('totalCustomers').textContent = uniqueCustomers;
+        }
+
+        // Cambiar tabs
+        function switchTab(tabName) {
+            // Desactivar todos los tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            // Activar el tab seleccionado
+            event.target.classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+
+        // Guardar configuración
+        function saveSettings() {
+            const storeName = document.getElementById('storeName').value;
+            const storeEmail = document.getElementById('storeEmail').value;
+
+            if (!storeName || !storeEmail) {
+                alert('Por favor completa al menos el nombre y email de la tienda');
+                return;
+            }
+
+            alert('¡Configuración guardada exitosamente!');
+        }
+
+        // Cargar datos de ejemplo
+        function loadSampleData() {
+            // Productos de ejemplo
+            products = [
+                {
+                    id: 1,
+                    name: 'Camisa Polo Algodón',
+                    price: 45000,
+                    stock: 15,
+                    category: 'ropa',
+                    description: 'Camisa polo 100% algodón, disponible en varios colores'
+                },
+                {
+                    id: 2,
+                    name: 'Audífonos Bluetooth',
+                    price: 89000,
+                    stock: 8,
+                    category: 'tecnologia',
+                    description: 'Audífonos inalámbricos con cancelación de ruido'
+                },
+                {
+                    id: 3,
+                    name: 'Set de Tazas Cerámica',
+                    price: 35000,
+                    stock: 20,
+                    category: 'hogar',
+                    description: 'Set de 4 tazas en cerámica artesanal'
+                }
+            ];
+
+            // Pedidos de ejemplo
+            orders = [
+                {
+                    id: 1001,
+                    date: '2025-10-12',
+                    customer: 'María González',
+                    items: '2x Camisa Polo',
+                    total: 90000,
+                    status: 'completed',
+                    statusText: 'Entregado',
+                    paymentMethod: 'Nequi'
+                },
+                {
+                    id: 1002,
+                    date: '2025-10-13',
+                    customer: 'Carlos Martínez',
+                    items: '1x Audífonos Bluetooth',
+                    total: 89000,
+                    status: 'processing',
+                    statusText: 'En proceso',
+                    paymentMethod: 'PSE'
+                },
+                {
+                    id: 1003,
+                    date: '2025-10-13',
+                    customer: 'Ana Rodríguez',
+                    items: '1x Set Tazas',
+                    total: 35000,
+                    status: 'pending',
+                    statusText: 'Pendiente',
+                    paymentMethod: 'Contra entrega'
+                }
+            ];
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('authModal');
+            if (event.target === modal) {
+                closeAuthModal();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduConnect - Plataforma Educativa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .chat-expand {
+            animation: chatExpand 0.3s ease-out;
+        }
+
+        @keyframes chatExpand {
+            from {
+                width: 4rem;
+                height: 4rem;
+            }
+            to {
+                width: 24rem;
+                height: 24rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-40">
+        <div class="flex items-center justify-between p-4">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 hover:bg-gray-100 rounded">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+                <div class="flex items-center gap-2">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 14l9-5-9-5-9 5 9 5z"/>
+                        <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                    </svg>
+                    <span class="text-xl font-bold text-gray-800">EduConnect</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <button class="relative p-2 hover:bg-gray-100 rounded">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                    </svg>
+                    <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                </button>
+                <button class="p-2 hover:bg-gray-100 rounded">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </button>
+                <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
+                    MG
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-30 w-64 bg-white shadow-lg transition-transform duration-300 -translate-x-full lg:translate-x-0">
+            <nav class="p-4 mt-16 lg:mt-0">
+                <div class="space-y-2">
+                    <button onclick="showView('home')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg transition-colors bg-blue-600 text-white" data-view="home">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                        <span>Inicio</span>
+                    </button>
+
+                    <button onclick="showView('grades')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-gray-700 hover:bg-gray-100" data-view="grades">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 14l9-5-9-5-9 5 9 5z"/>
+                            <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                        </svg>
+                        <span>Calificaciones</span>
+                    </button>
+
+                    <button onclick="showView('content')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-gray-700 hover:bg-gray-100" data-view="content">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                        <span>Contenidos</span>
+                    </button>
+
+                    <button onclick="showView('news')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-gray-700 hover:bg-gray-100" data-view="news">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                        </svg>
+                        <span>Noticias</span>
+                    </button>
+
+                    <button onclick="showView('enrollment')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-gray-700 hover:bg-gray-100" data-view="enrollment">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <span>Inscripciones</span>
+                    </button>
+                </div>
+
+                <div class="mt-8 pt-8 border-t">
+                    <button class="w-full flex items-center gap-3 p-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                        <span>Cerrar Sesión</span>
+                    </button>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <!-- Home View -->
+            <div id="homeView" class="view-content fade-in">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-8 rounded-lg shadow-lg mb-6">
+                    <h1 class="text-3xl font-bold mb-2">¡Bienvenido/a, María González!</h1>
+                    <p class="text-blue-100">Grado: 10°A</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-semibold text-gray-700">Promedio General</h3>
+                            <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 14l9-5-9-5-9 5 9 5z"/>
+                                <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                            </svg>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-800">4.53</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-semibold text-gray-700">Próximos Eventos</h3>
+                            <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-800">2</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-orange-500">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-semibold text-gray-700">Notificaciones</h3>
+                            <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                            </svg>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-800">3</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold mb-4 text-gray-800">Próximos Eventos</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                <div>
+                                    <p class="font-medium text-gray-800">Entrega Proyecto Ciencias</p>
+                                    <p class="text-sm text-gray-500">2025-10-20</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                <div>
+                                    <p class="font-medium text-gray-800">Examen Matemáticas</p>
+                                    <p class="text-sm text-gray-500">2025-10-25</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold mb-4 text-gray-800">Noticias Institucionales</h3>
+                        <div class="space-y-3">
+                            <div class="p-3 bg-gray-50 rounded-lg">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">Académico</span>
+                                    <span class="text-xs text-gray-500">2025-10-15</span>
+                                </div>
+                                <p class="font-medium text-gray-800">Inscripciones abiertas para Pre-ICFES</p>
+                            </div>
+                            <div class="p-3 bg-gray-50 rounded-lg">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">Eventos</span>
+                                    <span class="text-xs text-gray-500">2025-11-10</span>
+                                </div>
+                                <p class="font-medium text-gray-800">Feria de Ciencias 2025</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grades View -->
+            <div id="gradesView" class="view-content hidden">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center justify-between mb-6 flex-wrap gap-4">
+                        <h2 class="text-2xl font-bold text-gray-800">Mis Calificaciones</h2>
+                        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                            </svg>
+                            Descargar Boletín
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="text-left p-4 font-semibold text-gray-700">Asignatura</th>
+                                    <th class="text-center p-4 font-semibold text-gray-700">Periodo</th>
+                                    <th class="text-center p-4 font-semibold text-gray-700">Calificación</th>
+                                    <th class="text-center p-4 font-semibold text-gray-700">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b hover:bg-gray-50">
+                                    <td class="p-4 text-gray-800">Matemáticas</td>
+                                    <td class="p-4 text-center text-gray-600">Periodo 3</td>
+                                    <td class="p-4 text-center">
+                                        <span class="font-bold text-green-600">4.5</span>
+                                    </td>
+                                    <td class="p-4 text-center">
+                                        <span class="px-3 py-1 rounded-full text-sm bg-green-100 text-green-700">Aprobado</span>
+                                    </td>
+                                </tr>
+                                <tr class="border-b hover:bg-gray-50">
+                                    <td class="p-4 text-gray-800">Español</td>
+                                    <td class="p-4 text-center text-gray-600">Periodo 3</td>
+                                    <td class="p-4 text-center">
+                                        <span class="font-bold text-green-600">4.8</span>
+                                    </td>
+                                    <td class="p-4 text-center">
+                                        <span class="px-3 py-1 rounded-full text-sm bg-green-100 text-green-700">Aprobado</span>
+                                    </td>
+                                </tr>
+                                <tr class="border-b hover:bg-gray-50">
+                                    <td class="p-4 text-gray-800">Ciencias</td>
+                                    <td class="p-4 text-center text-gray-600">Periodo 3</td>
+                                    <td class="p-4 text-center">
+                                        <span class="font-bold text-green-600">4.2</span>
+                                    </td>
+                                    <td class="p-4 text-center">
+                                        <span class="px-3 py-1 rounded-full text-sm bg-green-100 text-green-700">Aprobado</span>
+                                    </td>
+                                </tr>
+                                <tr class="border-b hover:bg-gray-50">
+                                    <td class="p-4 text-gray-800">Inglés</td>
+                                    <td class="p-4 text-center text-gray-600">Periodo 3</td>
+                                    <td class="p-4 text-center">
+                                        <span class="font-bold text-green-600">4.6</span>
+                                    </td>
+                                    <td class="p-4 text-center">
+                                        <span class="px-3 py-1 rounded-full text-sm bg-green-100 text-green-700">Aprobado</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content View -->
+            <div id="contentView" class="view-content hidden">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Contenidos Educativos</h2>
+                    
+                    <div class="mb-6 flex gap-4 flex-wrap">
+                        <select class="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option>Todos los grados</option>
+                            <option>9°</option>
+                            <option>10°</option>
+                            <option>11°</option>
+                        </select>
+                        <select class="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option>Todas las materias</option>
+                            <option>Matemáticas</option>
+                            <option>Ciencias</option>
+                            <option>Español</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-gray-50 p-5 rounded-lg shadow hover:shadow-md transition-shadow">
+                            <div class="flex items-start justify-between mb-3">
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                </svg>
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">PDF</span>
+                            </div>
+                            <h3 class="font-semibold text-gray-800 mb-2">Álgebra Lineal - Guía Completa</h3>
+                            <p class="text-sm text-gray-600 mb-3">Matemáticas - 10°</p>
+                            <button class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors">
+                                Acceder
+                            </button>
+                        </div>
+
+                        <div class="bg-gray-50 p-5 rounded-lg shadow hover:shadow-md transition-shadow">
+                            <div class="flex items-start justify-between mb-3">
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                </svg>
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">Video</span>
+                            </div>
+                            <h3 class="font-semibold text-gray-800 mb-2">Historia de Colombia</h3>
+                            <p class="text-sm text-gray-600 mb-3">Sociales - 10°</p>
+                            <button class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors">
+                                Acceder
+                            </button>
+                        </div>
+
+                        <div class="bg-gray-50 p-5 rounded-lg shadow hover:shadow-md transition-shadow">
+                            <div class="flex items-start justify-between mb-3">
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                </svg>
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">Video</span>
+                            </div>
+                            <h3 class="font-semibold text-gray-800 mb-2">Química Orgánica Básica</h3>
+                            <p class="text-sm text-gray-600 mb-3">Ciencias - 10°</p>
+                            <button class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors">
+                                Acceder
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- News View -->
+            <div id="newsView" class="view-content hidden">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Noticias Institucionales</h2>
+
+                    <div class="space-y-6">
+                        <div class="border-l-4 border-blue-500 pl-4">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="px-3 py-1 bg-blue-100 text-blue-700 text-sm rounded">Académico</span>
+                                <span class="text-sm text-gray-500">2025-10-15</span>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Inscripciones abiertas para Pre-ICFES</h3>
+                            <p class="text-gray-600 mb-4">El colegio ha abierto las inscripciones para el programa de preparación al ICFES. Los estudiantes interesados pueden inscribirse hasta el 30 de octubre.</p>
+                            <button class="text-blue-600 hover:text-blue-800 font-medium">Leer más →</button>
+                        </div>
+
+                        <div class="border-l-4 border-green-500 pl-4">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="px-3 py-1 bg-green-100 text-green-700 text-sm rounded">Eventos</span>
+                                <span class="text-sm text-gray-500">2025-11-10</span>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Feria de Ciencias 2025</h3>
+                            <p class="text-gray-600 mb-4">Prepárate para la Feria de Ciencias anual donde nuestros estudiantes presentarán proyectos innovadores en diversas áreas científicas.</p>
+                            <button class="text-green-600 hover:text-green-800 font-medium">Leer más →</button>
+                        </div>
+
+                        <div class="border-l-4 border-orange-500 pl-4">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="px-3 py-1 bg-orange-100 text-orange-700 text-sm rounded">Deportes</span>
+                                <span class="text-sm text-gray-500">2025-10-18</span>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Campeonato Intercolegial de Fútbol</h3>
+                            <p class="text-gray-600 mb-4">Nuestro equipo de fútbol se prepara para participar en el campeonato intercolegial que se llevará a cabo el próximo mes.</p>
+                            <button class="text-orange-600 hover:text-orange-800 font-medium">Leer más →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enrollment View -->
+            <div id="enrollmentView" class="view-content hidden">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Inscripciones</h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
+                            <h3 class="text-lg font-semibold text-blue-800 mb-3">Pre-ICFES</h3>
+                            <p class="text-blue-700 mb-4">Programa intensivo de preparación para el examen de estado ICFES.</p>
+                            <div class="space-y-2 text-sm text-blue-600">
+                                <p>✓ Clases especializadas</p>
+                                <p>✓ Simulacros mensuales</p>
+                                <p>✓ Material didáctico incluido</p>
+                            </div>
+                            <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors">
+                                Inscribirme
+                            </button>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-green-50 to-green-100 p-6 rounded-lg border border-green-200">
+                            <h3 class="text-lg font-semibold text-green-800 mb-3">Club de Ciencias</h3>
+                            <p class="text-green-700 mb-4">Participa en proyectos científicos y experimentos prácticos.</p>
+                            <div class="space-y-2 text-sm text-green-600">
+                                <p>✓ Laboratorios equipados</p>
+                                <p>✓ Proyectos innovadores</p>
+                                <p>✓ Competencias científicas</p>
+                            </div>
+                            <button class="mt-4 w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition-colors">
+                                Inscribirme
+                            </button>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-orange-50 to-orange-100 p-6 rounded-lg border border-orange-200">
+                            <h3 class="text-lg font-semibold text-orange-800 mb-3">Club Deportivo</h3>
+                            <p class="text-orange-700 mb-4">Únete a nuestros equipos deportivos y representa al colegio.</p>
+                            <div class="space-y-2 text-sm text-orange-600">
+                                <p>✓ Entrenamientos especializados</p>
+                                <p>✓ Competiciones locales</p>
+                                <p>✓ Instalaciones modernas</p>
+                            </div>
+                            <button class="mt-4 w-full bg-orange-600 text-white py-2 rounded hover:bg-orange-700 transition-colors">
+                                Inscribirme
+                            </button>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-purple-50 to-purple-100 p-6 rounded-lg border border-purple-200">
+                            <h3 class="text-lg font-semibold text-purple-800 mb-3">Club de Arte</h3>
+                            <p class="text-purple-700 mb-4">Desarrolla tus habilidades artísticas y creativas.</p>
+                            <div class="space-y-2 text-sm text-purple-600">
+                                <p>✓ Talleres especializados</p>
+                                <p>✓ Exposiciones estudiantiles</p>
+                                <p>✓ Materiales incluidos</p>
+                            </div>
+                            <button class="mt-4 w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 transition-colors">
+                                Inscribirme
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+<script>
+    // State management for current view
+    let currentView = 'home';
+
+    // Pure function to get element by ID
+    const getElement = (id) => document.getElementById(id);
+
+    // Pure function to toggle class
+    const toggleClass = (element, className) => {
+        element.classList.toggle(className);
+    };
+
+    // Function to toggle sidebar
+    const toggleSidebar = () => {
+        const sidebar = getElement('sidebar');
+        toggleClass(sidebar, '-translate-x-full');
+        toggleClass(sidebar, 'lg:translate-x-0');
+    };
+
+    // Function to hide all views
+    const hideAllViews = () => {
+        const views = ['homeView', 'gradesView', 'contentView', 'newsView', 'enrollmentView'];
+        views.forEach(viewId => {
+            const view = getElement(viewId);
+            if (view) {
+                view.classList.add('hidden');
+                view.classList.remove('fade-in');
+            }
+        });
+    };
+
+    // Function to show a specific view
+    const showView = (viewName) => {
+        hideAllViews();
+        const view = getElement(viewName + 'View');
+        if (view) {
+            view.classList.remove('hidden');
+            view.classList.add('fade-in');
+            currentView = viewName;
+            updateNavActiveState(viewName);
+        }
+    };
+
+    // Function to update navigation active state
+    const updateNavActiveState = (activeView) => {
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.classList.remove('bg-blue-600', 'text-white');
+            item.classList.add('text-gray-700', 'hover:bg-gray-100');
+        });
+        const activeItem = document.querySelector(`[data-view="${activeView}"]`);
+        if (activeItem) {
+            activeItem.classList.add('bg-blue-600', 'text-white');
+            activeItem.classList.remove('text-gray-700', 'hover:bg-gray-100');
+        }
+    };
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+        showView('home');
+    });
+</script>
+</body>
+</html>

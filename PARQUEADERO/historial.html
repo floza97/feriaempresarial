@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial - ParkManager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-back {
+            background: #48bb78;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-back:hover {
+            background: #38a169;
+        }
+
+        .btn-logout {
+            background: #f56565;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: #e53e3e;
+        }
+
+        .user-badge {
+            background: #e8f4f8;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: #0277bd;
+            font-weight: 600;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .filters h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        .btn-export {
+            background: #48bb78;
+        }
+
+        .btn-export:hover {
+            background: #38a169;
+        }
+
+        .btn-clear {
+            background: #718096;
+        }
+
+        .btn-clear:hover {
+            background: #4a5568;
+        }
+
+        .history-table {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .history-table h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 13px;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-completed {
+            background: #bee3f8;
+            color: #2c5282;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 11px;
+            }
+
+            th, td {
+                padding: 8px 4px;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <h1>📊 Historial de Entradas y Salidas</h1>
+                <p>Registro completo de vehículos</p>
+            </div>
+            <div class="header-nav">
+                <a href="index.html" class="btn-back">⬅️ Volver al Panel</a>
+                <div class="user-badge">
+                    👤 <span id="currentUser"></span>
+                </div>
+                <button class="btn-logout" onclick="logout()">🚪 Salir</button>
+            </div>
+        </header>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Total de Registros</h3>
+                <div class="number" id="totalRecords">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Ingresos Totales</h3>
+                <div class="number" id="totalIncome">$0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Promedio por Vehículo</h3>
+                <div class="number" id="avgIncome">$0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Tiempo Promedio</h3>
+                <div class="number" id="avgTime">0h 0m</div>
+            </div>
+        </div>
+
+        <div class="filters">
+            <h2>🔍 Filtros de Búsqueda</h2>
+            <div class="filter-row">
+                <div class="form-group">
+                    <label for="filterPlate">Placa</label>
+                    <input type="text" id="filterPlate" placeholder="Ej: ABC123">
+                </div>
+                <div class="form-group">
+                    <label for="filterType">Tipo de Vehículo</label>
+                    <select id="filterType">
+                        <option value="">Todos</option>
+                        <option value="moto">Moto</option>
+                        <option value="carro">Carro</option>
+                        <option value="camioneta">Camioneta</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="filterDateFrom">Desde</label>
+                    <input type="date" id="filterDateFrom">
+                </div>
+                <div class="form-group">
+                    <label for="filterDateTo">Hasta</label>
+                    <input type="date" id="filterDateTo">
+                </div>
+                <div class="form-group">
+                    <button onclick="applyFilters()">🔍 Filtrar</button>
+                </div>
+                <div class="form-group">
+                    <button class="btn-clear" onclick="clearFilters()">🔄 Limpiar</button>
+                </div>
+                <div class="form-group">
+                    <button class="btn-export" onclick="exportToCSV()">📥 Exportar CSV</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="history-table">
+            <h2>📋 Registro de Operaciones</h2>
+            <table id="historyTable">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Placa</th>
+                        <th>Tipo</th>
+                        <th>Propietario</th>
+                        <th>Teléfono</th>
+                        <th>Entrada</th>
+                        <th>Salida</th>
+                        <th>Tiempo</th>
+                        <th>Monto</th>
+                        <th>Atendido por</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                    <!-- Se llenará dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="historial.js"></script>
+</body>
+</html>

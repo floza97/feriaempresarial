@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automata Solutions S.A.S. - Automatización para MiPymes</title>
+    <style>
+        /* Variables de colores corporativos */
+        :root {
+            --primary-blue: #1a3c8b;
+            --secondary-blue: #2a5cb8;
+            --light-blue: #e8f0fe;
+            --dark-gray: #333333;
+            --medium-gray: #666666;
+            --light-gray: #f5f5f5;
+            --white: #ffffff;
+        }
+
+        /* Estilos generales */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-blue);
+        }
+
+        section {
+            padding: 5rem 0;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-placeholder {
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-blue);
+            border-radius: 5px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 2rem;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark-gray);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: var(--primary-blue);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: var(--white);
+            padding: 10rem 0 5rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            color: var(--white);
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero .btn {
+            background-color: var(--white);
+            color: var(--primary-blue);
+        }
+
+        .hero .btn:hover {
+            background-color: var(--light-blue);
+        }
+
+        /* Problem Section */
+        .problem {
+            background-color: var(--light-gray);
+        }
+
+        .problem-content {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .problem-text {
+            flex: 1;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;   }
+
+            .problem-image {
+                width: 50%;
+                height: 400px;
+                padding: 5px;
+                background-color: #f8f9fa;
+                border-radius: 5px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* Services Section */
+            .services-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2rem;
+            }
+
+            .service-card {
+                background-color: var(--white);
+                border-radius: 10px;
+                padding: 2rem;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                transition: transform 0.3s, box-shadow 0.3s;
+            }
+
+            .service-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            }
+
+            .service-icon {
+                width: 60px;
+                height: 60px;
+                background-color: var(--light-blue);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 1.5rem;
+                color: var(--primary-blue);
+                font-size: 1.5rem;
+            }
+
+            /* Values Section */
+            .values {
+                background-color: var(--light-gray);
+            }
+
+            .values-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 2rem;
+            }
+
+            .value-item {
+                text-align: center;
+                padding: 1.5rem;
+            }
+
+            .value-icon {
+                width: 80px;
+                height: 80px;
+                background-color: var(--white);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 1.5rem;
+                color: var(--primary-blue);
+                font-size: 2rem;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            }
+
+            /* CTA Section */
+            .cta {
+                background-color: var(--primary-blue);
+                color: var(--white);
+                text-align: center;
+                padding: 4rem 0;
+            }
+
+            .cta h2 {
+                color: var(--white);
+            }
+
+            .cta .btn {
+                background-color: var(--white);
+                color: var(--primary-blue);
+            }
+
+            .cta .btn:hover {
+                background-color: var(--light-blue);
+            }
+
+            /* Footer */
+            footer {
+                background-color: var(--dark-gray);
+                color: var(--white);
+                padding: 3rem 0 1.5rem;
+            }
+
+            .footer-content {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .footer-column h3 {
+                color: var(--white);
+                margin-bottom: 1.5rem;
+            }
+
+            .footer-column ul {
+                list-style: none;
+            }
+
+            .footer-column ul li {
+                margin-bottom: 0.8rem;
+            }
+
+            .footer-column ul li a {
+                color: #cccccc;
+                text-decoration: none;
+                transition: color 0.3s;
+            }
+
+            .footer-column ul li a:hover {
+                color: var(--white);
+            }
+
+            .copyright {
+                text-align: center;
+                padding-top: 1.5rem;
+                border-top: 1px solid var(--medium-gray);
+                color: #cccccc;
+                font-size: 0.9rem;
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .header-container {
+                    flex-direction: column;
+                }
+
+                nav ul {
+                    margin-top: 1rem;
+                }
+
+                nav ul li {
+                    margin: 0 0.5rem;
+                }
+
+                .hero h1 {
+                    font-size: 2.2rem;
+                }
+
+                .problem-content {
+                    flex-direction: column;
+                }
+            }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <div class="logo-placeholder">AS</div>
+                <div class="logo-text">Automata Solutions</div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#servicios">Servicios</a></li>
+                    <li><a href="#nosotros">Nosotros</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="inicio">
+        <div class="container">
+            <h1>Automatización accesible para el crecimiento de tu empresa</h1>
+            <p>Brindamos soluciones tecnológicas innovadoras que permiten a las MiPymes optimizar procesos, incrementar
+                productividad y mejorar su competitividad en mercados digitales.</p>
+            <a href="#contacto" class="btn">Solicitar consultoría gratuita</a>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem">
+        <div class="container">
+            <h2>El desafío de las MiPymes en la era digital</h2>
+            <div class="problem-content">
+                <div class="problem-text">
+                    <p>En Colombia, las micro, pequeñas y medianas empresas representan más del 90% del tejido
+                        empresarial, pero enfrentan una brecha digital significativa que limita su competitividad.</p>
+                    <p>Solo el 30% de las MiPymes formales en Colombia se encuentran en un nivel avanzado de
+                        transformación digital, mientras que el 70% restante enfrenta dificultades para modernizar sus
+                        procesos.</p>
+                    <p>La falta de infraestructura digital, el desconocimiento sobre procesos de innovación y las
+                        limitaciones de inversión tecnológica son obstáculos recurrentes que restringen la
+                        productividad.</p>
+                </div>
+                <div class="problem-image">
+                    <img src="img\grafo.png" alt="grafico">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="servicios">
+        <div class="container">
+            <h2>Nuestras soluciones de automatización</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">AI</div>
+                    <h3>Inteligencia Artificial</h3>
+                    <p>Implementamos soluciones de IA que optimizan procesos de toma de decisiones, análisis predictivo
+                        y atención al cliente automatizada.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">RPA</div>
+                    <h3>Automatización Robótica de Procesos</h3>
+                    <p>Automatizamos tareas repetitivas y basadas en reglas, liberando a su personal para actividades de
+                        mayor valor estratégico.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">☁️</div>
+                    <h3>Cloud Computing</h3>
+                    <p>Migramos sus operaciones a la nube para mejorar la escalabilidad, seguridad y accesibilidad de
+                        sus sistemas empresariales.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📊</div>
+                    <h3>Gestión Empresarial Digital</h3>
+                    <p>Desarrollamos plataformas integrales que facilitan la gestión empresarial y el monitoreo en
+                        tiempo real de la operación.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🛠️</div>
+                    <h3>Consultoría y Capacitación</h3>
+                    <p>Acompañamos a su equipo en la adopción tecnológica con programas de capacitación continua y
+                        soporte técnico especializado.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📈</div>
+                    <h3>Análisis y Optimización</h3>
+                    <p>Analizamos sus procesos actuales e identificamos oportunidades de mejora mediante la
+                        implementación de tecnologías emergentes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="values" id="nosotros">
+        <div class="container">
+            <h2>Nuestros valores corporativos</h2>
+            <div class="values-grid">
+                <div class="value-item">
+                    <div class="value-icon">✓</div>
+                    <h3>Cumplimiento</h3>
+                    <p>Aseguramos el cumplimiento de compromisos y plazos con clientes y socios.</p>
+                </div>
+                <div class="value-item">
+                    <div class="value-icon">⭐</div>
+                    <h3>Calidad</h3>
+                    <p>Ofrecemos productos y servicios con altos estándares de calidad.</p>
+                </div>
+                <div class="value-item">
+                    <div class="value-icon">🤝</div>
+                    <h3>Compromiso</h3>
+                    <p>Dedicamos un servicio responsable y ético hacia el cliente y la comunidad.</p>
+                </div>
+                <div class="value-item">
+                    <div class="value-icon">⚡</div>
+                    <h3>Eficiencia</h3>
+                    <p>Optimizamos recursos y procesos para maximizar resultados.</p>
+                </div>
+                <div class="value-item">
+                    <div class="value-icon">💡</div>
+                    <h3>Innovación</h3>
+                    <p>Fomentamos la creatividad y la implementación de tecnologías avanzadas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2>¿Listo para transformar digitalmente su empresa?</h2>
+            <p>Contáctenos hoy mismo y reciba una consultoría gratuita para evaluar las oportunidades de automatización
+                en su organización.</p>
+            <a href="#contacto" class="btn">Solicitar consultoría gratuita</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contacto">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Automata Solutions S.A.S.</h3>
+                    <p>Especialistas en soluciones de automatización y digitalización para MiPymes colombianas.</p>
+                    <p><strong>Correo:</strong> info@automatasolutions.com</p>
+                    <p><strong>Teléfono:</strong> +57 XXX XXX XXXX</p>
+                    <p><strong>Ubicación:</strong> Corozal, Sucre</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Servicios</h3>
+                    <ul>
+                        <li><a href="#">Inteligencia Artificial</a></li>
+                        <li><a href="#">Automatización Robótica</a></li>
+                        <li><a href="#">Cloud Computing</a></li>
+                        <li><a href="#">Gestión Empresarial Digital</a></li>
+                        <li><a href="#">Consultoría y Capacitación</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul>
+                        <li><a href="#inicio">Inicio</a></li>
+                        <li><a href="#servicios">Servicios</a></li>
+                        <li><a href="#nosotros">Nosotros</a></li>
+                        <li><a href="#contacto">Contacto</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Automata Solutions S.A.S. - Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling para los enlaces de navegación
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

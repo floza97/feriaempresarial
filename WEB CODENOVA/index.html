@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeNova - Desarrollo de Software Personalizado</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #1a3c8b;
+            --secondary-blue: #2a5cb8;
+            --light-blue: #e8f0fe;
+            --dark-gray: #333333;
+            --medium-gray: #666666;
+            --light-gray: #f5f5f5;
+            --white: #ffffff;
+            --mint-green: #4fd1c5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            color: var(--dark-gray);
+            line-height: 1.6;
+            background-color: var(--white);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--mint-green);
+            display: inline-block;
+        }
+
+        .section-title {
+            text-align: center;
+            width: 100%;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-mint {
+            background-color: var(--mint-green);
+            color: var(--dark-gray);
+        }
+
+        .btn-mint:hover {
+            background-color: #38b2ac;
+        }
+
+        section {
+            padding: 5rem 0;
+        }
+
+        .section-light {
+            background-color: var(--light-gray);
+        }
+
+        /* Header */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--mint-green) 100%);
+            border-radius: 10px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 2rem;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark-gray);
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        nav ul li a:hover {
+            color: var(--primary-blue);
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--mint-green);
+            transition: width 0.3s;
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: var(--white);
+            padding: 10rem 0 5rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            color: var(--white);
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-btns {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .hero .btn {
+            background-color: var(--white);
+            color: var(--primary-blue);
+        }
+
+        .hero .btn:hover {
+            background-color: var(--light-blue);
+        }
+
+        /* About Section */
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .about-text {
+            flex: 1;
+        }
+
+        .about-image {
+            flex: 1;
+            background-color: var(--light-gray);
+            height: 400px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Values Section */
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .value-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+            text-align: center;
+        }
+
+        .value-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .value-icon {
+            width: 70px;
+            height: 70px;
+            background-color: var(--light-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: var(--primary-blue);
+            font-size: 1.8rem;
+        }
+
+        /* Services Section */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 4px solid var(--mint-green);
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            background-color: var(--light-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary-blue);
+            font-size: 1.5rem;
+        }
+
+        /* Canvas Section */
+        .canvas-img {
+            flex: 1;
+            background-color: var(--medium-gray);
+            height: 400px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            background-image: url('canva.png');
+            background-size: contain;
+            /* o 'cover' */
+            background-repeat: no-repeat;
+            background-position: center;
+
+        }
+
+        .canvas-container {
+            height: 400px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(40, 8, 130, 0.836);
+            text-align: center;
+
+            display: flex;
+            flex: 1;
+            background-color: var(--primary-blue);
+            height: 600px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            background-image: url('canva.png');
+            background-size: contain;
+            /* o 'cover' */
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .canvas-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: var(--light-gray);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            color: var(--medium-gray);
+        }
+
+        /* Objectives Section */
+        .objectives-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .objective-card {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .objective-card h3 {
+            color: var(--mint-green);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .objective-card h3 i {
+            margin-right: 10px;
+        }
+
+        .objective-list {
+            list-style-type: none;
+        }
+
+        .objective-list li {
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .objective-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--mint-green);
+            font-weight: bold;
+        }
+
+        /* Business Model Section */
+        .model-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .model-card {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .model-card h3 {
+            color: var(--primary-blue);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .model-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .model-item h4 {
+            color: var(--secondary-blue);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* CTA Section */
+        .cta {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .cta h2 {
+            color: var(--white);
+            border-bottom: 2px solid var(--mint-green);
+        }
+
+        .cta p {
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        .cta .btn {
+            background-color: var(--white);
+            color: var(--primary-blue);
+        }
+
+        .cta .btn:hover {
+            background-color: var(--light-blue);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-gray);
+            color: var(--white);
+            padding: 3rem 0 1.5rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h3 {
+            color: var(--white);
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-column ul li a {
+            color: #cccccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-column ul li a:hover {
+            color: var(--mint-green);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: var(--white);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background-color: var(--mint-green);
+            color: var(--dark-gray);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--medium-gray);
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav ul {
+                margin-top: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            nav ul li {
+                margin: 0 0.5rem;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .about-content {
+                flex-direction: column;
+            }
+
+            .hero-btns {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .mobile-menu {
+                display: block;
+                position: absolute;
+                top: 20px;
+                right: 20px;
+            }
+
+            nav {
+                display: none;
+                width: 100%;
+                margin-top: 1rem;
+            }
+
+            nav.active {
+                display: block;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            nav ul li {
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <div class="logo-icon">CN</div>
+                <div class="logo-text">CodeNova</div>
+            </div>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#nosotros">Nosotros</a></li>
+                    <li><a href="#servicios">Servicios</a></li>
+                    <li><a href="#modelo-canvas">Modelo Canvas</a></li>
+                    <li><a href="#objetivos">Objetivos</a></li>
+                    <li><a href="#modelo-negocio">Modelo de Negocio</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="inicio">
+        <div class="container">
+            <h1>Transformamos ideas en software que impulsa tu negocio</h1>
+            <p>Desarrollamos soluciones tecnológicas personalizadas para pequeñas y medianas empresas, optimizando
+                procesos, incrementando productividad y mejorando la toma de decisiones.</p>
+            <div class="hero-btns">
+                <a href="#servicios" class="btn">Nuestros Servicios</a>
+                <a href="#contacto" class="btn btn-mint">Contáctanos</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section-light" id="nosotros">
+        <div class="container">
+            <div class="section-title">
+                <h2>Nosotros</h2>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>CodeNova S.A.S.</h3>
+                    <p>Somos una empresa legalmente constituida dedicada al desarrollo de software personalizado y
+                        consultoría tecnológica para pequeñas y medianas empresas en Colombia.</p>
+                    <p>Nuestra misión es acelerar la transformación digital de las empresas mediante el desarrollo de
+                        software innovador, eficiente y adaptado a las necesidades de cada cliente, generando valor,
+                        competitividad y sostenibilidad en cada proyecto.</p>
+                    <p>Visualizamos ser la empresa de referencia en Latinoamérica en desarrollo de software empresarial
+                        personalizado, destacada por su innovación, calidad y compromiso con el crecimiento tecnológico
+                        y sostenible de las organizaciones.</p>
+                    <a href="#contacto" class="btn">Conoce más</a>
+                </div>
+                <div class="about-image">
+                    <!-- En un caso real, aquí iría una imagen representativa -->
+                    <div style="width: 100%; text-align: center; padding: 2rem;">
+                        <i class="fas fa-laptop-code" style="font-size: 5rem; color: var(--primary-blue);"></i>
+                        <p style="margin-top: 1rem; color: var(--medium-gray);">Desarrollo de software a medida</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section>
+        <div class="container">
+            <div class="section-title">
+                <h2>Nuestros Valores</h2>
+            </div>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3>Innovación</h3>
+                    <p>Creamos soluciones originales, eficaces y ajustadas a cada cliente.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h3>Calidad</h3>
+                    <p>Garantizamos alto rendimiento, seguridad y facilidad de uso en cada producto.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3>Compromiso</h3>
+                    <p>Nos enfocamos en cumplir con los objetivos de nuestros clientes.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Agilidad</h3>
+                    <p>Aplicamos metodologías como SCRUM para entregar valor en tiempos reducidos.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3>Responsabilidad</h3>
+                    <p>Apostamos por un desarrollo tecnológico ético y responsable.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="section-light" id="servicios">
+        <div class="container">
+            <div class="section-title">
+                <h2>Nuestros Servicios</h2>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>Software Personalizado</h3>
+                    <p>Desarrollamos sistemas a medida adaptados a las necesidades específicas de tu empresa.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Aplicaciones Web y Móviles</h3>
+                    <p>Creamos aplicaciones que mejoran la operación interna de las empresas.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Sistemas de Gestión</h3>
+                    <p>Implementamos ERP, CRM y otros sistemas adaptados a tus procesos.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3>Soporte Técnico</h3>
+                    <p>Brindamos mantenimiento, actualizaciones y soporte constante.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Consultoría Tecnológica</h3>
+                    <p>Asesoramos en la transformación digital de tu empresa.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3>Metodologías Ágiles</h3>
+                    <p>Aplicamos SCRUM para entregas rápidas y eficaces.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Canvas Section -->
+    <section id="modelo-canvas">
+        <div class="container">
+            <div class="section-title">
+                <h2>Modelo Canvas</h2>
+            </div>
+            <div class="canvas-container">
+                
+                    <!-- En un caso real, aquí iría la imagen del modelo canvas -->
+                 
+                    
+                </div>
+              
+            </div>
+        </div>
+    </section>
+
+    <!-- Objectives Section -->
+    <section class="section-light" id="objetivos">
+        <div class="container">
+            <div class="section-title">
+                <h2>Nuestros Objetivos</h2>
+            </div>
+            <div class="objectives-container">
+                <div class="objective-card">
+                    <h3><i class="fas fa-bullseye"></i> Objetivo General</h3>
+                    <p>Diseñar y desarrollar soluciones de software empresarial personalizadas que optimicen procesos
+                        internos, incrementen la productividad y mejoren la toma de decisiones en pequeñas y medianas
+                        empresas.</p>
+                </div>
+                <div class="objective-card">
+                    <h3><i class="fas fa-tasks"></i> Objetivos Específicos</h3>
+                    <ul class="objective-list">
+                        <li>Implementar sistemas de gestión (ERP, CRM, etc.) adaptados a las necesidades específicas de
+                            los clientes.</li>
+                        <li>Desarrollar aplicaciones web y móviles que mejoren la operación interna de las empresas.
+                        </li>
+                        <li>Brindar soporte técnico, mantenimiento y actualizaciones constantes.</li>
+                        <li>Aplicar metodologías ágiles que garanticen eficiencia, calidad y resultados rápidos.</li>
+                        <li>Establecer alianzas estratégicas con proveedores tecnológicos y entidades de apoyo.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Business Model Section -->
+    <section id="modelo-negocio">
+        <div class="container">
+            <div class="section-title">
+                <h2>Modelo de Negocio</h2>
+            </div>
+            <div class="model-content">
+                <div class="model-card">
+                    <h3>Segmento de Clientes</h3>
+                    <div class="model-item">
+                        <h4>Pymes Colombianas</h4>
+                        <p>Empresas con operaciones internas no digitalizadas o con procesos ineficientes.</p>
+                    </div>
+                    <div class="model-item">
+                        <h4>Sectores Objetivo</h4>
+                        <p>Comercio, manufactura, salud, logística y otros que requieren soluciones tecnológicas.</p>
+                    </div>
+                </div>
+                <div class="model-card">
+                    <h3>Propuesta de Valor</h3>
+                    <div class="model-item">
+                        <h4>Software Personalizado</h4>
+                        <p>Soluciones adaptadas a las necesidades específicas de cada cliente.</p>
+                    </div>
+                    <div class="model-item">
+                        <h4>Acompañamiento Integral</h4>
+                        <p>Soporte técnico constante y capacitación para el uso eficiente de las herramientas.</p>
+                    </div>
+                    <div class="model-item">
+                        <h4>Precios Competitivos</h4>
+                        <p>Soluciones accesibles para PYMES con presupuestos limitados.</p>
+                    </div>
+                </div>
+                <div class="model-card">
+                    <h3>Canales</h3>
+                    <div class="model-item">
+                        <h4>Digitales</h4>
+                        <p>Página web oficial, redes sociales y contacto directo por correo y videollamadas.</p>
+                    </div>
+                    <div class="model-item">
+                        <h4>Presenciales</h4>
+                        <p>Ferias tecnológicas, ruedas de negocios y alianzas con entidades educativas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2>¿Listo para transformar digitalmente tu empresa?</h2>
+            <p>Contáctanos hoy mismo y recibe una consultoría gratuita para evaluar las oportunidades de desarrollo de
+                software en tu organización.</p>
+            <a href="#contacto" class="btn">Solicitar Consultoría</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contacto">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>CodeNova S.A.S.</h3>
+                    <p>Especialistas en desarrollo de software personalizado para PYMES colombianas.</p>
+                    <p><strong>Correo:</strong> info@codenova.com</p>
+                    <p><strong>Teléfono:</strong> +57 XXX XXX XXXX</p>
+                    <p><strong>Ubicación:</strong> Corozal, Sucre</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Servicios</h3>
+                    <ul>
+                        <li><a href="#servicios">Software Personalizado</a></li>
+                        <li><a href="#servicios">Aplicaciones Web y Móviles</a></li>
+                        <li><a href="#servicios">Sistemas de Gestión</a></li>
+                        <li><a href="#servicios">Soporte Técnico</a></li>
+                        <li><a href="#servicios">Consultoría Tecnológica</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul>
+                        <li><a href="#inicio">Inicio</a></li>
+                        <li><a href="#nosotros">Nosotros</a></li>
+                        <li><a href="#servicios">Servicios</a></li>
+                        <li><a href="#modelo-canvas">Modelo Canvas</a></li>
+                        <li><a href="#objetivos">Objetivos</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 CodeNova S.A.S. - Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling para los enlaces de navegación
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Menú móvil
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const nav = document.querySelector('nav');
+
+        mobileMenu.addEventListener('click', function () {
+            nav.classList.toggle('active');
+        });
+    </script>
+</body>
+
+</html>

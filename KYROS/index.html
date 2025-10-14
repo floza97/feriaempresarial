@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kyros - Gobernando la tecnología</title>
+    <style>
+        /* Estilos generales */
+        :root {
+            --primary-color: #1a3c8b; /* Azul Kyros */
+            --secondary-color: #2ecc71; /* Verde Kyros */
+            --dark-color: #0d1b2a;
+            --light-color: #f8f9fa;
+            --gray-color: #6c757d;
+            --white: #ffffff;
+            --black: #000000;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: var(--light-color);
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .section {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: var(--secondary-color);
+            margin: 15px auto;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .logo-text span {
+            color: var(--secondary-color);
+        }
+        
+        .nav-menu {
+            display: flex;
+        }
+        
+        .nav-item {
+            margin-left: 30px;
+        }
+        
+        .nav-link {
+            font-weight: 600;
+            color: var(--dark-color);
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(13, 27, 42, 0.8), rgba(13, 27, 42, 0.8)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%231a3c8b"/><path d="M0 0L100 100M100 0L0 100" stroke="%232ecc71" stroke-width="2"/></svg>');
+            background-size: cover;
+            background-position: center;
+            color: var(--white);
+            padding: 180px 0 100px;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        .hero-btns {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .hero .btn {
+            background-color: var(--secondary-color);
+        }
+        
+        .hero .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--white);
+        }
+        
+        .hero .btn-outline:hover {
+            background-color: var(--white);
+            color: var(--primary-color);
+        }
+        
+        /* About Section */
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+        
+        .about-text {
+            flex: 1;
+        }
+        
+        .about-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        
+        .about-text p {
+            margin-bottom: 15px;
+        }
+        
+        .about-image {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .about-image-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: navy;
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 1.5rem;
+            border-radius: 8px;
+        }
+        
+        /* Services Section */
+        .services {
+            background-color: #f1f5f9;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .service-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .service-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        /* Values Section */
+        .values-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .value-item {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        
+        .value-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+        
+        .value-item h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        /* Team Section */
+        .team {
+            background-color: #f1f5f9;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .team-member {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        
+        .member-image {
+            height: 200px;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+        }
+        
+        .member-info {
+            padding: 20px;
+        }
+        
+        .member-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+        
+        .member-info p {
+            color: var(--gray-color);
+        }
+        
+        /* Contact Section */
+        .contact-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 50px;
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .contact-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+        }
+        
+        .form-control {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: var(--white);
+            padding: 60px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .footer-logo span {
+            color: var(--secondary-color);
+        }
+        
+        .footer-links h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+        }
+        
+        .footer-links ul {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+        
+        .social-link:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            }
+            
+            .nav-menu.active {
+                display: flex;
+            }
+            
+            .nav-item {
+                margin: 10px 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-btns {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .about-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <div class="logo-text">KY<span>ROS</span></div>
+            </div>
+            <nav>
+                <button class="mobile-menu-btn">☰</button>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="#inicio" class="nav-link">Inicio</a></li>
+                    <li class="nav-item"><a href="#nosotros" class="nav-link">Nosotros</a></li>
+                    <li class="nav-item"><a href="#servicios" class="nav-link">Servicios</a></li>
+                    <li class="nav-item"><a href="#valores" class="nav-link">Valores</a></li>
+                    <li class="nav-item"><a href="#equipo" class="nav-link">Equipo</a></li>
+                    <li class="nav-item"><a href="#contacto" class="nav-link">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero">
+        <div class="container">
+            <h1>Gobernando la tecnología</h1>
+            <p>Kyros es una empresa de base tecnológica que ofrece soluciones de software personalizado y ciberseguridad para empresas. Impulsamos la transformación digital de las organizaciones mediante el desarrollo de soluciones tecnológicas eficientes, seguras y hechas a la medida.</p>
+            <div class="hero-btns">
+                <a href="#servicios" class="btn">Nuestros Servicios</a>
+                <a href="#contacto" class="btn btn-outline">Contáctanos</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="nosotros" class="section">
+        <div class="container">
+            <h2 class="section-title">Sobre Kyros</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Impulsando la transformación digital</h3>
+                    <p>Kyros es una empresa de base tecnológica orientada al desarrollo de software empresarial y plataformas web seguras, diseñadas a la medida de cada organización. Nuestro enfoque está en la personalización, la ciberseguridad y la innovación constante.</p>
+                    <p>Brindamos soluciones que fortalecen la productividad, protegen los datos críticos y mejoran la competitividad de las empresas. No nos limitamos a vender productos, sino que ofrecemos acompañamiento continuo, soporte técnico especializado y capacitación al cliente, consolidándonos como un aliado estratégico en el crecimiento digital de cada organización.</p>
+                    <a href="#contacto" class="btn">Conoce más</a>
+                </div>
+                <div class="about-image">
+                    <div class="about-image-placeholder">
+                        <div class="logo-text">KY<span>ROS</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="servicios" class="section services">
+        <div class="container">
+            <h2 class="section-title">Nuestros Servicios</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">💻</div>
+                    <h3>Desarrollo de Software a Medida</h3>
+                    <p>Soluciones personalizadas para gestión de inventarios, ventas, recursos humanos, facturación electrónica, diseñadas específicamente para las necesidades de tu empresa.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🌐</div>
+                    <h3>Plataformas Web Seguras</h3>
+                    <p>Desarrollo de sitios web corporativos y aplicaciones en línea con funciones específicas para cada negocio, implementando los más altos estándares de seguridad.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔒</div>
+                    <h3>Ciberseguridad</h3>
+                    <p>Implementación de protocolos de seguridad informática, respaldo de datos y protección contra amenazas digitales basados en estándares internacionales.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📱</div>
+                    <h3>Aplicaciones Empresariales</h3>
+                    <p>Herramientas móviles para gestión interna y comunicación empresarial, diseñadas para optimizar los procesos operativos de tu organización.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🛠️</div>
+                    <h3>Soporte Técnico Especializado</h3>
+                    <p>Acompañamiento 24/7 en instalación, mantenimiento y actualización de sistemas, garantizando el funcionamiento óptimo de tus soluciones tecnológicas.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🎓</div>
+                    <h3>Consultoría y Capacitación</h3>
+                    <p>Asesoría estratégica para procesos de transformación digital y formación para que los equipos de trabajo adopten eficazmente las soluciones tecnológicas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section id="valores" class="section">
+        <div class="container">
+            <h2 class="section-title">Nuestros Valores</h2>
+            <div class="values-content">
+                <div class="value-item">
+                    <div class="value-icon">🎯</div>
+                    <h3>Innovación</h3>
+                    <p>Incorporamos tecnologías emergentes como inteligencia artificial, automatización y blockchain en el desarrollo de productos, garantizando innovación constante.</p>
+                </div>
+                <div class="value-item">
+                    <div class="value-icon">🛡️</div>
+                    <h3>Seguridad</h3>
+                    <p>Aplicamos estándares internacionales de ciberseguridad en cada sistema desarrollado para proteger la información confidencial de los usuarios y las organizaciones.</p>
+                </div>
+                <div class="value-item">
+                    <div class="value-icon">🤝</div>
+                    <h3>Compromiso</h3>
+                    <p>Fomentamos relaciones a largo plazo con los clientes mediante acompañamiento técnico, soporte continuo y actualizaciones permanentes.</p>
+                </div>
+                <div class="value-item">
+                    <div class="value-icon">💎</div>
+                    <h3>Calidad</h3>
+                    <p>Nos enfocamos en ofrecer soluciones de alta calidad que respondan a las necesidades operativas, comerciales y comunicativas de cada empresa cliente.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="equipo" class="section team">
+        <div class="container">
+            <h2 class="section-title">Nuestro Equipo</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-image">
+                        <span>Imagen del miembro</span>
+                    </div>
+                    <div class="member-info">
+                        <h3>María Belén Salgado Cabrera</h3>
+                        <p>Co-fundadora y Directora Administrativa</p>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-image">
+                        <span>Imagen del miembro</span>
+                    </div>
+                    <div class="member-info">
+                        <h3>Salomé Garcia Sepulveda</h3>
+                        <p>Co-fundadora y Gerente General</p>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-image">
+                        <span>Imagen del miembro</span>
+                    </div>
+                    <div class="member-info">
+                        <h3>Isaac David Mendoza</h3>
+                        <p>Co-fundador y Director Técnico</p>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-image">
+                        <span>Imagen del miembro</span>
+                    </div>
+                    <div class="member-info">
+                        <h3>Alex David Mareño Martinez</h3>
+                        <p>Co-fundador y Especialista en Ciberseguridad</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contacto" class="section">
+        <div class="container">
+            <h2 class="section-title">Contáctanos</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Información de Contacto</h3>
+                    <div class="contact-item">
+                        <div class="contact-icon">📍</div>
+                        <div>
+                            <h4>Ubicación</h4>
+                            <p>Corozal, Sucre, Colombia</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📧</div>
+                        <div>
+                            <h4>Email</h4>
+                            <p>info@kyros.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📞</div>
+                        <div>
+                            <h4>Teléfono</h4>
+                            <p>+57 XXX XXX XXXX</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">🕒</div>
+                        <div>
+                            <h4>Horario de Atención</h4>
+                            <p>Lunes a Viernes: 8:00 AM - 6:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <h3>Envíanos un Mensaje</h3>
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name">Nombre completo</label>
+                            <input type="text" id="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Correo electrónico</label>
+                            <input type="email" id="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Asunto</label>
+                            <input type="text" id="subject" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Mensaje</label>
+                            <textarea id="message" class="form-control" required></textarea>
+                        </div>
+                        <button type="submit" class="btn">Enviar Mensaje</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">KY<span>ROS</span></div>
+                    <p>Empresa de base tecnológica que ofrece soluciones de software personalizado y ciberseguridad para empresas, impulsando la transformación digital de las organizaciones.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link">f</a>
+                        <a href="#" class="social-link">in</a>
+                        <a href="#" class="social-link">t</a>
+                        <a href="#" class="social-link">ig</a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul>
+                        <li><a href="#inicio">Inicio</a></li>
+                        <li><a href="#nosotros">Nosotros</a></li>
+                        <li><a href="#servicios">Servicios</a></li>
+                        <li><a href="#valores">Valores</a></li>
+                        <li><a href="#equipo">Equipo</a></li>
+                        <li><a href="#contacto">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Servicios</h3>
+                    <ul>
+                        <li><a href="#">Software a Medida</a></li>
+                        <li><a href="#">Plataformas Web Seguras</a></li>
+                        <li><a href="#">Ciberseguridad</a></li>
+                        <li><a href="#">Aplicaciones Empresariales</a></li>
+                        <li><a href="#">Soporte Técnico</a></li>
+                        <li><a href="#">Consultoría Digital</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Kyros S.A.S. - Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // React components
+        const { createElement: h, useState, useEffect } = React;
+
+        // Mobile Menu Toggle
+        function MobileMenu() {
+            const [isOpen, setIsOpen] = useState(false);
+            
+            const toggleMenu = () => {
+                setIsOpen(!isOpen);
+            };
+            
+            return h(
+                'button',
+                {
+                    className: 'mobile-menu-btn',
+                    onClick: toggleMenu
+                },
+                '☰'
+            );
+        }
+
+        // Contact Form
+        function ContactForm() {
+            const [formData, setFormData] = useState({
+                name: '',
+                email: '',
+                subject: '',
+                message: ''
+            });
+            
+            const handleChange = (e) => {
+                const { id, value } = e.target;
+                setFormData(prev => ({
+                    ...prev,
+                    [id]: value
+                }));
+            };
+            
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                // Aquí iría la lógica para enviar el formulario
+                alert('Mensaje enviado. Nos pondremos en contacto contigo pronto.');
+                setFormData({
+                    name: '',
+                    email: '',
+                    subject: '',
+                    message: ''
+                });
+            };
+            
+            return h(
+                'form',
+                {
+                    id: 'contactForm',
+                    className: 'contact-form',
+                    onSubmit: handleSubmit
+                },
+                h('h3', null, 'Envíanos un Mensaje'),
+                h(
+                    'div',
+                    { className: 'form-group' },
+                    h('label', { htmlFor: 'name' }, 'Nombre completo'),
+                    h('input', {
+                        type: 'text',
+                        id: 'name',
+                        className: 'form-control',
+                        value: formData.name,
+                        onChange: handleChange,
+                        required: true
+                    })
+                ),
+                h(
+                    'div',
+                    { className: 'form-group' },
+                    h('label', { htmlFor: 'email' }, 'Correo electrónico'),
+                    h('input', {
+                        type: 'email',
+                        id: 'email',
+                        className: 'form-control',
+                        value: formData.email,
+                        onChange: handleChange,
+                        required: true
+                    })
+                ),
+                h(
+                    'div',
+                    { className: 'form-group' },
+                    h('label', { htmlFor: 'subject' }, 'Asunto'),
+                    h('input', {
+                        type: 'text',
+                        id: 'subject',
+                        className: 'form-control',
+                        value: formData.subject,
+                        onChange: handleChange,
+                        required: true
+                    })
+                ),
+                h(
+                    'div',
+                    { className: 'form-group' },
+                    h('label', { htmlFor: 'message' }, 'Mensaje'),
+                    h('textarea', {
+                        id: 'message',
+                        className: 'form-control',
+                        value: formData.message,
+                        onChange: handleChange,
+                        required: true
+                    })
+                ),
+                h(
+                    'button',
+                    {
+                        type: 'submit',
+                        className: 'btn'
+                    },
+                    'Enviar Mensaje'
+                )
+            );
+        }
+
+        // Smooth scrolling for navigation links
+        function useSmoothScroll() {
+            useEffect(() => {
+                const handleClick = (e) => {
+                    const target = e.target;
+                    if (target.matches('.nav-link') || target.matches('.hero-btns a')) {
+                        e.preventDefault();
+                        const href = target.getAttribute('href');
+                        const targetElement = document.querySelector(href);
+                        if (targetElement) {
+                            window.scrollTo({
+                                top: targetElement.offsetTop - 70,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                };
+                
+                document.addEventListener('click', handleClick);
+                
+                return () => {
+                    document.removeEventListener('click', handleClick);
+                };
+            }, []);
+        }
+
+        // Main App Component
+        function App() {
+            useSmoothScroll();
+            
+            return h(
+                'div',
+                null,
+                h(MobileMenu),
+                h(ContactForm)
+            );
+        }
+
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(h(App));
+    </script>
+
+    <!-- React and ReactDOM from CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Root element for React -->
+    <div id="root"></div>
+</body>
+</html>

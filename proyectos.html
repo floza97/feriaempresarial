@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Proyectos | Feria Empresarial SENATIC 2025</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0a0f1d;
+      --bg-2:#0f1528;
+      --card:#121a31;
+      --muted:#9daaf2;
+      --text:#e6e9ff;
+      --accent:#00FFAB;
+      --chip:#1b2544;
+      --border:#1f2a4a;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, #102043 0%, transparent 60%),
+        radial-gradient(900px 500px at 110% 10%, #0e2a3a 0%, transparent 55%),
+        var(--bg);
+      color:var(--text);
+      min-height:100dvh;
+    }
+    header{
+      position:sticky; top:0; z-index:20;
+      backdrop-filter: blur(8px);
+      background:rgba(5,8,18,.6);
+      border-bottom:1px solid var(--border);
+    }
+    .bar{
+      max-width:1200px; margin:0 auto; padding:16px 20px;
+      display:grid; gap:12px;
+      grid-template-columns: 1fr auto auto auto;
+      align-items:center;
+    }
+    .title{font-weight:700; letter-spacing:.3px;}
+    .title small{display:block; color:var(--muted); font-weight:500;}
+    .ctrl{
+      display:flex; gap:10px; align-items:center;
+    }
+    .search{
+      position:relative; min-width:260px;
+    }
+    .search input{
+      width:100%; padding:12px 40px 12px 14px; border-radius:12px;
+      border:1px solid var(--border); background:#0b1226; color:var(--text);
+      outline:none;
+    }
+    .search svg{position:absolute; right:10px; top:50%; transform:translateY(-50%); opacity:.7}
+    select, button{
+      background:#0b1226; color:var(--text); border:1px solid var(--border);
+      padding:12px 14px; border-radius:12px; cursor:pointer;
+    }
+    button:hover, select:hover{border-color:#2a3a6a}
+    .back{
+      display:inline-flex; gap:8px; align-items:center; text-decoration:none;
+      color:var(--accent); font-weight:600; padding:10px 0;
+    }
+
+    main{max-width:1200px; margin:14px auto 60px; padding:0 20px;}
+    .meta{display:flex; justify-content:space-between; align-items:center; margin:8px 0 18px 0; color:var(--muted)}
+    .grid{
+      display:grid; gap:18px;
+      grid-template-columns: repeat(1, minmax(0,1fr));
+    }
+    @media (min-width:640px){ .grid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    @media (min-width:980px){ .grid{ grid-template-columns: repeat(3, minmax(0,1fr)); } }
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0)) , var(--card);
+      border:1px solid var(--border);
+      border-radius:18px; padding:16px; display:flex; gap:14px; align-items:flex-start;
+      transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .card:hover{
+      transform: translateY(-2px);
+      border-color:#2a3a6a;
+      box-shadow:0 10px 24px rgba(0,0,0,.25);
+    }
+    .thumb{
+      width:64px; height:64px; border-radius:14px; flex:0 0 64px;
+      background: conic-gradient(from 180deg, #00FFAB, #6EE7F9, #7C3AED, #00FFAB);
+      position:relative; overflow:hidden; border:1px solid #284;
+    }
+    .thumb::after{
+      content:""; position:absolute; inset:2px; border-radius:12px; background:#0c1430;
+    }
+    .letters{
+      position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+      font-weight:800; letter-spacing:.5px; color:var(--accent); z-index:2;
+    }
+    .content{flex:1 1 auto}
+    .name{font-weight:700; font-size:1.05rem; margin-bottom:2px}
+    .desc{color:#c7ccff; font-size:.92rem; line-height:1.4; margin:0 0 10px}
+    .chips{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px}
+    .chip{
+      background:var(--chip); color:#cfe1ff; padding:6px 10px; border-radius:999px;
+      font-size:.8rem; border:1px solid var(--border)
+    }
+    .actions{display:flex; gap:10px; flex-wrap:wrap}
+    .btn{
+      display:inline-flex; align-items:center; gap:8px;
+      text-decoration:none; background:var(--accent); color:#001;
+      padding:10px 14px; border-radius:12px; font-weight:700; transition: transform .15s ease;
+      box-shadow:0 0 18px rgba(0,255,171,.25);
+    }
+    .btn:hover{ transform: translateY(-1px) scale(1.02); }
+    .ghost{
+      background:transparent; color:var(--muted); border:1px solid var(--border)
+    }
+
+    footer{
+      border-top:1px solid var(--border);
+      background:var(--bg-2);
+      color:var(--muted);
+      padding:28px 20px; text-align:center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <div class="title">
+        Proyectos · Feria Empresarial SENATIC 2025
+        <small>Programa de Programación de Software – ENSC · SENA · OIT · MinTIC</small>
+      </div>
+
+      <div class="search ctrl">
+        <input id="q" type="search" placeholder="Buscar por nombre, categoría o tecnología…" aria-label="Buscar"/>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="m21 21-3.5-3.5M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="#9daaf2" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+
+      <div class="ctrl">
+        <select id="filter-cat" aria-label="Filtrar por categoría">
+          <option value="all">Todas las categorías</option>
+          <option value="EdTech">EdTech</option>
+          <option value="E-commerce">E-commerce</option>
+          <option value="Gestión">Gestión</option>
+          <option value="DevTools">DevTools</option>
+          <option value="Salud/Bienestar">Salud/Bienestar</option>
+          <option value="Movilidad/Logística">Movilidad/Logística</option>
+        </select>
+        <select id="sort" aria-label="Ordenar">
+          <option value="az">A → Z</option>
+          <option value="za">Z → A</option>
+        </select>
+      </div>
+
+      <a href="index.html" class="back" aria-label="Volver a inicio">
+        <!-- back arrow -->
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 6 9 12l6 6" stroke="#00FFAB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Inicio
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <div class="meta">
+      <span id="count">24 proyectos</span>
+      <span>Filtra y busca para ubicar rápidamente cada MVP</span>
+    </div>
+
+    <div id="grid" class="grid" aria-live="polite"></div>
+  </main>
+
+  <footer>
+    © 2025 Feria Empresarial SENATIC – ENSC · SENA · OIT · MinTIC
+  </footer>
+
+  <script>
+    // === Configura aquí tus proyectos ===
+    // Puedes cambiar href por la ruta real del MVP de cada equipo.
+    const proyectos = [
+      { nombre:"Automata Solutions", cat:"Gestión", tech:["Web","JS"], desc:"Automatizaciones empresariales.", href:"AUTOMATA SOLUTIONS/index.html" },
+      { nombre:"VR Batallas por la paz", cat:"Realidad Virtual", tech:["Web","JS"], desc:"-", href:"BR VATALLAS/VR-Batallas-por-la-Paz.html" },
+      { nombre:"CalmaBit", cat:"Bienestar", tech:["Web"], desc:"-", href:"CALMABIT/index.html" },
+      { nombre:"ComerziApp", cat:"E-commerce", tech:["Web"], desc:"-", href:"COMERZIAPP/ComerziApp.html" },
+      { nombre:"Kyros", cat:"Seguridad", tech:["Web"], desc:"-", href:"KYROS/index.html" },
+      { nombre:"PArqueo", cat:"Gestión", tech:["Web","JS"], desc:"sistema de parqueadero.", href:"PARQUEADERO/index.html" },
+      { nombre:"VetData", cat:"Gestión", tech:["Web"], desc:"Gestión de Veterinarias.", href:"vetdata-mvp/index.html" },
+      { nombre:"CodeNova", cat:"E-DevTools", tech:["Web"], desc:"-", href:"WEB CODENOVA/index.html" },
+      { nombre:"EduConect", cat:"EdTech", tech:["Web"], desc:"Planificación de clase y seguimiento a aprendizajes.", href:"WEB EDUCONECT/educonnect-platform.html" },
+      
+      { nombre:"InnovaSoft", cat:"Gestión", tech:["Web"], desc:"CRM sencillo para pymes escolares y servicios.", href:"mvp/innovasoft/index.html" },
+      { nombre:"Bytewise S.A.S.", cat:"DevTools", tech:["Web"], desc:"Colección de utilidades para pruebas y QA web.", href:"mvp/bytewise/index.html" },
+      { nombre:"FullRide S.A.S.", cat:"Movilidad/Logística", tech:["Web"], desc:"Gestión de reservas y traslados estudiantiles.", href:"mvp/fullride/index.html" },
+
+      // Los siguientes son placeholders: renómbralos y cambia el href según tu lista final
+      { nombre:"Proyecto 13", cat:"EdTech", tech:["Web"], desc:"Descripción breve del MVP.", href:"mvp/proyecto-13/index.html" },
+      { nombre:"Proyecto 14", cat:"E-commerce", tech:["Web"], desc:"Descripción breve del MVP.", href:"mvp/proyecto-14/index.html" },
+      { nombre:"Proyecto 15", cat:"Gestión", tech:["Web"], desc:"Descripción breve del MVP.", href:"mvp/proyecto-15/index.html" },
+      { nombre:"Proyecto 16", cat:"DevTools", tech:["Web"], desc:"Descripción breve del MVP.", href:"mvp/proyecto-16/index.html" },
+      { nombre:"Proyecto 17", cat:"Salud/Bienestar", tech:["Web"], desc:"Descripción breve del MVP.", href:"mvp/proyecto-17/index.html" },
+      { nombre:"Proyecto 18", cat:"EdTech", tech:["Web"], desc:"Descripción breve del MVP.", href:"mvp/proyecto-18/index.html" },
+      { nombre:"Proyecto 19", cat:"E-commerce", tech:["Web"], desc:"Descripción breve del MVP.", href:"mvp/proyecto-19/index.html" },
+      { nombre:"Proyecto 20", cat:"Gestión", tech:["Web"], desc:"Descripción breve del MVP.", href:"mvp/proyecto-20/index.html" },
+      { nombre:"Proyecto 21", cat:"DevTools", tech:["Web"], desc:"Descripción breve del MVP.", href:"mvp/proyecto-21/index.html" },
+      { nombre:"Proyecto 22", cat:"Movilidad/Logística", tech:["Web"], desc:"Descripción breve del MVP.", href:"mvp/proyecto-22/index.html" },
+      { nombre:"Proyecto 23", cat:"Salud/Bienestar", tech:["Web"], desc:"Descripción breve del MVP.", href:"mvp/proyecto-23/index.html" },
+      { nombre:"Proyecto 24", cat:"Gestión", tech:["Web"], desc:"Descripción breve del MVP.", href:"mvp/proyecto-24/index.html" },
+    ];
+
+    const grid = document.getElementById('grid');
+    const q = document.getElementById('q');
+    const sel = document.getElementById('filter-cat');
+    const sort = document.getElementById('sort');
+    const count = document.getElementById('count');
+
+    const initials = (name) => {
+      const parts = name.split(' ').filter(Boolean);
+      let s = parts[0]?.[0] ?? '';
+      if(parts.length>1) s += parts[parts.length-1][0] ?? '';
+      return s.substring(0,3).toUpperCase();
+    };
+
+    function render(list){
+      grid.innerHTML = '';
+      list.forEach(p=>{
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.setAttribute('data-cat', p.cat);
+        card.setAttribute('data-name', p.nombre.toLowerCase());
+        card.setAttribute('data-tech', (p.tech||[]).join(',').toLowerCase());
+
+        card.innerHTML = `
+          <div class="thumb" aria-hidden="true">
+            <div class="letters">${initials(p.nombre)}</div>
+          </div>
+          <div class="content">
+            <div class="name">${p.nombre}</div>
+            <p class="desc">${p.desc}</p>
+            <div class="chips">
+              <span class="chip">${p.cat}</span>
+              ${(p.tech||[]).map(t=>`<span class="chip">${t}</span>`).join('')}
+            </div>
+            <div class="actions">
+              <a class="btn" href="${p.href}" target="_blank" rel="noopener">Ver MVP
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M7 17 17 7M9 7h8v8" stroke="#001" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+              <a class="btn ghost" href="#" onclick="copyLink('${location.origin}${location.pathname.replace('proyectos.html','')}${p.href}');return false;">Copiar enlace</a>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+      count.textContent = `${list.length} proyecto${list.length===1?'':'s'}`;
+    }
+
+    function copyLink(url){
+      navigator.clipboard.writeText(url).then(()=> {
+        alert('Enlace copiado al portapapeles');
+      }).catch(()=>{});
+    }
+
+    function apply(){
+      let list = proyectos.slice();
+
+      // filtro por categoría
+      const cat = sel.value;
+      if(cat !== 'all'){
+        list = list.filter(p => p.cat === cat);
+      }
+
+      // búsqueda
+      const term = q.value.trim().toLowerCase();
+      if(term){
+        list = list.filter(p =>
+          p.nombre.toLowerCase().includes(term) ||
+          (p.desc||'').toLowerCase().includes(term) ||
+          (p.cat||'').toLowerCase().includes(term) ||
+          (p.tech||[]).join(',').toLowerCase().includes(term)
+        );
+      }
+
+      // ordenar
+      list.sort((a,b)=>{
+        if(sort.value==='za') return b.nombre.localeCompare(a.nombre,'es',{sensitivity:'base'});
+        return a.nombre.localeCompare(b.nombre,'es',{sensitivity:'base'});
+      });
+
+      render(list);
+    }
+
+    q.addEventListener('input', apply);
+    sel.addEventListener('change', apply);
+    sort.addEventListener('change', apply);
+
+    // Inicial
+    render(proyectos);
+  </script>
+</body>
+</html>
