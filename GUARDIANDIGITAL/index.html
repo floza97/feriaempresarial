@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Guardián Digital — Tu familia segura en internet</title>
+  <meta name="description" content="Guardián Digital: control parental simple, transparente y asequible. Reglas lógicas configurables para proteger a tus hijos en línea." />
+  <style>
+    :root{
+      --bg:#FBFBFD;
+      --card:#FFFFFF;
+      --accent:#6AA4FF; /* soft blue */
+      --accent-2:#9AD3C8; /* pastel mint */
+      --text:#223244;
+      --muted:#65758A;
+      --round:18px;
+      --glass: rgba(255,255,255,0.6);
+      --shadow: 0 8px 24px rgba(34,50,68,0.08);
+      --maxw:1100px;
+      --soft: #FFF7F0;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: linear-gradient(180deg,var(--bg), #F6FBFF 60%);
+      color:var(--text); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      line-height:1.5;
+      padding:32px 18px;
+    }
+    .container{max-width:var(--maxw);margin:0 auto}
+
+    /* Header */
+    header{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:54px;height:54px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px;box-shadow:var(--shadow)}
+    .brand h1{margin:0;font-size:18px}
+    .nav{display:flex;gap:10px;align-items:center}
+    .btn{background:var(--accent);color:white;padding:10px 14px;border-radius:12px;text-decoration:none;font-weight:600;box-shadow:0 6px 18px rgba(106,164,255,0.18)}
+    .btn.ghost{background:transparent;color:var(--accent);border:1px solid rgba(106,164,255,0.12);box-shadow:none}
+
+    /* Hero */
+    .hero{display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:center;padding:24px 0}
+    .hero-card{background:var(--card);border-radius:22px;padding:28px;box-shadow:var(--shadow)}
+    .eyebrow{display:inline-block;background:var(--soft);color:var(--accent-2);padding:6px 10px;border-radius:999px;font-weight:700;margin-bottom:12px}
+    h2{margin:0 0 12px;font-size:28px}
+    p.lead{color:var(--muted);margin:0 0 18px}
+    .features-grid{display:flex;flex-direction:column;gap:12px}
+    .feature{display:flex;gap:12px;align-items:flex-start}
+    .feature .ico{width:44px;height:44px;border-radius:12px;background:linear-gradient(180deg,var(--accent-2), #E3F7EF);display:flex;align-items:center;justify-content:center;font-weight:700}
+
+    /* right column device mockup */
+    .mock{display:flex;flex-direction:column;gap:14px;align-items:center}
+    .device{width:360px;border-radius:18px;background:linear-gradient(180deg,#FFFFFF, #F6FAFF);padding:18px;box-shadow:0 18px 40px rgba(34,50,68,0.08);}
+    .device .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+    .pill{width:70px;height:8px;background:#EAF2FF;border-radius:999px}
+    .screen{height:420px;border-radius:12px;background:linear-gradient(180deg,#FFFFFF,#F4FBFF);padding:14px;overflow:hidden}
+    .rule{background:linear-gradient(90deg,#F1FFF9,#FFFFFF);border-radius:10px;padding:10px;margin-bottom:8px;border:1px solid rgba(154,211,200,0.4)}
+
+    /* sections */
+    section{margin:28px 0}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .card{background:var(--card);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+
+    /* testimonials */
+    .testimonials{display:flex;gap:14px}
+    .testimonial{background:linear-gradient(180deg,#FFFFFF,#FFFDF7);padding:16px;border-radius:14px;box-shadow:0 8px 24px rgba(34,50,68,0.06)}
+
+    /* pricing */
+    .pricing{display:flex;gap:18px}
+    .plan{flex:1;padding:18px;border-radius:14px;background:linear-gradient(180deg,#fff,#fbfffb);border:1px solid rgba(100,160,130,0.06)}
+
+    /* footer */
+    footer{padding:22px 0;color:var(--muted);font-size:14px}
+
+    /* responsive */
+    @media (max-width:980px){
+      .hero{grid-template-columns:1fr}
+      .cards{grid-template-columns:repeat(2,1fr)}
+      .device{width:100%}
+    }
+    @media (max-width:560px){
+      .cards{grid-template-columns:1fr}
+      .nav{display:none}
+      header{gap:10px}
+      h2{font-size:22px}
+    }
+
+    /* small helpers */
+    .muted{color:var(--muted)}
+    .center{display:flex;justify-content:center;align-items:center}
+    .cta-row{display:flex;gap:10px;margin-top:18px}
+    input,textarea{font-family:inherit}
+    .form-row{display:flex;gap:8px}
+    .input{padding:10px;border-radius:12px;border:1px solid rgba(34,50,68,0.06);flex:1}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">GD</div>
+        <div>
+          <h1>Guardián Digital</h1>
+          <div class="muted" style="font-size:13px">Tu familia segura en internet</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a class="btn ghost" href="#features">Funcionalidades</a>
+        <a class="btn ghost" href="#precios">Precios</a>
+        <a class="btn" href="#contact">Prueba gratuita</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-card">
+          <span class="eyebrow">Nuevo</span>
+          <h2>Protege, educa y acompaña el crecimiento digital de tus hijos — sin complicaciones.</h2>
+          <p class="lead">Guardián Digital es una herramienta de control parental pensada para padres que quieren <strong>transparencia</strong> y <strong>control real</strong>. Configura reglas lógicas, bloquea sitios y limita tiempos de uso con una interfaz clara y fácil.</p>
+
+          <div class="features-grid">
+            <div class="feature">
+              <div class="ico">🔒</div>
+              <div>
+                <strong>Control por reglas</strong>
+                <div class="muted">Listas blancas/ negras, palabras clave y horarios configurables.</div>
+              </div>
+            </div>
+            <div class="feature">
+              <div class="ico">📊</div>
+              <div>
+                <strong>Historial y reportes</strong>
+                <div class="muted">Visibilidad clara de la actividad en tiempo resumido y sencillo.</div>
+              </div>
+            </div>
+            <div class="feature">
+              <div class="ico">💸</div>
+              <div>
+                <strong>Accesible</strong>
+                <div class="muted">Modelo de suscripción asequible y opción de prueba gratuita.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cta-row">
+            <a class="btn" href="#contact">Comienza tu prueba</a>
+            <a class="btn ghost" href="#precios">Ver planes</a>
+          </div>
+
+          <div style="margin-top:18px;color:var(--muted);font-size:14px">¿Tienes preguntas? <a href="#contact">Contáctanos</a> — apoyo técnico y guías para padres disponibles.</div>
+        </div>
+
+        <aside class="mock">
+          <div class="device" aria-hidden="true">
+            <div class="top"><div class="pill"></div><div style="font-size:12px;color:var(--muted)">Guardián Digital v0.1</div></div>
+            <div class="screen">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                <div style="font-weight:700">Reglas rápidas</div>
+                <div style="font-size:12px;color:var(--muted)">Última actualización: Oct 2025</div>
+              </div>
+              <div class="rule">🏫 Bloquear: sitios de apuestas</div>
+              <div class="rule">🔞 Bloquear: contenido para adultos</div>
+              <div class="rule">⏰ Tiempo: 2h diarias (16:00–18:00)</div>
+              <div class="rule">🔍 Palabra clave: "comprar" — revisar</div>
+            </div>
+          </div>
+          <div style="width:360px;text-align:center;font-size:13px;color:var(--muted)">Panel simple. Reglas que entiendes. Control que funciona.</div>
+        </aside>
+      </section>
+
+      <section id="features">
+        <div class="container">
+          <h3 style="margin-bottom:12px">¿Qué hace Guardián Digital?</h3>
+          <div class="cards">
+            <div class="card">
+              <h4>Bloqueo por listas</h4>
+              <p class="muted">Crea listas blancas y negras de URLs para controlar exactamente qué sitios pueden visitar tus hijos.</p>
+            </div>
+            <div class="card">
+              <h4>Reglas horarias</h4>
+              <p class="muted">Define franjas horarias por día para limitar el uso de aplicaciones y navegación.</p>
+            </div>
+            <div class="card">
+              <h4>Monitoreo simple</h4>
+              <p class="muted">Historial de navegación resumido con alertas y acciones recomendadas para padres.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <h3>Beneficios para la familia</h3>
+          <div style="display:flex;gap:14px;margin-top:12px;flex-wrap:wrap">
+            <div style="flex:1;min-width:220px" class="card">
+              <strong>Tranquilidad</strong>
+              <div class="muted">Saber qué ocurre en la actividad digital de tus hijos sin herramientas opacas.</div>
+            </div>
+            <div style="flex:1;min-width:220px" class="card">
+              <strong>Educación digital</strong>
+              <div class="muted">Promovemos diálogo con guías y notificaciones que ayudan a enseñar en vez de solo castigar.</div>
+            </div>
+            <div style="flex:1;min-width:220px" class="card">
+              <strong>Ahorro</strong>
+              <div class="muted">Un producto funcional y transparente a precio competitivo frente a grandes competidores.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="testimonios">
+        <div class="container">
+          <h3>Lo que dicen los padres</h3>
+          <div class="testimonials" style="margin-top:12px">
+            <div class="testimonial">
+              <div style="font-weight:700">María, madre de dos</div>
+              <div class="muted" style="font-size:14px">"Finalmente una app que entiendo. Pude configurar reglas en 10 minutos y ver cómo mi hijo usa menos pantalla."</div>
+            </div>
+            <div class="testimonial">
+              <div style="font-weight:700">Jorge, docente</div>
+              <div class="muted" style="font-size:14px">"La versión escolar nos permitió controlar accesos en el aula y enseñar buenas prácticas en clase."</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="precios">
+        <div class="container">
+          <h3>Planes</h3>
+          <div class="pricing" style="margin-top:12px">
+            <div class="plan">
+              <div style="font-weight:700">Prueba Gratuita</div>
+              <div class="muted">7 días de acceso completo — sin tarjeta</div>
+              <div style="margin-top:10px;font-size:22px;font-weight:800">Gratis</div>
+              <div style="margin-top:12px">Perfecto para conocer la app y configurar las primeras reglas.</div>
+              <div style="margin-top:12px"><a class="btn" href="#contact">Comenzar</a></div>
+            </div>
+            <div class="plan">
+              <div style="font-weight:700">Familiar</div>
+              <div class="muted">Ideal para 1–3 niños</div>
+              <div style="margin-top:10px;font-size:22px;font-weight:800">$9.99 / mes</div>
+              <div style="margin-top:12px">Reglas ilimitadas, historial y soporte prioritario.</div>
+              <div style="margin-top:12px"><a class="btn" href="#contact">Suscribirme</a></div>
+            </div>
+            <div class="plan">
+              <div style="font-weight:700">Escuelas</div>
+              <div class="muted">Licencias por volumen para instituciones educativas</div>
+              <div style="margin-top:10px;font-size:22px;font-weight:800">Cotizar</div>
+              <div style="margin-top:12px">Pilotos y descuentos para centros educativos.</div>
+              <div style="margin-top:12px"><a class="btn" href="#contact">Solicitar demo</a></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact">
+        <div class="container">
+          <h3>Contacta con nosotros</h3>
+          <p class="muted">¿Interesado en una demo o tienes preguntas? Déjanos tus datos y te contactamos.</p>
+          <div style="margin-top:12px;display:flex;gap:14px;flex-wrap:wrap">
+            <div style="flex:1;min-width:320px" class="card">
+              <form id="contactForm">
+                <div style="margin-bottom:8px"><input class="input" type="text" id="name" placeholder="Tu nombre" required></div>
+                <div style="margin-bottom:8px"><input class="input" type="email" id="email" placeholder="Tu email" required></div>
+                <div style="margin-bottom:8px"><input class="input" id="subject" placeholder="Asunto (ej. Demo)" required></div>
+                <div style="margin-bottom:8px"><textarea class="input" id="message" rows="4" placeholder="Mensaje"></textarea></div>
+                <div style="display:flex;gap:8px"><button class="btn" type="submit">Enviar mensaje</button><button class="btn ghost" type="button" id="demoBtn">Solicitar demo</button></div>
+                <div id="formMsg" style="margin-top:10px;color:var(--muted);font-size:13px"></div>
+              </form>
+            </div>
+
+            <div style="flex:1;min-width:260px" class="card">
+              <strong>Información</strong>
+              <div class="muted" style="margin-top:8px">Email: hola@guardian-digital.co</div>
+              <div class="muted">Tel: +57 300 000 0000</div>
+              <div class="muted" style="margin-top:12px">Dirección: Corozal, Sucre — Colombia</div>
+              <div style="margin-top:14px"><small class="muted">Síguenos en redes para recibir consejos de crianza digital.</small></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="center">
+      <div style="max-width:var(--maxw);width:100%;display:flex;justify-content:space-between;align-items:center">
+        <div>© Guardián Digital 2025 — Todos los derechos reservados</div>
+        <div class="muted">Política de privacidad · Términos · Soporte</div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Simple form handler (demo only)
+    document.getElementById('contactForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      var name = document.getElementById('name').value || '—';
+      var email = document.getElementById('email').value || '—';
+      var subject = document.getElementById('subject').value || '—';
+      var message = document.getElementById('message').value || '—';
+      // Simulate submit
+      document.getElementById('formMsg').textContent = 'Gracias, ' + name + '. Hemos recibido tu mensaje y te contactaremos al ' + email + '. (Demo)';
+      this.reset();
+    });
+
+    document.getElementById('demoBtn').addEventListener('click', function(){
+      document.getElementById('formMsg').textContent = 'Solicitud de demo recibida. Un miembro del equipo se pondrá en contacto contigo.';
+    });
+  </script>
+</body>
+</html>

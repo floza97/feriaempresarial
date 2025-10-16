@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ZendaFleet — MVP</title>
+<style>
+  /* CSS minimalista y usable: paleta verde/amarillo acorde al documento */
+  :root{
+    --bg:#f4fbf6; --card:#ffffff; --accent:#FFD100; --primary:#2E8B57;
+    --muted:#666; --glass:rgba(255,255,255,0.8);
+  }
+  body{font-family:Inter,system-ui,Arial; margin:0; background:linear-gradient(180deg,var(--bg),#ecf9f0); color:#123;}
+  header{display:flex;align-items:center;gap:16px;padding:12px 20px;background:var(--card);box-shadow:0 2px 6px rgba(0,0,0,.06)}
+  header h1{margin:0;font-size:18px;color:var(--primary)}
+  main{display:grid;grid-template-columns:320px 1fr;gap:16px;padding:16px;align-items:start}
+  .card{background:var(--card);padding:12px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+  .sidebar{height:calc(100vh - 96px);overflow:auto;padding-bottom:20px}
+  .list{display:flex;flex-direction:column;gap:8px}
+  .btn{appearance:none;border:0;padding:8px 10px;border-radius:8px;background:var(--primary);color:white;cursor:pointer}
+  .btn.ghost{background:transparent;border:1px solid #ddd;color:var(--primary)}
+  .small{font-size:13px;padding:6px 8px;border-radius:6px}
+  label{display:block;font-size:13px;margin-top:8px;color:var(--muted)}
+  input,select,textarea{width:100%;padding:8px;border-radius:8px;border:1px solid #e6e6e6;margin-top:6px}
+  .flex{display:flex;gap:8px;align-items:center}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:8px;border-bottom:1px solid #f1f1f1;text-align:left;font-size:13px}
+  .map{height:420px;border-radius:8px;background:linear-gradient(#e8f7ee,#f6fff9);display:flex;align-items:center;justify-content:center;color:#999}
+  footer{padding:12px;text-align:center;color:var(--muted);font-size:13px}
+  .kpi{display:flex;gap:8px}
+  .k{background:linear-gradient(90deg,#fff,#f9fff6);padding:8px;border-radius:8px;box-shadow:0 1px 2px rgba(0,0,0,.03);min-width:110px}
+  .muted{color:var(--muted);font-size:12px}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{background:#fff;border-radius:20px;padding:6px 8px;border:1px dashed #eee;font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <div style="width:42px;height:42px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700">ZF</div>
+  <div>
+    <h1>ZendaFleet — Panel MVP</h1>
+    <div class="muted">Optimiza tu ruta, impulsa tu negocio</div>
+  </div>
+</header>
+
+<main>
+  <aside class="sidebar">
+    <div class="card">
+      <h3>Acciones rápidas</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+        <button id="openNewVehicle" class="btn">Registrar Motocicleta</button>
+        <button id="openNewDriver" class="btn ghost">Registrar Conductor</button>
+        <button id="openNewOrder" class="btn">Crear Pedido</button>
+        <button id="autoAssign" class="btn">Asignación automática</button>
+        <button id="simulate" class="btn ghost">Iniciar simulación entrega</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>KPI rápidos</h3>
+      <div class="kpi" style="margin-top:8px">
+        <div class="k"><div class="muted">Flota</div><strong id="k_vehicles">0</strong></div>
+        <div class="k"><div class="muted">Conductores</div><strong id="k_drivers">0</strong></div>
+        <div class="k"><div class="muted">Pedidos</div><strong id="k_orders">0</strong></div>
+      </div>
+      <div style="margin-top:8px" class="muted">Exporta datos o descarga reportes.</div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button id="exportCsv" class="btn small">Export CSV</button>
+        <button id="resetAll" class="btn ghost small">Reset demo</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>Planes / Suscripción</h3>
+      <div class="chips" style="margin-top:8px">
+        <div class="chip">Básico — 3 motos</div>
+        <div class="chip">Emprendedor — 10 motos</div>
+        <div class="chip">Empresarial — >10</div>
+      </div>
+      <div style="margin-top:10px">
+        <label>Seleccionar plan</label>
+        <select id="selectPlan">
+          <option value="free">Prueba - Gratis</option>
+          <option value="basic">Básico</option>
+          <option value="pro">Emprendedor</option>
+          <option value="enterprise">Empresarial</option>
+        </select>
+        <button id="subscribeBtn" class="btn" style="margin-top:8px">Seleccionar y pagar (simulado)</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>Soporte</h3>
+      <div class="muted">Capacitación inicial y contacto</div>
+      <div style="margin-top:8px">
+        <button id="openHelp" class="btn ghost">Manual rápido / FAQ</button>
+      </div>
+    </div>
+  </aside>
+
+  <section>
+    <div class="card" style="display:flex;gap:12px;align-items:flex-start;flex-direction:column">
+      <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;width:100%">
+        <div style="flex:1">
+          <h2 style="margin:0">Panel de operaciones</h2>
+          <div class="muted">Vista general — Gestión de flota, pedidos y rutas</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <input id="searchBox" placeholder="Buscar pedidos, moto o conductor" style="padding:8px;border-radius:8px;border:1px solid #eee" />
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 420px;gap:12px;width:100%">
+        <div>
+          <h3>Pedidos</h3>
+          <table id="ordersTable">
+            <thead><tr><th>#</th><th>Dir / Cliente</th><th>Estado</th><th>Asignado</th><th>Acciones</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div>
+            
+          <h3>Mapa (simulado)</h3>
+        
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <iframe width="520" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" id="gmap_canvas" src="https://maps.google.com/maps?width=520&amp;height=400&amp;hl=en&amp;q=%20corozal+(zendafleet)&amp;t=&amp;z=12&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"></iframe> <a href='http://maps-website.com/es'>Maps Generator</a> <script type='text/javascript' src='https://embedmaps.com/google-maps-authorization/script.js?id=08f069df1e28332f1a62b36705bdf86950cdeafa'></script>
+            
+          </div>
+          <button id="showRoutes" class="btn small">Mostrar rutas</button>
+            <button id="optimizeRoutes" class="btn small">Optimizar rutas</button>
+        </div>
+
+      </div>
+
+      <div style="width:100%;margin-top:8px">
+        <h3>Conductores y Motocicletas</h3>
+        <div style="display:flex;gap:12px">
+          <div class="card" style="flex:1">
+            <h4>Conductores</h4>
+            <table id="driversTable"><thead><tr><th>Nombre</th><th>Estado</th><th>Acciones</th></tr></thead><tbody></tbody></table>
+          </div>
+          <div class="card" style="flex:1">
+            <h4>Motocicletas</h4>
+            <table id="vehiclesTable"><thead><tr><th>Placa</th><th>Modelo</th><th>Acciones</th></tr></thead><tbody></tbody></table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <footer class="card" style="margin-top:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>ZendaFleet MVP — creado según modelo de negocio (SaaS para microempresas) </div>
+        <div class="muted">Demo local · No guarda datos en servidor (localStorage)</div>
+      </div>
+    </footer>
+  </section>
+</main>
+
+<!-- Modals básicos -->
+<div id="modalRoot"></div>
+
+<script>
+/* app.js - lógica en vanilla JS - demo MVP
+  Data storage: localStorage key "zendafleet_demo_v1"
+  Modelo de datos:
+   - vehicles: [{id,plate,model,coords:{x,y},status}]
+   - drivers: [{id,name,phone,coords:{x,y},status,vehicleId}]
+   - orders: [{id,client,address,coords:{x,y},items,priority,status,assignedDriverId,createdAt,deliveredAt}]
+*/
+
+(() => {
+  const DB_KEY = 'zendafleet_demo_v1';
+
+  // default seed sample
+  const defaultState = {
+    vehicles: [],
+    drivers: [],
+    orders: [],
+    plan: 'free',
+    metrics: {}
+  };
+
+  function loadState(){ try { return JSON.parse(localStorage.getItem(DB_KEY)) || defaultState; } catch(e){return defaultState;} }
+  function saveState(s){ localStorage.setItem(DB_KEY, JSON.stringify(s)); updateUI(); }
+
+  // utilities
+  function uid(prefix='id'){ return prefix + '_' + Math.random().toString(36).slice(2,9); }
+  function now(){ return new Date().toISOString(); }
+  function randCoord(){ return {x: Math.round(Math.random()*100), y: Math.round(Math.random()*100)}; }
+  function dist(a,b){ return Math.hypot(a.x-b.x,a.y-b.y); }
+
+  // state
+  let state = loadState();
+
+  // UI hooks
+  const ordersTbody = document.querySelector('#ordersTable tbody');
+  const driversTbody = document.querySelector('#driversTable tbody');
+  const vehiclesTbody = document.querySelector('#vehiclesTable tbody');
+  const kVehicles = document.getElementById('k_vehicles');
+  const kDrivers = document.getElementById('k_drivers');
+  const kOrders = document.getElementById('k_orders');
+  const mapArea = document.getElementById('mapArea');
+  const modalRoot = document.getElementById('modalRoot');
+
+  // initial render
+  function updateUI(){
+    state = loadState();
+
+    // KPI
+    kVehicles.textContent = state.vehicles.length;
+    kDrivers.textContent = state.drivers.length;
+    kOrders.textContent = state.orders.length;
+
+    // orders
+    ordersTbody.innerHTML = '';
+    state.orders.slice().reverse().forEach((o,idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${o.id}</td>
+        <td><strong>${o.client}</strong><div class="muted">${o.address}</div></td>
+        <td>${o.status}</td>
+        <td>${o.assignedDriverId ? (state.drivers.find(d=>d.id===o.assignedDriverId)?.name||'--') : '--'}</td>
+        <td>
+          <button class="small" data-id="${o.id}" data-action="assign">Asignar</button>
+          <button class="small" data-id="${o.id}" data-action="start">Iniciar</button>
+          <button class="small" data-id="${o.id}" data-action="deliver">Entregar</button>
+        </td>`;
+      ordersTbody.appendChild(tr);
+    });
+
+    // drivers
+    driversTbody.innerHTML = '';
+    state.drivers.forEach(d => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${d.name}<div class="muted">${d.phone||''}</div></td>
+        <td>${d.status||'disponible'}</td>
+        <td>
+          <button class="small" data-id="${d.id}" data-action="editDriver">Editar</button>
+          <button class="small" data-id="${d.id}" data-action="loc">Ver</button>
+        </td>`;
+      driversTbody.appendChild(tr);
+    });
+
+    // vehicles
+    vehiclesTbody.innerHTML = '';
+    state.vehicles.forEach(v => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${v.plate}</td><td>${v.model}</td>
+        <td>
+          <button class="small" data-id="${v.id}" data-action="editVehicle">Editar</button>
+          <button class="small" data-id="${v.id}" data-action="locV">Ver</button>
+        </td>`;
+      vehiclesTbody.appendChild(tr);
+    });
+
+    // map area mini-render
+    renderMap();
+  }
+
+  // map render (ASCII mini)
+  function renderMap(){
+    if(!mapArea) return;
+    let html = '<div style="width:100%"><strong>Posiciones (X,Y)</strong><div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap">';
+    state.drivers.forEach(d=>{
+      html += `<div style="padding:6px;border-radius:8px;background:#fff">${d.name}<div class="muted" style="font-size:12px">[${d.coords.x},${d.coords.y}]</div></div>`;
+    });
+    state.orders.forEach(o=>{
+      html += `<div style="padding:6px;border-radius:8px;background:#fff">${o.client}<div class="muted" style="font-size:12px">[${o.coords.x},${o.coords.y}] ${o.status}</div></div>`;
+    });
+    html += '</div></div>';
+    mapArea.innerHTML = html;
+  }
+
+  // modal helper
+  function showModal(title, contentHtml, onClose){
+    modalRoot.innerHTML = `<div style="position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:9999">
+      <div style="width:640px;max-width:95%;background:var(--card);padding:16px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.2)">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h3 style="margin:0">${title}</h3>
+          <button id="modalClose" class="btn ghost small">Cerrar</button>
+        </div>
+        <div style="margin-top:12px">${contentHtml}</div>
+      </div>
+    </div>`;
+    document.getElementById('modalClose').onclick = () => { modalRoot.innerHTML=''; onClose && onClose(); };
+  }
+
+  // forms
+  document.getElementById('openNewVehicle').addEventListener('click', ()=>{
+    const html = `<label>Placa</label><input id="v_plate" />
+      <label>Modelo</label><input id="v_model" />
+      <label>Coordenadas (X)</label><input id="v_x" value="${Math.round(Math.random()*100)}" />
+      <label>Coordenadas (Y)</label><input id="v_y" value="${Math.round(Math.random()*100)}" />
+      <div style="margin-top:10px"><button id="saveV" class="btn">Guardar</button></div>`;
+    showModal('Registrar Motocicleta', html, null);
+    document.getElementById('saveV').onclick = ()=>{
+      const plate = document.getElementById('v_plate').value || ('MOTO'+Math.floor(Math.random()*900));
+      const model = document.getElementById('v_model').value || 'Generico';
+      const x = parseFloat(document.getElementById('v_x').value||0);
+      const y = parseFloat(document.getElementById('v_y').value||0);
+      state.vehicles.push({id:uid('veh'), plate, model, coords:{x,y}, status:'active'});
+      saveState(state);
+      modalRoot.innerHTML='';
+    };
+  });
+
+  document.getElementById('openNewDriver').addEventListener('click', ()=>{
+    const html = `<label>Nombre</label><input id="d_name" />
+      <label>Teléfono</label><input id="d_phone" />
+      <label>Coord X</label><input id="d_x" value="${Math.round(Math.random()*100)}" />
+      <label>Coord Y</label><input id="d_y" value="${Math.round(Math.random()*100)}" />
+      <div style="margin-top:10px"><button id="saveD" class="btn">Guardar</button></div>`;
+    showModal('Registrar Conductor', html, null);
+    document.getElementById('saveD').onclick = ()=>{
+      const name = document.getElementById('d_name').value || ('Conductor '+(state.drivers.length+1));
+      const phone = document.getElementById('d_phone').value || '';
+      const x = parseFloat(document.getElementById('d_x').value||0);
+      const y = parseFloat(document.getElementById('d_y').value||0);
+      state.drivers.push({id:uid('drv'), name, phone, coords:{x,y}, status:'disponible', vehicleId:null});
+      saveState(state);
+      modalRoot.innerHTML='';
+    };
+  });
+
+  document.getElementById('openNewOrder').addEventListener('click', ()=>{
+    const html = `<label>Cliente</label><input id="o_client" />
+      <label>Dirección</label><input id="o_addr" />
+      <label>Coord X</label><input id="o_x" value="${Math.round(Math.random()*100)}" />
+      <label>Coord Y</label><input id="o_y" value="${Math.round(Math.random()*100)}" />
+      <label>Prioridad</label>
+      <select id="o_pri"><option value="normal">normal</option><option value="urgente">urgente</option></select>
+      <div style="margin-top:10px"><button id="saveO" class="btn">Crear pedido</button></div>`;
+    showModal('Crear Pedido', html, null);
+    document.getElementById('saveO').onclick = ()=>{
+      const client = document.getElementById('o_client').value || 'Anonimo';
+      const addr = document.getElementById('o_addr').value || 'Sin direccion';
+      const x = parseFloat(document.getElementById('o_x').value||0);
+      const y = parseFloat(document.getElementById('o_y').value||0);
+      const pri = document.getElementById('o_pri').value;
+      state.orders.push({id:uid('ord'), client, address:addr, coords:{x,y}, items:[], priority:pri, status:'pendiente', assignedDriverId:null, createdAt:now(), deliveredAt:null});
+      saveState(state);
+      modalRoot.innerHTML='';
+    };
+  });
+
+  // orders actions (delegation)
+  ordersTbody.addEventListener('click', e=>{
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    const id = btn.dataset.id; const action = btn.dataset.action;
+    if(action==='assign'){ openAssignModal(id); }
+    if(action==='start'){ updateOrderStatus(id,'en ruta'); }
+    if(action==='deliver'){ updateOrderStatus(id,'entregado'); }
+  });
+
+  function openAssignModal(orderId){
+    const o = state.orders.find(x=>x.id===orderId);
+    if(!o) return alert('Pedido no encontrado');
+    let html = `<label>Asignar conductor</label><select id="assignSelect">`;
+    state.drivers.forEach(d => {
+      html += `<option value="${d.id}">${d.name} — [${d.coords.x},${d.coords.y}]</option>`;
+    });
+    html += `</select><div style="margin-top:8px"><button id="doAssign" class="btn">Asignar</button></div>`;
+    showModal('Asignar pedido '+orderId, html);
+    document.getElementById('doAssign').onclick = ()=>{
+      const drv = document.getElementById('assignSelect').value;
+      assignDriverToOrder(orderId, drv);
+      modalRoot.innerHTML='';
+    };
+  }
+
+  function assignDriverToOrder(orderId, driverId){
+    const o = state.orders.find(x=>x.id===orderId);
+    const d = state.drivers.find(x=>x.id===driverId);
+    if(!o||!d) return;
+    o.assignedDriverId = d.id;
+    o.status = 'asignado';
+    saveState(state);
+  }
+
+  function updateOrderStatus(orderId, status){
+    const o = state.orders.find(x=>x.id===orderId);
+    if(!o) return;
+    o.status = status;
+    if(status==='entregado') o.deliveredAt = now();
+    saveState(state);
+  }
+
+  // auto assign: assign each pending order to nearest available driver (simple greedy)
+  document.getElementById('autoAssign').addEventListener('click', ()=> {
+    const pending = state.orders.filter(o => o.status === 'pendiente' || o.status==='creado');
+    const availableDrivers = state.drivers.filter(d => d.status === 'disponible');
+    pending.forEach(o => {
+      let best = null; let bestDist = Infinity;
+      availableDrivers.forEach(d => {
+        const dd = dist(o.coords, d.coords);
+        if(dd < bestDist){ bestDist = dd; best = d; }
+      });
+      if(best){
+        o.assignedDriverId = best.id; o.status = 'asignado';
+        // mark driver busy
+        best.status = 'ocupado';
+      }
+    });
+    saveState(state);
+    alert('Asignación automática finalizada (heurística nearest-driver)');
+  });
+
+  // optimize routes - simple grouping: for each driver get his assigned orders and order them by nearest neighbor
+  document.getElementById('optimizeRoutes').addEventListener('click', ()=>{
+    const drivers = state.drivers;
+    drivers.forEach(d=>{
+      const assigned = state.orders.filter(o => o.assignedDriverId === d.id && o.status !== 'entregado');
+      if(assigned.length <= 1) return; // nothing to optimize
+      // NN heuristic start at driver's coords
+      let route = []; let remaining = assigned.slice();
+      let cur = {...d.coords};
+      while(remaining.length){
+        let bestIdx=0; let bestD=Infinity;
+        remaining.forEach((p,idx) => { const dd = dist(cur,p.coords); if(dd<bestD){bestD=dd;bestIdx=idx;} });
+        route.push(remaining.splice(bestIdx,1)[0]);
+        cur = route[route.length-1].coords;
+      }
+      // store route ordering as metadata (for demo in map)
+      d.route = route.map(r=>r.id);
+    });
+    saveState(state);
+    alert('Rutas optimizadas con heurística nearest-neighbor (MVP).');
+  });
+
+  // simulate movement: every 800ms move drivers 1 step to next target
+  let simInterval = null;
+  document.getElementById('simulate').addEventListener('click', ()=> {
+    if(simInterval){ clearInterval(simInterval); simInterval=null; alert('Simulación detenida'); return; }
+    simInterval = setInterval(simStep,800);
+    alert('Simulación iniciada — ver actualizaciones en mapa');
+  });
+
+  function simStep(){
+    // for each driver with route or with assigned orders move towards first assigned order coords
+    state.drivers.forEach(d=>{
+      // find target: first order assigned and not delivered
+      let targetOrder = state.orders.find(o => o.assignedDriverId === d.id && o.status !== 'entregado');
+      if(!targetOrder) return;
+      // move 10% of vector towards target
+      const dx = targetOrder.coords.x - d.coords.x;
+      const dy = targetOrder.coords.y - d.coords.y;
+      d.coords.x += dx * 0.12; d.coords.y += dy * 0.12;
+      // if close enough, mark en ruta / entregado
+      if(Math.hypot(dx,dy) < 1.5){
+        // mark delivered
+        targetOrder.status = 'entregado';
+        targetOrder.deliveredAt = now();
+      } else {
+        targetOrder.status = 'en ruta';
+      }
+    });
+    saveState(state); // will call updateUI
+  }
+
+  // export CSV
+  document.getElementById('exportCsv').addEventListener('click', ()=>{
+    const rows = [['orderId,client,address,x,y,status,assignedDriver,createdAt,deliveredAt']];
+    state.orders.forEach(o=>{
+      const drv = state.drivers.find(d=>d.id===o.assignedDriverId)?.name || '';
+      rows.push([`${o.id},${o.client},${o.address},${o.coords.x},${o.coords.y},${o.status},${drv},${o.createdAt||''},${o.deliveredAt||''}`]);
+    });
+    const csv = rows.map(r=>Array.isArray(r)?r.join(''):r).join('\\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download='zenda_orders.csv'; a.click(); URL.revokeObjectURL(url);
+  });
+
+  // reset demo
+  document.getElementById('resetAll').addEventListener('click', ()=>{
+    if(!confirm('Resetear demo y datos locales?')) return;
+    state = JSON.parse(JSON.stringify(defaultState));
+    saveState(state);
+  });
+
+  // subscribe
+  document.getElementById('subscribeBtn').addEventListener('click', ()=>{
+    const plan = document.getElementById('selectPlan').value;
+    // placeholder: here integrate Wompi/PayU/Stripe
+    state.plan = plan;
+    saveState(state);
+    alert('Plan seleccionado: ' + plan + ' (pago simulado). En producción integrar pasarela: Wompi/PayU/Stripe).');
+  });
+
+  // small table actions (drivers/vehicles)
+  driversTbody.addEventListener('click', e=>{
+    const btn = e.target.closest('button'); if(!btn) return;
+    const id = btn.dataset.id; const action = btn.dataset.action;
+    const d = state.drivers.find(x=>x.id===id);
+    if(action==='editDriver'){
+      const html = `<label>Nombre</label><input id="ed_name" value="${d.name}" />
+        <label>Teléfono</label><input id="ed_phone" value="${d.phone||''}" />
+        <div style="margin-top:8px"><button id="edSave" class="btn">Guardar</button></div>`;
+      showModal('Editar Conductor', html);
+      document.getElementById('edSave').onclick = ()=>{
+        d.name = document.getElementById('ed_name').value;
+        d.phone = document.getElementById('ed_phone').value;
+        saveState(state); modalRoot.innerHTML='';
+      };
+    }
+    if(action==='loc'){
+      alert('Coord: ['+Math.round(d.coords.x)+','+Math.round(d.coords.y)+']');
+    }
+  });
+
+  vehiclesTbody.addEventListener('click', e=>{
+    const btn = e.target.closest('button'); if(!btn) return;
+    const id = btn.dataset.id; const action = btn.dataset.action;
+    const v = state.vehicles.find(x=>x.id===id);
+    if(action==='editVehicle'){
+      const html = `<label>Placa</label><input id="ev_plate" value="${v.plate}" />
+        <label>Modelo</label><input id="ev_model" value="${v.model}" />
+        <div style="margin-top:8px"><button id="evSave" class="btn">Guardar</button></div>`;
+      showModal('Editar Moto', html);
+      document.getElementById('evSave').onclick = ()=>{
+        v.plate = document.getElementById('ev_plate').value;
+        v.model = document.getElementById('ev_model').value;
+        saveState(state); modalRoot.innerHTML='';
+      };
+    }
+    if(action==='locV'){ alert('Coord: ['+Math.round(v.coords.x)+','+Math.round(v.coords.y)+']'); }
+  });
+
+  // onboarding/help
+  document.getElementById('openHelp').addEventListener('click', ()=>{
+    const html = `<h4>Guía rápida</h4>
+      <ol>
+        <li>Registra motos y conductores.</li>
+        <li>Crea pedidos (puedes usar coordenadas simuladas).</li>
+        <li>Usa "Asignación automática" para asignar pedidos a conductores disponibles.</li>
+        <li>Optimiza rutas y simula entregas con "Simulación".</li>
+        <li>Exporta reportes como CSV para análisis sencillo.</li>
+      </ol>
+      <p class="muted">Para producción: integrar mapas reales (Leaflet/Google Maps), WebSockets para tracking en tiempo real, base de datos y pasarela de pago.</p>`;
+    showModal('Ayuda / Onboarding', html);
+  });
+
+  // init seed if empty
+  if(!state.vehicles.length && !state.drivers.length && !state.orders.length){
+    // seed 3 vehicles, 3 drivers, 4 orders
+    state.vehicles = [
+      {id:uid('veh'), plate:'ZFD-001', model:'AKT 110', coords:randCoord(), status:'active'},
+      {id:uid('veh'), plate:'ZFD-002', model:'Auteco 125', coords:randCoord(), status:'active'},
+      {id:uid('veh'), plate:'ZFD-003', model:'KTM 150', coords:randCoord(), status:'active'}
+    ];
+    state.drivers = [
+      {id:uid('drv'), name:'Carlos', phone:'300111222', coords:randCoord(), status:'disponible', vehicleId:state.vehicles[0].id},
+      {id:uid('drv'), name:'Luisa', phone:'300333444', coords:randCoord(), status:'disponible', vehicleId:state.vehicles[1].id},
+      {id:uid('drv'), name:'Pedro', phone:'300555666', coords:randCoord(), status:'disponible', vehicleId:state.vehicles[2].id}
+    ];
+    state.orders = [
+      {id:uid('ord'), client:'Panaderia La 1', address:'Calle 10 #5', coords:randCoord(), items:['pan'], priority:'normal', status:'pendiente', assignedDriverId:null, createdAt:now()},
+      {id:uid('ord'), client:'Restaurante Sol', address:'Avenida 7', coords:randCoord(), items:['almuerzo'], priority:'urgente', status:'pendiente', assignedDriverId:null, createdAt:now()},
+      {id:uid('ord'), client:'Farmacia ABC', address:'Calle 4', coords:randCoord(), items:['med'], priority:'normal', status:'pendiente', assignedDriverId:null, createdAt:now()},
+      {id:uid('ord'), client:'Tienda 24/7', address:'Diagonal 1', coords:randCoord(), items:['bebida'], priority:'normal', status:'pendiente', assignedDriverId:null, createdAt:now()}
+    ];
+    saveState(state);
+  } else {
+    updateUI();
+  }
+
+  // expose for debugging
+  window._ZF = { state, saveState, loadState };
+})();
+</script>
+</body>
+</html>

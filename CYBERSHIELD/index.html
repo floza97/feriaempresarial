@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberShield S.A.S. - Seguridad para Infraestructura Digital</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1>CyberShield S.A.S.</h1>
+                <p class="slogan">Protegemos lo invisible, defendemos lo invaluable</p>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="#inicio" class="nav-link active">Inicio</a></li>
+                    <li><a href="#servicios" class="nav-link">Servicios</a></li>
+                    <li><a href="#nosotros" class="nav-link">Nosotros</a></li>
+                    <li><a href="#contacto" class="nav-link">Contacto</a></li>
+                </ul>
+                <div class="auth-buttons">
+                    <button id="loginBtn" class="btn btn-secondary">Iniciar Sesión</button>
+                    <button id="registerBtn" class="btn btn-primary">Registrarse</button>
+                </div>
+            </nav>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="main">
+        <!-- Sección de Inicio -->
+        <section id="inicio" class="section active">
+            <div class="hero">
+                <div class="container">
+                    <div class="hero-content">
+                        <h2 class="hero-title">Seguridad para tu Infraestructura Digital</h2>
+                        <p class="hero-subtitle">Protección integral contra amenazas cibernéticas para empresas e instituciones</p>
+                        <div class="hero-buttons">
+                            <button class="btn btn-primary" id="ctaServices">Conocer Servicios</button>
+                            <button class="btn btn-secondary" id="ctaContact">Contactar Asesor</button>
+                        </div>
+                    </div>
+                    <div class="hero-image">
+                        <div class="cyber-shield-graphic">
+                            <div class="shield"></div>
+                            <div class="data-flow"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="features">
+                <div class="container">
+                    <h2 class="section-title">Nuestros Pilares Fundamentales</h2>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon prevention"></div>
+                            <h3>Prevención</h3>
+                            <p>Implementamos medidas proactivas para evitar incidentes de seguridad antes de que ocurran.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon detection"></div>
+                            <h3>Detección</h3>
+                            <p>Monitoreo constante para identificar amenazas en tiempo real y minimizar su impacto.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon response"></div>
+                            <h3>Respuesta</h3>
+                            <p>Protocolos efectivos para actuar rápidamente ante incidentes y restaurar la normalidad.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Servicios -->
+        <section id="servicios" class="section">
+            <div class="container">
+                <h2 class="section-title">Nuestros Servicios de Ciberseguridad</h2>
+                <div class="services-grid" id="servicesGrid">
+                    <!-- Los servicios se cargarán dinámicamente -->
+                </div>
+                
+                <div class="pricing-section">
+                    <h3>Planes de Suscripción</h3>
+                    <div class="pricing-cards" id="pricingCards">
+                        <!-- Los planes de precios se cargarán dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Nosotros -->
+        <section id="nosotros" class="section">
+            <div class="container">
+                <h2 class="section-title">Sobre CyberShield S.A.S.</h2>
+                <div class="about-content">
+                    <div class="about-text">
+                        <h3>Nuestra Misión</h3>
+                        <p>Proteger la información y los activos digitales de nuestros clientes mediante soluciones de ciberseguridad profesionales, éticas y efectivas.</p>
+                        
+                        <h3>Nuestra Visión</h3>
+                        <p>Ser reconocidos como la empresa líder en servicios de ciberseguridad para PYMES y entidades públicas en Colombia para el año 2030.</p>
+                        
+                        <h3>Segmento de Clientes</h3>
+                        <ul>
+                            <li>Pequeñas y medianas empresas (PYMES)</li>
+                            <li>Instituciones educativas</li>
+                            <li>Entidades públicas</li>
+                            <li>Profesionales independientes</li>
+                        </ul>
+                    </div>
+                    <div class="about-stats">
+                        <div class="stat-card">
+                            <div class="stat-number" id="clientsCount">0</div>
+                            <div class="stat-label">Clientes Protegidos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="incidentsPrevented">0</div>
+                            <div class="stat-label">Incidentes Prevenidos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="servicesProvided">0</div>
+                            <div class="stat-label">Servicios Prestados</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Contacto -->
+        <section id="contacto" class="section">
+            <div class="container">
+                <h2 class="section-title">Contáctanos</h2>
+                <div class="contact-content">
+                    <div class="contact-info">
+                        <h3>Información de Contacto</h3>
+                        <div class="contact-item">
+                            <strong>Ubicación:</strong> Sincelejo/Corozal/Sucre
+                        </div>
+                        <div class="contact-item">
+                            <strong>Email:</strong> info@cybershield.com.co
+                        </div>
+                        <div class="contact-item">
+                            <strong>Teléfono:</strong> +57 300 123 4567
+                        </div>
+                        
+                        <h3>Canales de Distribución</h3>
+                        <ul>
+                            <li>Plataforma web corporativa</li>
+                            <li>Redes sociales profesionales</li>
+                            <li>Asesoría directa</li>
+                            <li>Convenios institucionales</li>
+                            <li>Marketing digital</li>
+                        </ul>
+                    </div>
+                    <div class="contact-form-container">
+                        <h3>Solicitar Asesoría</h3>
+                        <form id="contactForm" class="contact-form">
+                            <div class="form-group">
+                                <label for="name">Nombre Completo</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="company">Empresa/Institución</label>
+                                <input type="text" id="company" name="company" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="service">Servicio de Interés</label>
+                                <select id="service" name="service" required>
+                                    <option value="">Seleccione un servicio</option>
+                                    <option value="analisis-vulnerabilidades">Análisis de Vulnerabilidades</option>
+                                    <option value="monitoreo-amenazas">Monitoreo de Amenazas</option>
+                                    <option value="simulacion-ataques">Simulación de Ataques</option>
+                                    <option value="capacitacion">Capacitación</option>
+                                    <option value="plan-respuesta">Plan de Respuesta a Incidentes</option>
+                                    <option value="otros">Otros</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Mensaje</label>
+                                <textarea id="message" name="message" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard (se muestra después del login) -->
+        <section id="dashboard" class="section hidden">
+            <div class="container">
+                <div class="dashboard-header">
+                    <h2>Panel de Control</h2>
+                    <div class="user-info">
+                        <span id="userWelcome">Bienvenido, </span>
+                        <button id="logoutBtn" class="btn btn-secondary">Cerrar Sesión</button>
+                    </div>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h3>Mis Servicios Contratados</h3>
+                        <div class="services-list" id="userServices">
+                            <!-- Los servicios del usuario se cargarán dinámicamente -->
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <h3>Estado de Seguridad</h3>
+                        <div class="security-status">
+                            <div class="status-item">
+                                <span class="status-label">Vulnerabilidades Detectadas:</span>
+                                <span class="status-value" id="vulnerabilitiesCount">0</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">Amenazas Bloqueadas:</span>
+                                <span class="status-value" id="threatsBlocked">0</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">Última Auditoría:</span>
+                                <span class="status-value" id="lastAudit">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <h3>Reportes Recientes</h3>
+                        <div class="reports-list" id="reportsList">
+                            <!-- Los reportes se cargarán dinámicamente -->
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <h3>Solicitar Nuevo Servicio</h3>
+                        <button id="requestServiceBtn" class="btn btn-primary">Solicitar Servicio</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de Login -->
+    <div id="loginModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Iniciar Sesión</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Contraseña</label>
+                    <input type="password" id="loginPassword" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+            </form>
+            <p>¿No tienes cuenta? <a href="#" id="showRegister">Regístrate aquí</a></p>
+        </div>
+    </div>
+
+    <!-- Modal de Registro -->
+    <div id="registerModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Registrarse</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="registerName">Nombre Completo</label>
+                    <input type="text" id="registerName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerCompany">Empresa/Institución</label>
+                    <input type="text" id="registerCompany" name="company" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Contraseña</label>
+                    <input type="password" id="registerPassword" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerConfirmPassword">Confirmar Contraseña</label>
+                    <input type="password" id="registerConfirmPassword" name="confirmPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Registrarse</button>
+            </form>
+            <p>¿Ya tienes cuenta? <a href="#" id="showLogin">Inicia sesión aquí</a></p>
+        </div>
+    </div>
+
+    <!-- Modal de Solicitud de Servicio -->
+    <div id="serviceRequestModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Solicitar Servicio</h2>
+            <form id="serviceRequestForm">
+                <div class="form-group">
+                    <label for="requestService">Servicio</label>
+                    <select id="requestService" name="service" required>
+                        <option value="">Seleccione un servicio</option>
+                        <option value="analisis-vulnerabilidades">Análisis de Vulnerabilidades</option>
+                        <option value="monitoreo-amenazas">Monitoreo de Amenazas</option>
+                        <option value="simulacion-ataques">Simulación de Ataques</option>
+                        <option value="capacitacion">Capacitación</option>
+                        <option value="plan-respuesta">Plan de Respuesta a Incidentes</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="requestDetails">Detalles Adicionales</label>
+                    <textarea id="requestDetails" name="details" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="requestUrgency">Urgencia</label>
+                    <select id="requestUrgency" name="urgency" required>
+                        <option value="baja">Baja</option>
+                        <option value="media">Media</option>
+                        <option value="alta">Alta</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>CyberShield S.A.S.</h3>
+                    <p>Protegemos lo invisible, defendemos lo invaluable</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul>
+                        <li><a href="#inicio">Inicio</a></li>
+                        <li><a href="#servicios">Servicios</a></li>
+                        <li><a href="#nosotros">Nosotros</a></li>
+                        <li><a href="#contacto">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <p>Sincelejo/Corozal/Sucre</p>
+                    <p>info@cybershield.com.co</p>
+                    <p>+57 300 123 4567</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CyberShield S.A.S. - Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

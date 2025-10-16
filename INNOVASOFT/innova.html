@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InnovaSoft S.A.S. - Demo MVP (Vanilla JS)</title>
+    <style>
+        /* Estilos Modernos */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            --surface-gradient: linear-gradient(to right, rgba(255,255,255,0.95), rgba(255,255,255,0.98));
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            background: var(--secondary-gradient);
+            color: #2d3748;
+            min-height: 100vh;
+        }
+
+        header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Sistema de pestañas */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        .tab-button {
+            background: var(--surface-gradient);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #4a5568;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .tab-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+        }
+
+        .tab-button.active {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .module {
+            background: var(--surface-gradient);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            margin-bottom: 2rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 0.5rem;
+            }
+            
+            .tabs {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .tab-button {
+                width: 100%;
+            }
+
+            .module {
+                padding: 1rem;
+            }
+        }
+        h2 {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 1.8rem;
+            margin: 0 0 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        input[type="text"], 
+        input[type="number"], 
+        select, 
+        textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            box-sizing: border-box;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus, 
+        select:focus, 
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
+
+        button {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+        }
+        .asset-list, .ticket-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 1.5rem;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .asset-item, .ticket-item {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .asset-item:hover, .ticket-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .asset-info, .ticket-info {
+            flex-grow: 1;
+        }
+
+        .ticket-status {
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-left: 1rem;
+            min-width: 100px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .status-Abierto { 
+            background: linear-gradient(135deg, #ffd166 0%, #ffc107 100%);
+            color: #333;
+        }
+
+        .status-En_Proceso { 
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .status-Cerrado { 
+            background: linear-gradient(135deg, #48c6ef 0%, #6f86d6 100%);
+            color: white;
+        }
+
+        .status-Operativo { 
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            color: #2d3748;
+        }
+
+        .status-Mantenimiento { 
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            color: #2d3748;
+        }
+
+        .asset-actions, .ticket-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .asset-actions button, .ticket-actions button,
+        .ticket-actions select {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .ticket-actions select {
+            background: white;
+            border: 2px solid #e2e8f0;
+            color: #4a5568;
+        }
+
+        .delete-btn { 
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5253 100%);
+        }
+
+        .delete-btn:hover { 
+            background: linear-gradient(135deg, #ee5253 0%, #ff6b6b 100%);
+        }
+
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(to right, #e2e8f0, transparent);
+            margin: 2rem 0;
+        }
+
+        h3 {
+            color: #4a5568;
+            font-size: 1.25rem;
+            margin: 1.5rem 0 1rem;
+        }
+    </style>
+    
+    <script>
+        // Función para manejar el cambio de pestañas
+        function switchTab(tabId) {
+            // Ocultar todos los contenidos de pestañas
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Desactivar todos los botones de pestañas
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Mostrar el contenido de la pestaña seleccionada
+            document.getElementById(tabId).classList.add('active');
+            
+            // Activar el botón de la pestaña seleccionada
+            event.target.classList.add('active');
+        }
+    </script>
+</head>
+<body>
+
+    <header>
+        <h1>InnovaSoft S.A.S. - MVP Demostración de Funciones</h1>
+        <p>Soluciones a la medida para PYMES. Muestra de CRUD y Gestión de Estados.</p>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('assets')">💻 Gestión de Activos</button>
+            <button class="tab-button" onclick="switchTab('tickets')">📞 Tickets de Soporte</button>
+        </div>
+
+        <div id="assets" class="tab-content active">
+            <div class="module">
+                <h2>Gestión de Activos Empresariales</h2>
+                <form id="assetForm">
+                    <input type="text" id="assetName" placeholder="Nombre del Activo (Ej: Laptop HP-01)" required>
+                    <input type="text" id="assetModel" placeholder="Modelo/Serie" required>
+                    <select id="assetInitialStatus" required>
+                        <option value="">Seleccione Estado Inicial</option>
+                        <option value="Operativo">Operativo</option>
+                        <option value="Mantenimiento">En Mantenimiento</option>
+                    </select>
+                    <button type="submit">➕ Añadir Activo</button>
+                </form>
+
+                <hr>
+                <h3>Buscar y Filtrar Activos</h3>
+                <input type="text" id="assetSearch" placeholder="Buscar por Nombre o Modelo..." oninput="renderAssets()">
+
+                <h3>Lista de Activos (<span id="assetCount">0</span>)</h3>
+                <ul id="assetList" class="asset-list">
+                </ul>
+            </div>
+        </div>
+
+        <div id="tickets" class="tab-content">
+            <div class="module">
+                <h2>Seguimiento de Tickets de Soporte</h2>
+
+                <form id="ticketForm">
+                    <input type="text" id="ticketTitle" placeholder="Asunto del Ticket (Ej: Falla de red)" required>
+                    <select id="ticketPriority" required>
+                        <option value="">Seleccione Prioridad</option>
+                        <option value="Alta">Alta</option>
+                        <option value="Media">Media</option>
+                        <option value="Baja">Baja</option>
+                    </select>
+                    <textarea id="ticketDescription" placeholder="Descripción del problema" required></textarea>
+                    <button type="submit">📨 Crear Ticket</button>
+                </form>
+
+                <hr>
+                <h3>Filtro por Estado</h3>
+                <select id="ticketFilter" onchange="renderTickets()">
+                    <option value="Todos">Todos los Estados</option>
+                    <option value="Abierto">Abierto</option>
+                    <option value="En_Proceso">En Proceso</option>
+                    <option value="Cerrado">Cerrado</option>
+                </select>
+                
+                <h3>Tickets Pendientes (<span id="openTicketCount">0</span>)</h3>
+                <ul id="ticketList" class="ticket-list">
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- INICIO DE LÓGICA JAVASCRIPT VANILLA ---
+
+        // =========================================================================
+        // MÓDULO 1: GESTIÓN DE ACTIVOS (CRUD)
+        // =========================================================================
+        
+        const ASSET_STORAGE_KEY = 'innovaSoftAssets';
+        const assetForm = document.getElementById('assetForm');
+        const assetListEl = document.getElementById('assetList');
+        const assetSearchEl = document.getElementById('assetSearch');
+        const assetCountEl = document.getElementById('assetCount');
+        let assets = [];
+
+        // 1. Cargar datos del almacenamiento local
+        function loadAssets() {
+            const storedAssets = localStorage.getItem(ASSET_STORAGE_KEY);
+            assets = storedAssets ? JSON.parse(storedAssets) : [];
+            renderAssets();
+        }
+
+        // 2. Guardar datos en el almacenamiento local
+        function saveAssets() {
+            localStorage.setItem(ASSET_STORAGE_KEY, JSON.stringify(assets));
+        }
+
+        // 3. Renderizar (Leer) la lista de activos
+        function renderAssets() {
+            const searchTerm = assetSearchEl.value.toLowerCase();
+            const filteredAssets = assets.filter(asset => 
+                asset.name.toLowerCase().includes(searchTerm) || 
+                asset.model.toLowerCase().includes(searchTerm)
+            );
+
+            assetListEl.innerHTML = ''; // Limpiar lista
+            assetCountEl.textContent = filteredAssets.length;
+
+            if (filteredAssets.length === 0) {
+                assetListEl.innerHTML = '<p>No hay activos registrados o no coinciden con la búsqueda.</p>';
+                return;
+            }
+
+            filteredAssets.forEach(asset => {
+                const li = document.createElement('li');
+                li.className = 'asset-item';
+                li.innerHTML = `
+                    <div class="asset-info">
+                        <strong>${asset.name}</strong> - Modelo: ${asset.model}
+                    </div>
+                    <div class="asset-actions">
+                        <span class="ticket-status status-${asset.status.replace(/\s/g, '_')}" id="status-${asset.id}">${asset.status}</span>
+                        <button onclick="toggleAssetStatus('${asset.id}')">Cambiar Estado</button>
+                        <button class="delete-btn" onclick="deleteAsset('${asset.id}')">Eliminar</button>
+                    </div>
+                `;
+                assetListEl.appendChild(li);
+            });
+        }
+
+        // 4. Crear nuevo activo
+        assetForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newAsset = {
+                id: Date.now().toString(),
+                name: document.getElementById('assetName').value,
+                model: document.getElementById('assetModel').value,
+                status: document.getElementById('assetInitialStatus').value // Operativo | Mantenimiento
+            };
+            assets.push(newAsset);
+            saveAssets();
+            renderAssets();
+            assetForm.reset();
+        });
+
+        // 5. Actualizar estado del activo (Toggle)
+        function toggleAssetStatus(id) {
+            const assetIndex = assets.findIndex(a => a.id === id);
+            if (assetIndex > -1) {
+                const currentStatus = assets[assetIndex].status;
+                assets[assetIndex].status = 
+                    currentStatus === 'Operativo' ? 'Mantenimiento' : 'Operativo';
+                saveAssets();
+                renderAssets(); // Re-renderiza para reflejar el cambio
+            }
+        }
+
+        // 6. Eliminar Activo
+        function deleteAsset(id) {
+            if (confirm('¿Está seguro de que desea eliminar este activo?')) {
+                assets = assets.filter(a => a.id !== id);
+                saveAssets();
+                renderAssets();
+            }
+        }
+
+
+        // =========================================================================
+        // MÓDULO 2: SEGUIMIENTO DE TICKETS
+        // =========================================================================
+
+        const TICKET_STORAGE_KEY = 'innovaSoftTickets';
+        const ticketForm = document.getElementById('ticketForm');
+        const ticketListEl = document.getElementById('ticketList');
+        const ticketFilterEl = document.getElementById('ticketFilter');
+        const openTicketCountEl = document.getElementById('openTicketCount');
+        let tickets = [];
+
+        // 1. Cargar datos del almacenamiento local
+        function loadTickets() {
+            const storedTickets = localStorage.getItem(TICKET_STORAGE_KEY);
+            tickets = storedTickets ? JSON.parse(storedTickets) : [];
+            renderTickets();
+        }
+
+        // 2. Guardar datos en el almacenamiento local
+        function saveTickets() {
+            localStorage.setItem(TICKET_STORAGE_KEY, JSON.stringify(tickets));
+        }
+
+        // 3. Renderizar (Leer) la lista de tickets
+        function renderTickets() {
+            const filterValue = ticketFilterEl.value;
+            
+            const filteredTickets = tickets.filter(ticket => 
+                filterValue === 'Todos' || ticket.status.replace(/\s/g, '_') === filterValue
+            );
+
+            ticketListEl.innerHTML = ''; // Limpiar lista
+            
+            // Contador de tickets Abiertos
+            const openTickets = tickets.filter(t => t.status === 'Abierto').length;
+            openTicketCountEl.textContent = openTickets;
+
+
+            if (filteredTickets.length === 0) {
+                ticketListEl.innerHTML = '<p>No hay tickets registrados que coincidan con el filtro.</p>';
+                return;
+            }
+
+            filteredTickets.forEach(ticket => {
+                const li = document.createElement('li');
+                li.className = 'ticket-item';
+                li.innerHTML = `
+                    <div class="ticket-info">
+                        <strong>Ticket #${ticket.id.slice(-4)}: ${ticket.title}</strong>
+                        <p style="margin: 5px 0 0; font-size: 0.9em;">Prioridad: ${ticket.priority}</p>
+                    </div>
+                    <div class="ticket-actions">
+                        <select onchange="updateTicketStatus('${ticket.id}', this.value)">
+                            <option value="Abierto" ${ticket.status === 'Abierto' ? 'selected' : ''}>Abierto</option>
+                            <option value="En_Proceso" ${ticket.status === 'En Proceso' ? 'selected' : ''}>En Proceso</option>
+                            <option value="Cerrado" ${ticket.status === 'Cerrado' ? 'selected' : ''}>Cerrado</option>
+                        </select>
+                        <span class="ticket-status status-${ticket.status.replace(/\s/g, '_')}">${ticket.status}</span>
+                    </div>
+                `;
+                ticketListEl.appendChild(li);
+            });
+        }
+
+        // 4. Crear nuevo ticket
+        ticketForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newTicket = {
+                id: Date.now().toString(),
+                title: document.getElementById('ticketTitle').value,
+                description: document.getElementById('ticketDescription').value,
+                priority: document.getElementById('ticketPriority').value,
+                status: 'Abierto' // Estado inicial
+            };
+            tickets.push(newTicket);
+            saveTickets();
+            renderTickets();
+            ticketForm.reset();
+        });
+
+        // 5. Actualizar estado del ticket
+        function updateTicketStatus(id, newStatus) {
+            const ticketIndex = tickets.findIndex(t => t.id === id);
+            if (ticketIndex > -1) {
+                // Convertir el valor del select de vuelta al formato legible (ej: En_Proceso -> En Proceso)
+                tickets[ticketIndex].status = newStatus.replace(/_/g, ' '); 
+                saveTickets();
+                renderTickets(); // Re-renderiza para reflejar el cambio y actualizar el contador
+            }
+        }
+
+
+        // =========================================================================
+        // Inicialización
+        // =========================================================================
+        // Sistema de pestañas
+        function switchTab(tabId) {
+            // Ocultar todos los contenidos
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Desactivar todos los botones
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Activar la pestaña seleccionada
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`button[onclick="switchTab('${tabId}')"]`).classList.add('active');
+        }
+
+        window.onload = () => {
+            loadAssets();
+            loadTickets();
+
+            // Agregar algunos datos de ejemplo si localStorage está vacío
+            if (assets.length === 0 && tickets.length === 0) {
+                assets.push({ id: '1001', name: 'Servidor Principal', model: 'Dell PowerEdge', status: 'Operativo' });
+                assets.push({ id: '1002', name: 'Impresora Área Contable', model: 'Epson L3210', status: 'Mantenimiento' });
+                tickets.push({ id: '2001', title: 'Acceso a Correo Bloqueado', description: 'No puedo iniciar sesión...', priority: 'Alta', status: 'Abierto' });
+                tickets.push({ id: '2002', title: 'Solicitud de Software', description: 'Necesito Office 365.', priority: 'Baja', status: 'En Proceso' });
+                saveAssets();
+                saveTickets();
+                renderAssets();
+                renderTickets();
+            }
+        };
+
+        // --- FIN DE LÓGICA JAVASCRIPT VANILLA ---
+    </script>
+
+</body>
+</html>

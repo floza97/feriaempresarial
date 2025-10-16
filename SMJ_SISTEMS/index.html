@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SMJ Solutions — Demo (GitHub Pages)</title>
+  <meta name="description" content="SMJ Solutions — Demo UI/UX. ERP ligero para PYMES — Vanilla JS, localStorage, charts, export/import, responsive." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚙️</text></svg>">
+  <style>
+    /* ------- Modern clean UI for demo ------- */
+    :root{
+      --bg:#f6fbff;--card:#fff;--muted:#6b7280;--accent:linear-gradient(135deg,#0ea5e9,#6366f1);--glass: rgba(255,255,255,0.6);
+      --radius:16px;--shadow: 0 8px 30px rgba(11,54,95,0.06);
+      --success:#16a34a;--danger:#ef4444;--gold:#f59e0b
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,Segoe UI,system-ui,Roboto,'Helvetica Neue',Arial}
+    body{background:radial-gradient(1000px 400px at 10% 10%, rgba(99,102,241,0.06), transparent),var(--bg);color:#04263b}
+    .wrap{max-width:1200px;margin:32px auto;padding:18px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:56px;height:56px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;box-shadow:0 8px 30px rgba(99,102,241,0.18)}
+    h1{font-size:20px;margin:0}
+    .subtitle{color:var(--muted);font-size:13px}
+
+    /* layout */
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:18px;margin-top:18px}
+    .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+
+    /* nav tabs */
+    .tabs{display:flex;gap:8px;flex-wrap:wrap}
+    .tab{padding:8px 12px;border-radius:12px;border:1px solid rgba(6,95,70,0.03);cursor:pointer;background:transparent}
+    .tab.active{background:linear-gradient(90deg, rgba(99,102,241,0.12), rgba(14,165,233,0.06));font-weight:600}
+
+    /* quick metrics */
+    .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .metric{padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.6),rgba(255,255,255,0.3));box-shadow:inset 0 -1px 0 rgba(255,255,255,0.6)}
+    .metric h3{margin:0;font-size:14px}
+    .metric strong{font-size:20px;display:block;margin-top:6px}
+
+    /* tables */
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{padding:10px;text-align:left;border-bottom:1px solid #eef3fb}
+
+    /* forms */
+    input,select,textarea{padding:10px;border-radius:10px;border:1px solid #e6eef9;width:100%}
+    .row{display:flex;gap:8px}
+    .col{flex:1}
+    .btn{padding:10px 12px;border-radius:10px;border:0;cursor:pointer}
+    .btn.primary{background:linear-gradient(90deg,#0ea5e9,#6366f1);color:white}
+    .btn.ghost{background:transparent;border:1px solid #e6eef9}
+    .btn.warn{background:var(--gold);color:#08263b}
+
+    /* aside */
+    aside .mini{display:flex;flex-direction:column;gap:8px}
+    .muted{color:var(--muted);font-size:13px}
+
+    /* responsive */
+    @media(max-width:980px){.grid{grid-template-columns:1fr}.brand h1{font-size:18px}}
+
+    /* nice small utilities */
+    .flex{display:flex;gap:8px;align-items:center}
+    .right{text-align:right}
+    .tag{padding:6px 10px;border-radius:999px;background:rgba(99,102,241,0.08);font-weight:600}
+    .search{display:flex;gap:8px}
+    .card.transparent{background:linear-gradient(180deg,rgba(255,255,255,0.6),rgba(255,255,255,0.4));}
+    .center{text-align:center}
+    .tiny{font-size:12px;color:#9aa6b2}
+
+    /* modal */
+    .modal-back{position:fixed;inset:0;background:rgba(2,6,23,0.4);display:none;align-items:center;justify-content:center}
+    .modal{width:720px;max-width:95%;background:var(--card);padding:18px;border-radius:14px}
+
+    /* animations */
+    .fade-in{animation:fadeIn .28s ease both}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+    /* footer */
+    footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">SMJ</div>
+        <div>
+          <h1>SMJ Solutions — Demo</h1>
+          <div class="subtitle">ERP ligero para PYMES · Demo estático (Vanilla JS)</div>
+        </div>
+      </div>
+      <div class="flex">
+        <div class="right tiny">Demo · LocalStorage</div>
+        <button id="btnTheme" class="btn ghost">Cambiar tema</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <main>
+        <section class="card fade-in">
+          <div class="tabs" id="mainTabs">
+            <div class="tab active" data-panel="dashboard">Dashboard</div>
+            <div class="tab" data-panel="employees">Empleados</div>
+            <div class="tab" data-panel="products">Inventario</div>
+            <div class="tab" data-panel="sales">Ventas</div>
+            <div class="tab" data-panel="reports">Reportes</div>
+            <div class="tab" data-panel="settings">Ajustes</div>
+          </div>
+
+          <!-- Dashboard -->
+          <div id="dashboardPanel" class="panel">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <h2>Bienvenido a SMJ</h2>
+                <div class="muted">Presentación para inversores — interfaz de demo</div>
+              </div>
+              <div class="flex">
+                <button id="btnQuickNewSale" class="btn primary">Nueva venta</button>
+                <button id="btnQuickNewProduct" class="btn ghost">Nuevo producto</button>
+              </div>
+            </div>
+
+            <div style="margin-top:12px" class="metrics">
+              <div class="metric">
+                <h3>Ingresos mensuales</h3>
+                <strong id="kRevenue">0</strong>
+                <div class="tiny muted">Proyección y crecimiento</div>
+              </div>
+              <div class="metric">
+                <h3>Clientes activos</h3>
+                <strong id="kClients">0</strong>
+                <div class="tiny muted">Clientes con compras en 30 días</div>
+              </div>
+              <div class="metric">
+                <h3>Productos con stock bajo</h3>
+                <strong id="kLow">0</strong>
+                <div class="tiny muted">Alerta automática</div>
+              </div>
+            </div>
+
+            <div style="margin-top:18px;display:grid;grid-template-columns:1fr 360px;gap:12px">
+              <div class="card transparent">
+                <h4>Actividad reciente</h4>
+                <div id="activityList" class="muted tiny">Sin actividad</div>
+              </div>
+
+              <div class="card transparent">
+                <h4>Gráfica de ventas</h4>
+                <canvas id="chartSales" width="400" height="240"></canvas>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Employees -->
+          <div id="employeesPanel" class="panel" style="display:none">
+            <div class="flex" style="justify-content:space-between;align-items:center">
+              <h2>Empleados</h2>
+              <div class="flex">
+                <input id="searchEmp" placeholder="Buscar" />
+                <button id="addEmpBtn" class="btn primary">Agregar</button>
+                <button id="exportEmp" class="btn ghost">Exportar</button>
+              </div>
+            </div>
+            <table id="tblEmp"><thead><tr><th>Nombre</th><th>Cargo</th><th>Salario</th><th>Fecha</th><th></th></tr></thead><tbody></tbody></table>
+          </div>
+
+          <!-- Products -->
+          <div id="productsPanel" class="panel" style="display:none">
+            <div class="flex" style="justify-content:space-between;align-items:center">
+              <h2>Inventario</h2>
+              <div class="flex">
+                <input id="searchProd" placeholder="Buscar producto" />
+                <button id="importProd" class="btn ghost">Importar JSON</button>
+                <button id="addProdBtn" class="btn primary">Agregar</button>
+              </div>
+            </div>
+            <table id="tblProd"><thead><tr><th>SKU</th><th>Nombre</th><th>Stock</th><th>Precio</th><th></th></tr></thead><tbody></tbody></table>
+          </div>
+
+          <!-- Sales -->
+          <div id="salesPanel" class="panel" style="display:none">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <h2>Ventas</h2>
+              <div class="flex">
+                <input id="searchSale" placeholder="Buscar por cliente o id" />
+                <button id="exportSalesBtn" class="btn ghost">Exportar CSV</button>
+              </div>
+            </div>
+
+            <div style="margin-top:10px" class="card">
+              <h4>Registrar venta</h4>
+              <div class="row">
+                <div class="col"><select id="selProd"></select></div>
+                <div style="width:120px"><input id="qtyProd" type="number" min="1" value="1" /></div>
+                <div style="width:180px"><input id="clientName" placeholder="Nombre cliente (opcional)" /></div>
+                <div><button id="addToCartBtn" class="btn primary">Agregar</button></div>
+              </div>
+              <div id="cartView" style="margin-top:10px"></div>
+            </div>
+
+            <table id="tblSales"><thead><tr><th>Fecha</th><th>Cliente</th><th>Items</th><th>Total</th><th></th></tr></thead><tbody></tbody></table>
+          </div>
+
+          <!-- Reports -->
+          <div id="reportsPanel" class="panel" style="display:none">
+            <h2>Reportes</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div class="card">
+                <h4>Resumen</h4>
+                <div id="repSummary" class="muted tiny">Sin datos</div>
+              </div>
+              <div class="card">
+                <h4>Exportes y backups</h4>
+                <div class="flex"><button id="backupBtn" class="btn ghost">Backup JSON</button><button id="downloadPdf" class="btn warn">Exportar PDF</button></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Settings -->
+          <div id="settingsPanel" class="panel" style="display:none">
+            <h2>Ajustes</h2>
+            <div class="row">
+              <div class="col card">
+                <h4>Empresa</h4>
+                <label>Nombre</label>
+                <input id="cfgName" />
+                <label>Moneda</label>
+                <input id="cfgCurrency" />
+                <div style="margin-top:8px"><button id="saveCfg" class="btn primary">Guardar</button></div>
+              </div>
+              <div class="col card">
+                <h4>Seguridad (demo)</h4>
+                <label>Usuario admin</label>
+                <input id="cfgUser" />
+                <label>Contraseña</label>
+                <input id="cfgPass" type="password" />
+                <div style="margin-top:8px"><button id="saveCred" class="btn ghost">Guardar</button></div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+      </main>
+
+      <aside>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center"><strong>Acciones rápidas</strong><div class="tag">Demo</div></div>
+          <div class="mini" style="margin-top:12px">
+            <button id="quickExport" class="btn ghost">Exportar todo</button>
+            <button id="quickImport" class="btn ghost">Importar demo</button>
+            <button id="clearData" class="btn" style="background:#ffecec;color:var(--danger)">Reset demo</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4>Soporte</h4>
+          <div class="muted tiny">Versión para demo estática. Para producción: conectar backend, autenticación segura y facturación electrónica.</div>
+        </div>
+      </aside>
+    </div>
+
+    <footer>SMJ Solutions · Demo para inversores · Vanilla JS · open-source</footer>
+  </div>
+
+  <!-- Modal container -->
+  <div id="modalBack" class="modal-back">
+    <div class="modal" id="modalContent"></div>
+  </div>
+
+  <!-- External libs (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- App logic (Vanilla JS) -->
+  <script>
+    /* ---------- Tiny data layer using localStorage ---------- */
+    const DB = {
+      get(k){try{return JSON.parse(localStorage.getItem(k))||null}catch(e){return null}},
+      set(k,v){localStorage.setItem(k,JSON.stringify(v))},
+      init(){
+        if(!this.get('smj_cfg')) this.set('smj_cfg',{name:'SMJ Demo',currency:'COP'})
+        if(!this.get('smj_users')) this.set('smj_users',[{username:'admin',password:'admin',name:'Admin SMJ'}])
+        if(!this.get('smj_products')) this.set('smj_products',[
+          {sku:'MED-001',name:'Paracetamol 500mg',stock:120,price:2500},
+          {sku:'MED-002',name:'Ibuprofeno 400mg',stock:60,price:3200},
+          {sku:'SNK-01',name:'Snack Natural',stock:30,price:4200}
+        ])
+        if(!this.get('smj_employees')) this.set('smj_employees',[
+          {id:'emp-001',name:'Saul I. Salcedo',position:'Gerente',salary:2200000,joined:'2025-10-01'}
+        ])
+        if(!this.get('smj_sales')) this.set('smj_sales',[])
+      }
+    }
+
+    /* ---------- Utilities ---------- */
+    const qs = s => document.querySelector(s)
+    const qsa = s => Array.from(document.querySelectorAll(s))
+    const uid = (p='id') => p + '-' + Math.random().toString(36).slice(2,9)
+    const fmt = n => (DB.get('smj_cfg')?.currency||'COP') + ' ' + Number(n).toLocaleString()
+
+    /* ---------- UI plumbing ---------- */
+    const panels = { dashboard: qs('#dashboardPanel'), employees: qs('#employeesPanel'), products: qs('#productsPanel'), sales: qs('#salesPanel'), reports: qs('#reportsPanel'), settings: qs('#settingsPanel') }
+    qsa('.tab').forEach(t=>t.addEventListener('click',()=>{ qsa('.tab').forEach(x=>x.classList.remove('active')); t.classList.add('active'); const p = t.dataset.panel; Object.values(panels).forEach(x=>x.style.display='none'); panels[p].style.display='block'; renderAll(); }))
+
+    /* Modal helper */
+    function showModal(html){ qs('#modalContent').innerHTML = html; qs('#modalBack').style.display='flex' }
+    function hideModal(){ qs('#modalBack').style.display='none'; qs('#modalContent').innerHTML='' }
+    qs('#modalBack').addEventListener('click', (e)=>{ if(e.target===qs('#modalBack')) hideModal() })
+
+    /* Init */
+    function init(){ DB.init(); bindButtons(); renderAll(); }
+
+    /* ------------ Employees ------------ */
+    function renderEmployees(filter=''){
+      const rows = (DB.get('smj_employees')||[]).filter(r=>r.name.toLowerCase().includes(filter.toLowerCase())||r.position.toLowerCase().includes(filter.toLowerCase()))
+      const tbody = qs('#tblEmp tbody'); tbody.innerHTML=''
+      rows.forEach(r=>{ const tr = document.createElement('tr'); tr.innerHTML = `<td>${r.name}</td><td>${r.position}</td><td>${fmt(r.salary)}</td><td>${r.joined}</td><td class="right"><button class="btn ghost" data-id="${r.id}" data-action="edit-emp">Editar</button> <button class="btn" style="background:#ffecec;color:var(--danger)" data-id="${r.id}" data-action="del-emp">Eliminar</button></td>`; tbody.appendChild(tr) })
+    }
+
+    function addEmployee(){ showModal(`<h3>Nuevo empleado</h3><div class="row"><div class="col"><input id="mName" placeholder="Nombre" /></div><div class="col"><input id="mPosition" placeholder="Cargo" /></div></div><div class="row" style="margin-top:8px"><div class="col"><input id="mSalary" placeholder="Salario" /></div><div class="col"><input id="mJoined" placeholder="YYYY-MM-DD" value="${new Date().toISOString().slice(0,10)}"/></div></div><div style="margin-top:8px" class="flex right"><button class="btn ghost" id="mCancel">Cancelar</button><button class="btn primary" id="mSave">Guardar</button></div>`) 
+      qs('#mCancel').onclick = hideModal; qs('#mSave').onclick = ()=>{ const name = qs('#mName').value; const pos = qs('#mPosition').value; const sal = Number(qs('#mSalary').value||0); const joined = qs('#mJoined').value; const rows = DB.get('smj_employees')||[]; rows.push({id:uid('emp'),name,position:pos,salary:sal,joined}); DB.set('smj_employees',rows); hideModal(); renderAll(); }
+    }
+
+    /* ------------ Products ------------ */
+    function renderProducts(filter=''){
+      const rows = (DB.get('smj_products')||[]).filter(p=>p.name.toLowerCase().includes(filter.toLowerCase())||p.sku.toLowerCase().includes(filter.toLowerCase()));
+      const tbody = qs('#tblProd tbody'); tbody.innerHTML=''
+      rows.forEach(p=>{ const tr = document.createElement('tr'); tr.innerHTML = `<td>${p.sku}</td><td>${p.name}</td><td>${p.stock}</td><td>${fmt(p.price)}</td><td class="right"><button class="btn ghost" data-sku="${p.sku}" data-action="edit-prod">Editar</button> <button class="btn" style="background:#ffecec;color:var(--danger)" data-sku="${p.sku}" data-action="del-prod">Eliminar</button></td>`; tbody.appendChild(tr) })
+      // options
+      const sel = qs('#selProd'); sel.innerHTML=''; (DB.get('smj_products')||[]).forEach(p=>{ const opt = document.createElement('option'); opt.value=p.sku; opt.dataset.price=p.price; opt.innerText = `${p.sku} • ${p.name} (stock:${p.stock})`; sel.appendChild(opt) })
+    }
+
+    function addProduct(){ showModal(`<h3>Nuevo producto</h3><div><input id="mSKU" placeholder="SKU" /></div><div style="margin-top:8px"><input id="mPName" placeholder="Nombre" /></div><div class="row" style="margin-top:8px"><div class="col"><input id="mStock" placeholder="Stock" /></div><div class="col"><input id="mPrice" placeholder="Precio" /></div></div><div style="margin-top:8px" class="flex right"><button class="btn ghost" id="mCancel">Cancelar</button><button class="btn primary" id="mSave">Guardar</button></div>`) 
+      qs('#mCancel').onclick = hideModal; qs('#mSave').onclick = ()=>{ const sku = qs('#mSKU').value||('SKU-'+Math.random().toString(36).slice(2,6)); const name = qs('#mPName').value; const stock = Number(qs('#mStock').value||0); const price = Number(qs('#mPrice').value||0); const rows = DB.get('smj_products')||[]; rows.push({sku,name,stock,price}); DB.set('smj_products',rows); hideModal(); renderAll(); }
+    }
+
+    /* ------------ Sales / Cart ------------ */
+    let CART = []
+    function renderCart(){ qs('#cartView').innerHTML = CART.length ? `<div>${CART.map((c,i)=>`<div>${i+1}. ${c.sku} • ${c.qty} x ${fmt(c.price)} = <strong>${fmt(c.qty*c.price)}</strong> <button class="btn ghost" data-i="${i}" data-action="rm-cart">Eliminar</button></div>`).join('')}</div><div style="margin-top:8px" class="flex right"><button id="confirmSale" class="btn primary">Confirmar venta</button></div>` : '<div class="muted">Carrito vacío</div>'
+      qs('[data-action="rm-cart"]')?.forEach
+    }
+
+    function addToCart(){ const sku = qs('#selProd').value; const qty = Number(qs('#qtyProd').value||1); const prod = (DB.get('smj_products')||[]).find(p=>p.sku===sku); if(!prod) return alert('Producto no encontrado'); CART.push({sku,qty,price:prod.price}); renderCart(); }
+
+    function confirmSale(){ if(!CART.length) return alert('Carrito vacío'); const client = qs('#clientName').value||''; const sales = DB.get('smj_sales')||[]; const id = uid('sale'); const date = new Date().toISOString().slice(0,10); const total = CART.reduce((s,i)=>s+i.qty*i.price,0); sales.push({id,date,client,total,items:CART}); DB.set('smj_sales',sales); // decrease stock
+      const prods = DB.get('smj_products'); CART.forEach(it=>{ const p = prods.find(x=>x.sku===it.sku); if(p) p.stock = Math.max(0,p.stock - it.qty); }); DB.set('smj_products',prods); CART = []; renderAll(); alert('Venta registrada ✓') }
+
+    /* ------------ Reports & charts ------------ */
+    let salesChart = null
+    function renderReports(){ const sales = DB.get('smj_sales')||[]; const revenue = sales.reduce((s,x)=>s+x.total,0); qs('#kRevenue').innerText = fmt(revenue); qs('#kClients').innerText = (new Set((sales||[]).map(s=>s.client))).size || 0; qs('#kLow').innerText = (DB.get('smj_products')||[]).filter(p=>p.stock<=10).length
+      qs('#repSummary').innerText = `Ventas: ${sales.length} • Ingresos: ${fmt(revenue)}`
+      // chart data (last 6 sales)
+      const last = sales.slice(-6); const labels = last.map(s=>s.date); const data = last.map(s=>s.total);
+      if(salesChart) salesChart.data.labels = labels, salesChart.data.datasets[0].data = data, salesChart.update(); else { const ctx = qs('#chartSales').getContext('2d'); salesChart = new Chart(ctx, { type:'line', data:{ labels, datasets:[{ label:'Ventas', data, fill:true, tension:0.4 }] }, options:{ responsive:true, plugins:{ legend:{display:false}} } }) }
+    }
+
+    /* ------------ Render lists ------------ */
+    function renderSalesList(filter=''){ const rows = DB.get('smj_sales')||[]; const tbody = qs('#tblSales tbody'); tbody.innerHTML=''; rows.filter(r=> r.client?.toLowerCase().includes(filter.toLowerCase()) || r.id?.toLowerCase().includes(filter.toLowerCase())).forEach(s=>{ const tr = document.createElement('tr'); tr.innerHTML = `<td>${s.date}</td><td>${s.client||'--'}</td><td>${s.items.length}</td><td>${fmt(s.total)}</td><td class="right"><button class="btn ghost" data-id="${s.id}" data-action="view-sale">Ver</button></td>`; tbody.appendChild(tr) }) }
+
+    /* ------------ Export / Import ---------- */
+    function downloadCSV(filename, rows){ const csv = rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n'); const blob = new Blob([csv],{type:'text/csv'}); const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click(); a.remove(); }
+    function exportAll(){ const data = { cfg: DB.get('smj_cfg'), users:DB.get('smj_users'), products:DB.get('smj_products'), employees:DB.get('smj_employees'), sales:DB.get('smj_sales') }; const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='smj-backup.json'; a.click(); a.remove(); }
+    function importDemo(){ if(confirm('Cargar demo? Esto sobreescribirá los datos actuales')){ localStorage.clear(); DB.init(); renderAll(); } }
+
+    /* PDF export */
+    async function exportPDF(){ const { jsPDF } = window.jspdf; const doc = new jsPDF(); doc.setFontSize(16); doc.text('SMJ Solutions - Reporte',14,20); const sales = DB.get('smj_sales')||[]; doc.setFontSize(12); doc.text(`Ventas: ${sales.length}`,14,32); doc.text(`Ingresos: ${fmt(sales.reduce((s,x)=>s+x.total,0))}`,14,40); doc.save('smj-report.pdf') }
+
+    /* ------------ Bind events & actions ------------ */
+    function bindButtons(){
+      qs('#addEmpBtn').onclick = addEmployee; qs('#addProdBtn').onclick = addProduct;
+      qs('#quickImport').onclick = importDemo; qs('#quickExport').onclick = exportAll; qs('#backupBtn').onclick = exportAll; qs('#downloadPdf').onclick = exportPDF; qs('#clearData').onclick = ()=>{ if(confirm('Borrar datos demo?')){ localStorage.clear(); DB.init(); renderAll(); } }
+      qs('#btnQuickNewSale').onclick = ()=>{ document.querySelector('[data-panel="sales"]').click() }
+      qs('#btnQuickNewProduct').onclick = ()=>{ document.querySelector('[data-panel="products"]').click() }
+      qs('#addToCartBtn').onclick = addToCart; qs('#confirmSale')?.addEventListener('click', confirmSale)
+      qs('#exportSalesBtn').onclick = ()=>{ const rows = [['id','date','client','total','items'], ...(DB.get('smj_sales')||[]).map(s=>[s.id,s.date,s.client,s.total,s.items.map(i=>i.sku+':'+i.qty).join('|')])]; downloadCSV('ventas.csv',rows) }
+      qs('#exportEmp').onclick = ()=>{ const rows = [['id','name','position','salary','joined'], ...(DB.get('smj_employees')||[]).map(e=>[e.id,e.name,e.position,e.salary,e.joined])]; downloadCSV('empleados.csv',rows) }
+      qs('#importProd').onclick = ()=>{ const input = document.createElement('input'); input.type='file'; input.accept='.json'; input.onchange = (e)=>{ const f = e.target.files[0]; const reader = new FileReader(); reader.onload = ()=>{ try{ const data = JSON.parse(reader.result); if(Array.isArray(data)) { DB.set('smj_products', data); renderAll(); } else alert('JSON no tiene formato esperado (array)'); }catch(err){ alert('JSON inválido') } }; reader.readAsText(f) }; input.click(); }
+      qs('#btnTheme').onclick = ()=>{ document.body.classList.toggle('dark'); alert('Tema demo - puedes personalizarlo') }
+
+      // delegated actions
+      document.addEventListener('click', (e)=>{
+        const a = e.target.closest('[data-action]'); if(!a) return;
+        const act = a.dataset.action; if(act==='del-emp'){ const id = a.dataset.id; const rows = DB.get('smj_employees').filter(x=>x.id!==id); DB.set('smj_employees',rows); renderAll(); }
+        if(act==='edit-emp'){ const id = a.dataset.id; const emp = (DB.get('smj_employees')||[]).find(x=>x.id===id); showModal(`<h3>Editar</h3><input id="eName" value="${emp.name}" /><input id="ePosition" value="${emp.position}" /><input id="eSalary" value="${emp.salary}" /><div class="flex right" style="margin-top:8px"><button class="btn ghost" id="eCancel">Cancelar</button><button class="btn primary" id="eSave">Guardar</button></div>`); qs('#eCancel').onclick = hideModal; qs('#eSave').onclick = ()=>{ emp.name = qs('#eName').value; emp.position = qs('#ePosition').value; emp.salary = Number(qs('#eSalary').value||0); DB.set('smj_employees', DB.get('smj_employees').map(x=> x.id===id?emp:x)); hideModal(); renderAll(); } }
+        if(act==='del-prod'){ const sku = a.dataset.sku; DB.set('smj_products', (DB.get('smj_products')||[]).filter(x=>x.sku!==sku)); renderAll(); }
+        if(act==='edit-prod'){ const sku = a.dataset.sku; const p = (DB.get('smj_products')||[]).find(x=>x.sku===sku); showModal(`<h3>Editar producto</h3><input id="pName" value="${p.name}" /><input id="pStock" value="${p.stock}" /><input id="pPrice" value="${p.price}" /><div class="flex right" style="margin-top:8px"><button class="btn ghost" id="pCancel">Cancelar</button><button class="btn primary" id="pSave">Guardar</button></div>`); qs('#pCancel').onclick = hideModal; qs('#pSave').onclick = ()=>{ p.name = qs('#pName').value; p.stock = Number(qs('#pStock').value||0); p.price = Number(qs('#pPrice').value||0); DB.set('smj_products', DB.get('smj_products').map(x=> x.sku===sku?p:x)); hideModal(); renderAll(); } }
+        if(act==='view-sale'){ const id = a.dataset.id; const s = (DB.get('smj_sales')||[]).find(x=>x.id===id); showModal(`<h3>Venta ${s.id}</h3><div>Fecha: ${s.date}</div><div>Cliente: ${s.client||'--'}</div><div>Items:</div><ul>${s.items.map(i=>`<li>${i.sku} x ${i.qty} — ${fmt(i.price)}</li>`).join('')}</ul><div class="flex right"><button class="btn" id="closeSale">Cerrar</button></div>`); qs('#closeSale').onclick = hideModal }
+        if(act==='rm-cart'){ const i = Number(a.dataset.i); CART.splice(i,1); renderCart(); }
+      })
+
+      // search handlers
+      qs('#searchEmp').addEventListener('input', e=> renderEmployees(e.target.value))
+      qs('#searchProd').addEventListener('input', e=> renderProducts(e.target.value))
+      qs('#searchSale').addEventListener('input', e=> renderSalesList(e.target.value))
+
+      // cart interactions
+      qs('#addToCartBtn').onclick = ()=>{ addToCart(); renderCart(); }
+      document.addEventListener('click', (e)=>{ if(e.target && e.target.id==='confirmSale'){ confirmSale(); } })
+
+      // sales export
+      qs('#exportSalesBtn').onclick = ()=>{ const rows = [['id','date','client','total','items'], ...(DB.get('smj_sales')||[]).map(s=>[s.id,s.date,s.client,s.total,s.items.map(i=>i.sku+':'+i.qty).join('|')])]; downloadCSV('ventas.csv',rows) }
+
+    }
+
+    /* ------------ Global render ------------ */
+    function renderAll(){ renderEmployees(); renderProducts(); renderSalesList(); renderReports(); renderCart(); // activity
+      const sales = DB.get('smj_sales')||[]; qs('#activityList').innerText = sales.slice(-5).reverse().map(s=>`${s.date} • ${s.client||'Cliente anónimo'} • ${fmt(s.total)}`).join('\n') || 'Sin actividad'; }
+
+    // boot
+    init();
+  </script>
+</body>
+</html>

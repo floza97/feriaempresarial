@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INNOVA TECH S.A.S. - Sistema de Gestión</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1f2937;
+            --light: #f3f4f6;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Login Screen */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: var(--primary);
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: var(--white);
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .header {
+            background: var(--white);
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 28px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .nav-tabs {
+            background: var(--white);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            background: var(--light);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: var(--dark);
+        }
+
+        .nav-tab:hover {
+            background: #e5e7eb;
+        }
+
+        .nav-tab.active {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card h3 {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            color: var(--dark);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th {
+            background: var(--light);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        table td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        table tr:hover {
+            background: var(--light);
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-card">
+            <div class="logo">
+                <h1>INNOVA TECH</h1>
+                <p>Avanzando al ritmo de la tecnología</p>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Usuario</label>
+                    <input type="text" id="username" required placeholder="Ingrese su usuario">
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" required placeholder="Ingrese su contraseña">
+                </div>
+                <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+            </form>
+            <p style="margin-top: 20px; text-align: center; color: #6b7280; font-size: 12px;">
+                Demo: usuario: <strong>admin</strong> | contraseña: <strong>admin</strong>
+            </p>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard container">
+        <div class="header">
+            <h1>INNOVA TECH S.A.S.</h1>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">A</div>
+                <div>
+                    <strong id="userName">Usuario</strong>
+                    <button class="btn btn-danger btn-small" onclick="logout()">Cerrar Sesión</button>
+                    <a  class="btn btn-danger btn-small" href="dash.html">Volver</a>
+    
+                    
+                </div>
+            </div>
+        </div>
+
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('overview')">Resumen</button>
+            <button class="nav-tab" onclick="showSection('clients')">Clientes</button>
+            <button class="nav-tab" onclick="showSection('projects')">Proyectos</button>
+            <button class="nav-tab" onclick="showSection('quotes')">Cotizaciones</button>
+            <button class="nav-tab" onclick="showSection('support')">Soporte</button>
+        </nav>
+
+        <!-- Overview Section -->
+        <div id="overview" class="content-section active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Clientes Activos</h3>
+                    <div class="value" id="totalClients">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Proyectos en Curso</h3>
+                    <div class="value" id="activeProjects">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Cotizaciones Pendientes</h3>
+                    <div class="value" id="pendingQuotes">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Tickets de Soporte</h3>
+                    <div class="value" id="supportTickets">0</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Proyectos Recientes</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Proyecto</th>
+                                <th>Cliente</th>
+                                <th>Estado</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentProjects">
+                            <tr>
+                                <td colspan="4" style="text-align: center; color: #6b7280;">No hay proyectos recientes</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clients Section -->
+        <div id="clients" class="content-section">
+            <div class="card">
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="openModal('clientModal')">+ Nuevo Cliente</button>
+                </div>
+                <h2>Gestión de Clientes</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Empresa</th>
+                                <th>Email</th>
+                                <th>Teléfono</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientsTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Section -->
+        <div id="projects" class="content-section">
+            <div class="card">
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="openModal('projectModal')">+ Nuevo Proyecto</button>
+                </div>
+                <h2>Gestión de Proyectos</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Proyecto</th>
+                                <th>Cliente</th>
+                                <th>Estado</th>
+                                <th>Progreso</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projectsTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quotes Section -->
+        <div id="quotes" class="content-section">
+            <div class="card">
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="openModal('quoteModal')">+ Nueva Cotización</button>
+                </div>
+                <h2>Gestión de Cotizaciones</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Servicio</th>
+                                <th>Monto</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quotesTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Support Section -->
+        <div id="support" class="content-section">
+            <div class="card">
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="openModal('supportModal')">+ Nuevo Ticket</button>
+                </div>
+                <h2>Soporte Técnico</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ticket</th>
+                                <th>Cliente</th>
+                                <th>Asunto</th>
+                                <th>Prioridad</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="supportTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client Modal -->
+    <div id="clientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nuevo Cliente</h2>
+                <button class="close-modal" onclick="closeModal('clientModal')">&times;</button>
+            </div>
+            <form id="clientForm">
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Empresa</label>
+                    <input type="text" name="company" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="tel" name="phone" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Guardar Cliente</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Project Modal -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nuevo Proyecto</h2>
+                <button class="close-modal" onclick="closeModal('projectModal')">&times;</button>
+            </div>
+            <form id="projectForm">
+                <div class="form-group">
+                    <label>Nombre del Proyecto</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Cliente</label>
+                    <select name="client" id="projectClientSelect" required>
+                        <option value="">Seleccione un cliente</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select name="status" required>
+                        <option value="En Desarrollo">En Desarrollo</option>
+                        <option value="En Espera">En Espera</option>
+                        <option value="Completado">Completado</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Progreso (%)</label>
+                    <input type="number" name="progress" min="0" max="100" value="0" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Quote Modal -->
+    <div id="quoteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nueva Cotización</h2>
+                <button class="close-modal" onclick="closeModal('quoteModal')">&times;</button>
+            </div>
+            <form id="quoteForm">
+                <div class="form-group">
+                    <label>Cliente</label>
+                    <select name="client" id="quoteClientSelect" required>
+                        <option value="">Seleccione un cliente</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Servicio</label>
+                    <select name="service" required>
+                        <option value="Desarrollo Web">Desarrollo Web</option>
+                        <option value="Desarrollo Móvil">Desarrollo Móvil</option>
+                        <option value="Consultoría">Consultoría</option>
+                        <option value="Soporte">Soporte</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Monto (COP)</label>
+                    <input type="number" name="amount" required>
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea name="description" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Crear Cotización</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Support Modal -->
+    <div id="supportModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nuevo Ticket de Soporte</h2>
+                <button class="close-modal" onclick="closeModal('supportModal')">&times;</button>
+            </div>
+            <form id="supportForm">
+                <div class="form-group">
+                    <label>Cliente</label>
+                    <select name="client" id="supportClientSelect" required>
+                        <option value="">Seleccione un cliente</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Asunto</label>
+                    <input type="text" name="subject" required>
+                </div>
+                <div class="form-group">
+                    <label>Prioridad</label>
+                    <select name="priority" required>
+                        <option value="Alta">Alta</option>
+                        <option value="Media">Media</option>
+                        <option value="Baja">Baja</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea name="description" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Crear Ticket</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Data Storage
+        const storage = {
+            clients: JSON.parse(localStorage.getItem('clients')) || [],
+            projects: JSON.parse(localStorage.getItem('projects')) || [],
+            quotes: JSON.parse(localStorage.getItem('quotes')) || [],
+            support: JSON.parse(localStorage.getItem('support')) || [],
+            
+            save(key, data) {
+                this[key] = data;
+                localStorage.setItem(key, JSON.stringify(data));
+            }
+        };
+
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const currentUser = sessionStorage.getItem('user');
+            if (currentUser) {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('dashboard').classList.add('active');
+                document.getElementById('userName').textContent = currentUser.toUpperCase();
+                document.getElementById('userAvatar').textContent = currentUser[0].toUpperCase();
+                loadDashboard();
+            }
+            
+            // Authentication
+            document.getElementById('loginForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value.trim();
+                
+                if (username === 'admin' && password === 'admin') {
+                    sessionStorage.setItem('user', username);
+                    document.getElementById('loginScreen').classList.add('hidden');
+                    document.getElementById('dashboard').classList.add('active');
+                    document.getElementById('userName').textContent = username.toUpperCase();
+                    document.getElementById('userAvatar').textContent = username[0].toUpperCase();
+                    loadDashboard();
+                } else {
+                    alert('Usuario o contraseña incorrectos\n\nCredenciales correctas:\nUsuario: admin\nContraseña: admin');
+                }
+            });
+        });
+
+        function logout() {
+            if (confirm('¿Está seguro de cerrar sesión?')) {
+                sessionStorage.removeItem('user');
+                location.reload();
+            }
+        }
+
+        // Navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelector(`.nav-tab[onclick*="showSection('${sectionId}')"]`).classList.add('active');
+
+            if (sectionId === 'overview') updateStats();
+        }
+
+        // Modal Management
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            updateClientSelects();
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function updateClientSelects() {
+            const selects = ['projectClientSelect', 'quoteClientSelect', 'supportClientSelect'];
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                select.innerHTML = '<option value="">Seleccione un cliente</option>';
+                storage.clients.forEach(client => {
+                    select.innerHTML += `<option value="${client.company}">${client.company}</option>`;
+                });
+            });
+        }
+
+        // Client Management
+        document.getElementById('clientForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const client = {
+                id: Date.now(),
+                name: formData.get('name'),
+                company: formData.get('company'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                createdAt: new Date().toISOString()
+            };
+            
+            storage.clients.push(client);
+            storage.save('clients', storage.clients);
+            closeModal('clientModal');
+            e.target.reset();
+            renderClients();
+            updateStats();
+        });
+
+        function renderClients() {
+            const tbody = document.getElementById('clientsTable');
+            tbody.innerHTML = storage.clients.map(client => `
+                <tr>
+                    <td>${client.name}</td>
+                    <td>${client.company}</td>
+                    <td>${client.email}</td>
+                    <td>${client.phone}</td>
+                    <td>
+                        <button class="btn btn-danger btn-small" onclick="deleteClient(${client.id})">Eliminar</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteClient(id) {
+            if (confirm('¿Está seguro de eliminar este cliente?')) {
+                storage.clients = storage.clients.filter(c => c.id !== id);
+                storage.save('clients', storage.clients);
+                renderClients();
+                updateStats();
+            }
+        }
+
+        // Project Management
+        document.getElementById('projectForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const project = {
+                id: Date.now(),
+                name: formData.get('name'),
+                client: formData.get('client'),
+                status: formData.get('status'),
+                progress: formData.get('progress'),
+                createdAt: new Date().toISOString()
+            };
+            
+            storage.projects.push(project);
+            storage.save('projects', storage.projects);
+            closeModal('projectModal');
+            e.target.reset();
+            renderProjects();
+            updateStats();
+        });
+
+        function renderProjects() {
+            const tbody = document.getElementById('projectsTable');
+            tbody.innerHTML = storage.projects.map(project => `
+                <tr>
+                    <td>${project.name}</td>
+                    <td>${project.client}</td>
+                    <td><span class="badge badge-${getStatusClass(project.status)}">${project.status}</span></td>
+                    <td>${project.progress}%</td>
+                    <td>
+                        <button class="btn btn-danger btn-small" onclick="deleteProject(${project.id})">Eliminar</button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            renderRecentProjects();
+        }
+
+        function renderRecentProjects() {
+            const tbody = document.getElementById('recentProjects');
+            const recent = storage.projects.slice(-5).reverse();
+            if (recent.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #6b7280;">No hay proyectos recientes</td></tr>';
+                return;
+            }
+            tbody.innerHTML = recent.map(project => `
+                <tr>
+                    <td>${project.name}</td>
+                    <td>${project.client}</td>
+                    <td><span class="badge badge-${getStatusClass(project.status)}">${project.status}</span></td>
+                    <td>${new Date(project.createdAt).toLocaleDateString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteProject(id) {
+            if (confirm('¿Está seguro de eliminar este proyecto?')) {
+                storage.projects = storage.projects.filter(p => p.id !== id);
+                storage.save('projects', storage.projects);
+                renderProjects();
+                updateStats();
+            }
+        }
+
+        // Quote Management
+        document.getElementById('quoteForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const quote = {
+                id: Date.now(),
+                client: formData.get('client'),
+                service: formData.get('service'),
+                amount: parseFloat(formData.get('amount')),
+                description: formData.get('description'),
+                status: 'Pendiente',
+                createdAt: new Date().toISOString()
+            };
+            
+            storage.quotes.push(quote);
+            storage.save('quotes', storage.quotes);
+            closeModal('quoteModal');
+            e.target.reset();
+            renderQuotes();
+            updateStats();
+        });
+
+        function renderQuotes() {
+            const tbody = document.getElementById('quotesTable');
+            tbody.innerHTML = storage.quotes.map(quote => `
+                <tr>
+                    <td>#${quote.id}</td>
+                    <td>${quote.client}</td>
+                    <td>${quote.service}</td>
+                    <td>${quote.amount.toLocaleString('es-CO')}</td>
+                    <td><span class="badge badge-${getStatusClass(quote.status)}">${quote.status}</span></td>
+                    <td>
+                        <button class="btn btn-secondary btn-small" onclick="approveQuote(${quote.id})">Aprobar</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteQuote(${quote.id})">Eliminar</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function approveQuote(id) {
+            const quote = storage.quotes.find(q => q.id === id);
+            if (quote) {
+                quote.status = 'Aprobada';
+                storage.save('quotes', storage.quotes);
+                renderQuotes();
+                updateStats();
+            }
+        }
+
+        function deleteQuote(id) {
+            if (confirm('¿Está seguro de eliminar esta cotización?')) {
+                storage.quotes = storage.quotes.filter(q => q.id !== id);
+                storage.save('quotes', storage.quotes);
+                renderQuotes();
+                updateStats();
+            }
+        }
+
+        // Support Management
+        document.getElementById('supportForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const ticket = {
+                id: Date.now(),
+                client: formData.get('client'),
+                subject: formData.get('subject'),
+                priority: formData.get('priority'),
+                description: formData.get('description'),
+                status: 'Abierto',
+                createdAt: new Date().toISOString()
+            };
+            
+            storage.support.push(ticket);
+            storage.save('support', storage.support);
+            closeModal('supportModal');
+            e.target.reset();
+            renderSupport();
+            updateStats();
+        });
+
+        function renderSupport() {
+            const tbody = document.getElementById('supportTable');
+            tbody.innerHTML = storage.support.map(ticket => `
+                <tr>
+                    <td>#${ticket.id}</td>
+                    <td>${ticket.client}</td>
+                    <td>${ticket.subject}</td>
+                    <td><span class="badge badge-${getPriorityClass(ticket.priority)}">${ticket.priority}</span></td>
+                    <td><span class="badge badge-${getStatusClass(ticket.status)}">${ticket.status}</span></td>
+                    <td>
+                        <button class="btn btn-secondary btn-small" onclick="resolveTicket(${ticket.id})">Resolver</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteTicket(${ticket.id})">Eliminar</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function resolveTicket(id) {
+            const ticket = storage.support.find(t => t.id === id);
+            if (ticket) {
+                ticket.status = 'Resuelto';
+                storage.save('support', storage.support);
+                renderSupport();
+                updateStats();
+            }
+        }
+
+        function deleteTicket(id) {
+            if (confirm('¿Está seguro de eliminar este ticket?')) {
+                storage.support = storage.support.filter(t => t.id !== id);
+                storage.save('support', storage.support);
+                renderSupport();
+                updateStats();
+            }
+        }
+
+        // Utility Functions
+        function getStatusClass(status) {
+            const classes = {
+                'En Desarrollo': 'warning',
+                'En Espera': 'warning',
+                'Completado': 'success',
+                'Pendiente': 'warning',
+                'Aprobada': 'success',
+                'Abierto': 'danger',
+                'Resuelto': 'success'
+            };
+            return classes[status] || 'warning';
+        }
+
+        function getPriorityClass(priority) {
+            const classes = {
+                'Alta': 'danger',
+                'Media': 'warning',
+                'Baja': 'success'
+            };
+            return classes[priority] || 'warning';
+        }
+
+        function updateStats() {
+            document.getElementById('totalClients').textContent = storage.clients.length;
+            document.getElementById('activeProjects').textContent = 
+                storage.projects.filter(p => p.status !== 'Completado').length;
+            document.getElementById('pendingQuotes').textContent = 
+                storage.quotes.filter(q => q.status === 'Pendiente').length;
+            document.getElementById('supportTickets').textContent = 
+                storage.support.filter(t => t.status === 'Abierto').length;
+        }
+
+        function loadDashboard() {
+            renderClients();
+            renderProjects();
+            renderQuotes();
+            renderSupport();
+            updateStats();
+        }
+
+        // Initialize sample data if empty
+        function initializeSampleData() {
+            if (storage.clients.length === 0) {
+                storage.clients = [
+                    {
+                        id: 1,
+                        name: 'María Rodríguez',
+                        company: 'Comercial El Caribe',
+                        email: 'maria@elcaribe.com',
+                        phone: '3001234567',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 2,
+                        name: 'Carlos Pérez',
+                        company: 'Agropecuaria Los Andes',
+                        email: 'carlos@losandes.com',
+                        phone: '3009876543',
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+                storage.save('clients', storage.clients);
+            }
+
+            if (storage.projects.length === 0) {
+                storage.projects = [
+                    {
+                        id: 1,
+                        name: 'Sistema de Inventario',
+                        client: 'Comercial El Caribe',
+                        status: 'En Desarrollo',
+                        progress: 65,
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+                storage.save('projects', storage.projects);
+            }
+        }
+
+        // Initialize data on load
+        initializeSampleData();
+    </script>
+</body>
+</html>

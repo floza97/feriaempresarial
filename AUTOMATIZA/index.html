@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Automatiza — Soluciones para PYMES (Demo)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/1.1.0/modern-normalize.min.css">
+  <script src="https://kit.fontawesome.com/a2d9b9f6a8.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{--accent:#2b8cff;--muted:#6b7280;--bg:#0f172a;--card:#0b1220}
+    body{font-family:Inter,system-ui,Arial;background:#f6f7fb;color:#0b1220;margin:0}
+    header{background:linear-gradient(90deg,var(--accent),#0bb5ff);color:white;padding:18px 24px;display:flex;align-items:center;justify-content:space-between}
+    header h1{margin:0;font-size:1.25rem}
+    nav{display:flex;gap:8px}
+    nav button{background:transparent;border:0;color:rgba(255,255,255,0.95);padding:8px 10px;border-radius:8px;cursor:pointer}
+    .container{max-width:1100px;margin:24px auto;padding:0 16px}
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:20px}
+    .card{background:white;border-radius:10px;padding:16px;box-shadow:0 6px 20px rgba(11,18,32,0.06)}
+    .toolbar{display:flex;gap:8px;align-items:center}
+    .btn{background:var(--accent);color:white;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
+    .muted{color:var(--muted);font-size:0.95rem}
+    form input, form textarea, select{width:100%;padding:8px;margin:6px 0;border:1px solid #e6e9ef;border-radius:6px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:8px;border-bottom:1px solid #eef2f6;text-align:left}
+    .small{font-size:0.9rem}
+    .pill{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef6ff;color:var(--accent);font-weight:600}
+    footer{margin:30px 0;text-align:center;color:var(--muted)}
+    /* responsive */
+    @media (max-width:980px){.grid{grid-template-columns:1fr}nav{display:none}}
+  </style>
+</head>
+<body>
+<header>
+  <div style="display:flex;gap:14px;align-items:center">
+    <img src="" alt="logo" style="width:44px;height:44px;border-radius:8px;background:white;padding:6px;" onerror="this.style.display='none'">
+    <div>
+      <h1>Automatiza — Soluciones para PYMES</h1>
+      <div class="muted small">Digitalización, automatización y acompañamiento para PYMES</div>
+    </div>
+  </div>
+  <nav>
+    <button data-nav="dashboard">Dashboard</button>
+    <button data-nav="clientes">Clientes</button>
+    <button data-nav="proyectos">Propuestas / Cotizaciones</button>
+    <button data-nav="facturas">Facturación</button>
+    <button data-nav="soporte">Soporte</button>
+    <button data-nav="capacitacion">Capacitación</button>
+  </nav>
+</header>
+<main class="container">
+  <div class="grid">
+    <section id="mainArea">
+      <!-- dynamic content here -->
+    </section>
+    <aside>
+      <div class="card" id="companyCard">
+        <h3>Empresa</h3>
+        <p class="muted">Automatiza - Soluciones para PYMES</p>
+        <p class="small">Fundadores: Harol Ortega, Juan Camilo Pérez, Jesús Daniel...</p>
+        <hr>
+        <div><strong>Propuesta de valor</strong><p class="muted small">Automatizar procesos, capacitar equipos y ofrecer soporte técnico para digitalizar PYMES.</p></div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <h3>Atajos</h3>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button class="btn" data-nav="clientes">Nuevo cliente</button>
+          <button class="btn" data-nav="proyectos">Nueva propuesta</button>
+          <button class="btn" id="exportBtn">Exportar datos</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+  <footer>Versión demo </footer>
+</main>
+
+<script>
+// --- Simple single-file vanilla JS app with localStorage persistence ---
+const APP_KEY = 'autom:db:v1';
+const defaultDB = {
+  clients: [],
+  proposals: [],
+  invoices: [],
+  tickets: [],
+  trainings: [],
+  meta: { createdAt: new Date().toISOString() }
+};
+
+function loadDB(){
+  try{const raw=localStorage.getItem(APP_KEY);return raw?JSON.parse(raw):structuredClone(defaultDB)}catch(e){console.error(e);return structuredClone(defaultDB)}
+}
+function saveDB(db){localStorage.setItem(APP_KEY, JSON.stringify(db));}
+let DB = loadDB();
+
+// Navigation and rendering
+const mainArea = document.getElementById('mainArea');
+document.querySelectorAll('[data-nav]').forEach(btn=>btn.addEventListener('click',()=>navigate(btn.dataset.nav)));
+function navigate(view){
+  if(!view) view='dashboard';
+  history.replaceState({},'', '#'+view);
+  render(view);
+}
+window.addEventListener('popstate', ()=>{const v=location.hash.replace('#','')||'dashboard';render(v);});
+
+// Initial render
+render(location.hash.replace('#','')||'dashboard');
+
+function render(view){
+  if(view==='dashboard') return renderDashboard();
+  if(view==='clientes') return renderClientes();
+  if(view==='proyectos') return renderProposals();
+  if(view==='facturas') return renderInvoices();
+  if(view==='soporte') return renderTickets();
+  if(view==='capacitacion') return renderTrainings();
+  // fallback
+  mainArea.innerHTML='<div class="card"><h2>Vista no encontrada</h2></div>';
+}
+
+// ---------- DASHBOARD ----------
+function renderDashboard(){
+  mainArea.innerHTML=`
+    <div class="card">
+      <h2>Dashboard</h2>
+      <div class="toolbar">
+        <div class="muted">Resumen rápido de operaciones</div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap">
+        <div style="flex:1;min-width:220px" class="card small"><strong>${DB.clients.length}</strong><div class="muted">Clientes</div></div>
+        <div style="flex:1;min-width:220px" class="card small"><strong>${DB.proposals.length}</strong><div class="muted">Propuestas</div></div>
+        <div style="flex:1;min-width:220px" class="card small"><strong>${DB.invoices.length}</strong><div class="muted">Facturas</div></div>
+        <div style="flex:1;min-width:220px" class="card small"><strong>${DB.tickets.length}</strong><div class="muted">Tickets</div></div>
+      </div>
+      <div style="margin-top:18px" class="card">
+        <h3>Ventas (demo)</h3>
+        <canvas id="salesChart" height="120"></canvas>
+      </div>
+    </div>
+  `;
+  renderChart();
+}
+function renderChart(){
+  const ctx = document.getElementById('salesChart').getContext('2d');
+  // compute simple monthly totals from invoices
+  const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const totals = new Array(12).fill(0);
+  DB.invoices.forEach(inv=>{
+    try{const d=new Date(inv.date);totals[d.getMonth()]+=Number(inv.total)||0}catch(e){}
+  });
+  if(window._salesChart) window._salesChart.destroy();
+  window._salesChart = new Chart(ctx, {type:'bar',data:{labels:months,datasets:[{label:'Ingresos',data:totals}]},options:{responsive:true,plugins:{legend:{display:false}}}});
+}
+
+// ---------- CLIENTES (CRUD) ----------
+function renderClientes(){
+  mainArea.innerHTML=`
+    <div class="card">
+      <h2>Clientes</h2>
+      <div class="toolbar"><button class="btn" id="newClientBtn">+ Nuevo cliente</button></div>
+      <div id="clientsTable"></div>
+    </div>
+  `;
+  document.getElementById('newClientBtn').addEventListener('click', ()=>showClientForm());
+  refreshClientsTable();
+}
+function refreshClientsTable(){
+  const el = document.getElementById('clientsTable');
+  if(!DB.clients.length) return el.innerHTML='<p class="muted">No hay clientes aún.</p>';
+  let html='<table><thead><tr><th>Nombre</th><th>Contacto</th><th>Teléfono</th><th></th></tr></thead><tbody>';
+  DB.clients.forEach((c,i)=>{
+    html+=`<tr><td>${c.name}</td><td class="small">${c.email||''}</td><td class="small">${c.phone||''}</td><td><button data-idx="${i}" class="small editBtn">Editar</button> <button data-idx="${i}" class="small delBtn">Eliminar</button></td></tr>`;
+  });
+  html+='</tbody></table>';
+  el.innerHTML = html;
+  el.querySelectorAll('.editBtn').forEach(b=>b.addEventListener('click', e=>showClientForm(Number(e.target.dataset.idx))));
+  el.querySelectorAll('.delBtn').forEach(b=>b.addEventListener('click', e=>{if(confirm('Eliminar cliente?')){DB.clients.splice(Number(e.target.dataset.idx),1);saveDB(DB);refreshClientsTable();}}));
+}
+function showClientForm(idx=null){
+  const client = idx!==null?DB.clients[idx]:{name:'',email:'',phone:'',notes:''};
+  mainArea.innerHTML = `<div class="card"><h2>${idx!==null?'Editar':'Nuevo'} cliente</h2>
+    <form id="clientForm">
+      <label>Nombre<input required name="name" value="${escapeHtml(client.name)}"></label>
+      <label>Email<input name="email" value="${escapeHtml(client.email)}"></label>
+      <label>Teléfono<input name="phone" value="${escapeHtml(client.phone)}"></label>
+      <label>Notas<textarea name="notes">${escapeHtml(client.notes)}</textarea></label>
+      <div style="display:flex;gap:8px"><button class="btn" type="submit">Guardar</button><button type="button" id="cancelBtn">Cancelar</button></div>
+    </form></div>`;
+  document.getElementById('cancelBtn').addEventListener('click', ()=>renderClientes());
+  document.getElementById('clientForm').addEventListener('submit', e=>{
+    e.preventDefault();const fd=new FormData(e.target);const obj={name:fd.get('name'),email:fd.get('email'),phone:fd.get('phone'),notes:fd.get('notes')};
+    if(idx!==null) DB.clients[idx]=obj; else DB.clients.push(obj);
+    saveDB(DB);renderClientes();
+  });
+}
+
+// ---------- PROPOSALS / COTIZACIONES ----------
+function renderProposals(){
+  mainArea.innerHTML=`
+  <div class="card">
+    <h2>Propuestas / Cotizaciones</h2>
+    <div class="toolbar"><button class="btn" id="newPropBtn">+ Nueva propuesta</button></div>
+    <div id="propList"></div>
+  </div>`;
+  document.getElementById('newPropBtn').addEventListener('click', ()=>showProposalForm());
+  refreshProposals();
+}
+function refreshProposals(){
+  const el=document.getElementById('propList');
+  if(!DB.proposals.length) return el.innerHTML='<p class="muted">No hay propuestas aún.</p>';
+  let html='<table><thead><tr><th>#</th><th>Cliente</th><th>Valor</th><th>Estado</th><th></th></tr></thead><tbody>';
+  DB.proposals.forEach((p,i)=>{html+=`<tr><td>${i+1}</td><td>${p.clientName||'-'}</td><td>${p.total||0}</td><td>${p.status||'borrador'}</td><td><button data-i="${i}" class="viewProp">Ver</button> <button data-i="${i}" class="delProp">Eliminar</button></td></tr>`});
+  html+='</tbody></table>';
+  el.innerHTML=html;
+  el.querySelectorAll('.viewProp').forEach(b=>b.addEventListener('click', e=>viewProposal(Number(e.target.dataset.i))));
+  el.querySelectorAll('.delProp').forEach(b=>b.addEventListener('click', e=>{if(confirm('Eliminar propuesta?')){DB.proposals.splice(Number(e.target.dataset.i),1);saveDB(DB);refreshProposals();}}));
+}
+function showProposalForm(idx=null){
+  const p = idx!==null?DB.proposals[idx]:{clientId:'',clientName:'',items:[],total:0,status:'borrador',notes:'',created:new Date().toISOString()};
+  // client select
+  const clientsOptions = DB.clients.map((c,i)=>`<option value="${i}" ${p.clientId==i?'selected':''}>${c.name}</option>`).join('');
+  mainArea.innerHTML = `<div class="card"><h2>${idx!==null?'Editar':'Nueva'} propuesta</h2>
+    <form id="propForm">
+      <label>Cliente<select name="clientId"><option value="">-- seleccionar --</option>${clientsOptions}</select></label>
+      <label>Notas<textarea name="notes">${escapeHtml(p.notes)}</textarea></label>
+      <div id="itemsArea"></div>
+      <button type="button" id="addItemBtn" class="btn">Añadir ítem</button>
+      <div style="margin-top:12px"><strong>Total: </strong><span id="propTotal">${p.total||0}</span></div>
+      <div style="display:flex;gap:8px;margin-top:12px"><button class="btn">Guardar</button><button type="button" id="toInvoice">Generar factura</button><button type="button" id="cancelProp">Cancelar</button></div>
+    </form></div>`;
+
+  const items = p.items||[];
+  const itemsArea=document.getElementById('itemsArea');
+  function refreshItems(){
+    itemsArea.innerHTML='';
+    items.forEach((it,i)=>{
+      const div=document.createElement('div');div.className='card small';div.style.margin='6px 0';div.innerHTML=`<label>Descripción<input name="desc${i}" value="${escapeHtml(it.desc||'')}"></label><label>Precio<input name="price${i}" value="${it.price||0}" type="number"></label><label>Cantidad<input name="qty${i}" value="${it.qty||1}" type="number"></label><div style="text-align:right"><button data-i="${i}" class="delItem">Eliminar ítem</button></div>`;
+      itemsArea.appendChild(div);
+    });
+    itemsArea.querySelectorAll('.delItem').forEach(b=>b.addEventListener('click', e=>{items.splice(Number(e.target.dataset.i),1);refreshItems();calcTotal();}));
+  }
+  refreshItems();
+  document.getElementById('addItemBtn').addEventListener('click', ()=>{items.push({desc:'',price:0,qty:1});refreshItems();});
+  function calcTotal(){
+    let t=0;items.forEach((it,i)=>{const price=Number(document.querySelector(`[name=price${i}]`).value||0);const qty=Number(document.querySelector(`[name=qty${i}]`).value||0);t+=price*qty});
+    document.getElementById('propTotal').innerText=t;return t;
+  }
+  itemsArea.addEventListener('input', calcTotal);
+  document.getElementById('cancelProp').addEventListener('click', ()=>renderProposals());
+  document.getElementById('toInvoice').addEventListener('click', ()=>{document.getElementById('propForm').dispatchEvent(new Event('submit'));const last=DB.proposals[DB.proposals.length-1];if(last){createInvoiceFromProposal(DB.proposals.length-1);renderInvoices();}});
+  document.getElementById('propForm').addEventListener('submit', e=>{
+    e.preventDefault();const fd=new FormData(e.target);const clientId = fd.get('clientId');const clientName = clientId!==''?DB.clients[clientId].name:'';const notes = fd.get('notes');
+    // collect items from DOM
+    const finalItems = items.map((it,i)=>({desc:document.querySelector(`[name=desc${i}]`).value,price:Number(document.querySelector(`[name=price${i}]`).value||0),qty:Number(document.querySelector(`[name=qty${i}]`).value||0)}));
+    const total = finalItems.reduce((s,x)=>s + (x.price*(x.qty||1)),0);
+    const obj={clientId,clientName,items:finalItems,total,status:'enviado',notes,created:new Date().toISOString()};
+    if(idx!==null) DB.proposals[idx]=obj; else DB.proposals.push(obj);
+    saveDB(DB);renderProposals();
+  });
+}
+function viewProposal(i){
+  const p=DB.proposals[i];
+  mainArea.innerHTML=`<div class="card"><h2>Propuesta #${i+1}</h2>
+    <p><strong>Cliente:</strong> ${p.clientName||'-'}</p>
+    <p><strong>Fecha:</strong> ${new Date(p.created).toLocaleString()}</p>
+    <h3>Ítems</h3>
+    <table><thead><tr><th>Desc</th><th>Precio</th><th>Cant</th><th>Subtotal</th></tr></thead><tbody>${p.items.map(it=>`<tr><td>${escapeHtml(it.desc)}</td><td>${it.price}</td><td>${it.qty}</td><td>${it.price*(it.qty||1)}</td></tr>`).join('')}</tbody></table>
+    <div style="margin-top:12px"><strong>Total: </strong>${p.total}</div>
+    <div style="margin-top:12px"><button class="btn" id="backProps">Volver</button> <button id="convertInvoice">Crear factura</button></div>
+    </div>`;
+  document.getElementById('backProps').addEventListener('click', ()=>renderProposals());
+  document.getElementById('convertInvoice').addEventListener('click', ()=>{createInvoiceFromProposal(i);renderInvoices();});
+}
+
+// ---------- INVOICES ----------
+function renderInvoices(){
+  mainArea.innerHTML=`<div class="card"><h2>Facturas</h2><div class="toolbar"><button class="btn" id="newInvBtn">+ Nueva factura</button></div><div id="invList"></div></div>`;
+  document.getElementById('newInvBtn').addEventListener('click', ()=>showInvoiceForm());
+  refreshInvoices();
+}
+function refreshInvoices(){
+  const el=document.getElementById('invList');
+  if(!DB.invoices.length) return el.innerHTML='<p class="muted">No hay facturas.</p>';
+  let html='<table><thead><tr><th>#</th><th>Cliente</th><th>Fecha</th><th>Total</th><th></th></tr></thead><tbody>';
+  DB.invoices.forEach((inv,i)=>{html+=`<tr><td>${i+1}</td><td>${inv.clientName||'-'}</td><td>${new Date(inv.date).toLocaleDateString()}</td><td>${inv.total}</td><td><button data-i="${i}" class="viewInv">Ver</button> <button data-i="${i}" class="delInv">Eliminar</button></td></tr>`});
+  html+='</tbody></table>';
+  el.innerHTML=html;
+  el.querySelectorAll('.viewInv').forEach(b=>b.addEventListener('click', e=>viewInvoice(Number(e.target.dataset.i))));
+  el.querySelectorAll('.delInv').forEach(b=>b.addEventListener('click', e=>{if(confirm('Eliminar factura?')){DB.invoices.splice(Number(e.target.dataset.i),1);saveDB(DB);refreshInvoices();}}));
+}
+function showInvoiceForm(prefill=null){
+  const clientsOptions = DB.clients.map((c,i)=>`<option value="${i}">${c.name}</option>`).join('');
+  mainArea.innerHTML=`<div class="card"><h2>Nueva factura</h2>
+    <form id="invForm">
+      <label>Cliente<select name="clientId"><option value="">-- seleccionar --</option>${clientsOptions}</select></label>
+      <label>Concepto<textarea name="concept"></textarea></label>
+      <label>Total<input name="total" type="number" value="0"></label>
+      <label>Fecha<input name="date" type="date" value="${new Date().toISOString().slice(0,10)}"></label>
+      <div style="display:flex;gap:8px"><button class="btn">Guardar</button><button type="button" id="cancelInv">Cancelar</button></div>
+    </form></div>`;
+  document.getElementById('cancelInv').addEventListener('click', ()=>renderInvoices());
+  document.getElementById('invForm').addEventListener('submit', e=>{e.preventDefault();const fd=new FormData(e.target);const clientId=fd.get('clientId');const clientName=clientId!==''?DB.clients[clientId].name:'';const obj={clientId,clientName,concept:fd.get('concept'),total:Number(fd.get('total')||0),date:fd.get('date')||new Date().toISOString()};DB.invoices.push(obj);saveDB(DB);renderInvoices();});
+}
+function createInvoiceFromProposal(propIndex){
+  const p = DB.proposals[propIndex];
+  if(!p) return alert('Propuesta no encontrada');
+  const inv = {clientId:p.clientId,clientName:p.clientName,concept:'Factura generada de propuesta',total:p.total,date:new Date().toISOString(),items:p.items};
+  DB.invoices.push(inv);saveDB(DB);alert('Factura creada');
+}
+function viewInvoice(i){
+  const inv = DB.invoices[i];
+  mainArea.innerHTML=`<div class="card"><h2>Factura #${i+1}</h2>
+    <p><strong>Cliente:</strong> ${inv.clientName||'-'}</p>
+    <p><strong>Fecha:</strong> ${new Date(inv.date).toLocaleDateString()}</p>
+    <h3>Concepto</h3><p>${escapeHtml(inv.concept||'')}</p>
+    <h3>Total: ${inv.total}</h3>
+    <div style="margin-top:12px"><button class="btn" id="printBtn">Imprimir / Guardar PDF</button> <button id="backInv">Volver</button></div>
+  </div>`;
+  document.getElementById('backInv').addEventListener('click', ()=>renderInvoices());
+  document.getElementById('printBtn').addEventListener('click', ()=>window.print());
+}
+
+// ---------- SOPORTE (tickets) ----------
+function renderTickets(){
+  mainArea.innerHTML=`<div class="card"><h2>Soporte técnico (Tickets)</h2><div class="toolbar"><button class="btn" id="newTicket">Nuevo ticket</button></div><div id="ticketList"></div></div>`;
+  document.getElementById('newTicket').addEventListener('click', ()=>showTicketForm());
+  refreshTickets();
+}
+function refreshTickets(){
+  const el=document.getElementById('ticketList');
+  if(!DB.tickets.length) return el.innerHTML='<p class="muted">No hay tickets.</p>';
+  let html='<table><thead><tr><th>#</th><th>Cliente</th><th>Asunto</th><th>Estado</th><th></th></tr></thead><tbody>';
+  DB.tickets.forEach((t,i)=>{html+=`<tr><td>${i+1}</td><td>${t.clientName||'-'}</td><td>${escapeHtml(t.title)}</td><td>${t.status||'abierto'}</td><td><button data-i="${i}" class="viewT">Ver</button></td></tr>`});
+  html+='</tbody></table>';
+  el.innerHTML=html;el.querySelectorAll('.viewT').forEach(b=>b.addEventListener('click', e=>viewTicket(Number(e.target.dataset.i))));
+}
+function showTicketForm(){
+  const clientsOptions = DB.clients.map((c,i)=>`<option value="${i}">${c.name}</option>`).join('');
+  mainArea.innerHTML=`<div class="card"><h2>Nuevo ticket</h2><form id="ticketForm"><label>Cliente<select name="clientId"><option value="">-- seleccionar --</option>${clientsOptions}</select></label><label>Título<input name="title" required></label><label>Descripción<textarea name="desc"></textarea></label><div style="display:flex;gap:8px"><button class="btn">Crear</button><button type="button" id="cancelT">Cancelar</button></div></form></div>`;
+  document.getElementById('cancelT').addEventListener('click', ()=>renderTickets());
+  document.getElementById('ticketForm').addEventListener('submit', e=>{e.preventDefault();const fd=new FormData(e.target);const clientId=fd.get('clientId');const clientName=clientId!==''?DB.clients[clientId].name:'';const obj={clientId,clientName,title:fd.get('title'),desc:fd.get('desc'),status:'abierto',created:new Date().toISOString()};DB.tickets.push(obj);saveDB(DB);renderTickets();});
+}
+function viewTicket(i){
+  const t=DB.tickets[i];
+  mainArea.innerHTML=`<div class="card"><h2>Ticket #${i+1}</h2><p><strong>Cliente:</strong>${t.clientName||'-'}</p><p><strong>Estado:</strong>${t.status}</p><p>${escapeHtml(t.desc)}</p><div style="display:flex;gap:8px;margin-top:12px"><button class="btn" id="closeT">Cerrar</button><button id="backT">Volver</button></div></div>`;
+  document.getElementById('backT').addEventListener('click', ()=>renderTickets());
+  document.getElementById('closeT').addEventListener('click', ()=>{t.status='cerrado';saveDB(DB);viewTicket(i);});
+}
+
+// ---------- CAPACITACIÓN (Agenda simple) ----------
+function renderTrainings(){
+  mainArea.innerHTML=`<div class="card"><h2>Capacitación</h2><div class="toolbar"><button class="btn" id="newTraining">Nuevo evento</button></div><div id="trainList"></div></div>`;
+  document.getElementById('newTraining').addEventListener('click', ()=>showTrainingForm());
+  refreshTrainings();
+}
+function refreshTrainings(){
+  const el=document.getElementById('trainList');
+  if(!DB.trainings.length) return el.innerHTML='<p class="muted">No hay eventos programados.</p>';
+  let html='<ul>';
+  DB.trainings.forEach((t,i)=>{html+=`<li><strong>${escapeHtml(t.title)}</strong> - ${new Date(t.date).toLocaleString()} <button data-i="${i}" class="delTr">Eliminar</button></li>`});
+  html+='</ul>';
+  el.innerHTML=html;el.querySelectorAll('.delTr').forEach(b=>b.addEventListener('click', e=>{DB.trainings.splice(Number(e.target.dataset.i),1);saveDB(DB);refreshTrainings();}));
+}
+function showTrainingForm(){
+  mainArea.innerHTML=`<div class="card"><h2>Nuevo evento de capacitación</h2><form id="trForm"><label>Título<input name="title" required></label><label>Fecha<input name="date" type="datetime-local" required></label><label>Descripción<textarea name="desc"></textarea></label><div style="display:flex;gap:8px;margin-top:8px"><button class="btn">Crear</button><button id="cancelTr" type="button">Cancelar</button></div></form></div>`;
+  document.getElementById('cancelTr').addEventListener('click', ()=>renderTrainings());
+  document.getElementById('trForm').addEventListener('submit', e=>{e.preventDefault();const fd=new FormData(e.target);DB.trainings.push({title:fd.get('title'),date:fd.get('date'),desc:fd.get('desc')});saveDB(DB);renderTrainings();});
+}
+
+// ---------- Utilities ----------
+function escapeHtml(s){if(!s) return ''; return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');}
+
+// Export data
+document.getElementById('exportBtn').addEventListener('click', ()=>{const data=JSON.stringify(DB,null,2);const blob=new Blob([data],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='autom_db.json';a.click();URL.revokeObjectURL(url);});
+
+// If first time, seed with sample per the doc
+if(!localStorage.getItem(APP_KEY)){
+  DB.clients.push({name:'Restaurante La Buena Mesa',email:'info@buena-mesa.com',phone:'+57 300 000 0000',notes:'Cliente piloto'});
+  DB.proposals.push({clientId:0,clientName:'Restaurante La Buena Mesa',items:[{desc:'Automatización ventas',price:800000,qty:1}],total:800000,status:'borrador',notes:'Propuesta piloto',created:new Date().toISOString()});
+  DB.meta.seeded=true;saveDB(DB);
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeNet - Demo Funcional</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --accent: #9b59b6;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --text: #333;
+            --white: #ffffff;
+            --gray: #95a5a6;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--light);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: var(--white);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            padding: 20px 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            color: var(--dark);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: var(--light);
+            border-left: 4px solid var(--primary);
+        }
+
+        .sidebar-menu i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .content-header h1 {
+            color: var(--dark);
+            font-size: 1.8rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-success {
+            background-color: var(--secondary);
+            color: var(--white);
+        }
+
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: var(--white);
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: var(--white);
+        }
+
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Alert Styles */
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid var(--danger);
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border-left: 4px solid var(--warning);
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid var(--primary);
+        }
+
+        /* Child List */
+        .child-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .child-card {
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .child-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .child-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: var(--white);
+            font-size: 2rem;
+        }
+
+        .child-name {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .child-info {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            height: 10px;
+            background: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        /* Activity List */
+        .activity-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .activity-app {
+            font-weight: 500;
+        }
+
+        .activity-time {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .child-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const App = () => {
+            const [children, setChildren] = useState([]);
+            const [alerts, setAlerts] = useState([]);
+            const [activities, setActivities] = useState([]);
+            const [showModal, setShowModal] = useState(false);
+            const [formData, setFormData] = useState({
+                name: '',
+                age: '',
+                device: '',
+                timeLimit: 120,
+                blockInappropriate: true
+            });
+
+            // Load data from localStorage on mount
+            useEffect(() => {
+                const savedChildren = localStorage.getItem('safenet_children');
+                const savedAlerts = localStorage.getItem('safenet_alerts');
+                const savedActivities = localStorage.getItem('safenet_activities');
+
+                if (savedChildren) setChildren(JSON.parse(savedChildren));
+                else setChildren([
+                    { id: 1, name: "Ana", age: 14, device: "iPhone 12", timeUsed: 90, timeLimit: 120, blocked: false },
+                    { id: 2, name: "Carlos", age: 16, device: "Samsung Galaxy", timeUsed: 114, timeLimit: 120, blocked: false }
+                ]);
+
+                if (savedAlerts) setAlerts(JSON.parse(savedAlerts));
+                else setAlerts([
+                    { id: 1, type: "danger", child: "Ana", message: "Intento de acceso a aplicación bloqueada: TikTok", time: "Hace 15 minutos" },
+                    { id: 2, type: "warning", child: "Carlos", message: "Límite de tiempo casi alcanzado (115/120 min)", time: "Hace 1 hora" },
+                    { id: 3, type: "info", child: "Ana", message: "Nueva aplicación instalada: Discord", time: "Hace 3 horas" }
+                ]);
+
+                if (savedActivities) setActivities(JSON.parse(savedActivities));
+                else setActivities([
+                    { id: 1, app: "YouTube", child: "Ana", duration: "32 minutos", time: "Hace 5 minutos" },
+                    { id: 2, app: "WhatsApp", child: "Carlos", duration: "18 minutos", time: "Hace 12 minutos" },
+                    { id: 3, app: "Instagram", child: "Ana", duration: "45 minutos", time: "Hace 25 minutos" },
+                    { id: 4, app: "Juegos", child: "Carlos", duration: "1 hora 15 min", time: "Hace 40 minutos" },
+                    { id: 5, app: "Navegador", child: "Ana", duration: "25 minutos", time: "Hace 1 hora" }
+                ]);
+            }, []);
+
+            // Save to localStorage whenever data changes
+            useEffect(() => {
+                localStorage.setItem('safenet_children', JSON.stringify(children));
+            }, [children]);
+
+            useEffect(() => {
+                localStorage.setItem('safenet_alerts', JSON.stringify(alerts));
+            }, [alerts]);
+
+            useEffect(() => {
+                localStorage.setItem('safenet_activities', JSON.stringify(activities));
+            }, [activities]);
+
+            // Simulate real-time activity
+            useEffect(() => {
+                const interval = setInterval(() => {
+                    const apps = ["YouTube", "WhatsApp", "Instagram", "Juegos", "Navegador", "TikTok", "Netflix"];
+                    const childNames = children.map(c => c.name);
+                    if (childNames.length > 0) {
+                        const randomApp = apps[Math.floor(Math.random() * apps.length)];
+                        const randomChild = childNames[Math.floor(Math.random() * childNames.length)];
+                        const duration = Math.floor(Math.random() * 60) + 5;
+                        const newActivity = {
+                            id: Date.now(),
+                            app: randomApp,
+                            child: randomChild,
+                            duration: `${duration} minutos`,
+                            time: "Ahora mismo"
+                        };
+                        setActivities(prev => [newActivity, ...prev.slice(0, 9)]); // Keep last 10
+                    }
+                }, 30000); // Every 30 seconds
+
+                return () => clearInterval(interval);
+            }, [children]);
+
+            const handleInputChange = (e) => {
+                const { name, value, type, checked } = e.target;
+                setFormData(prev => ({
+                    ...prev,
+                    [name]: type === 'checkbox' ? checked : value
+                }));
+            };
+
+            const addChild = () => {
+                if (!formData.name || !formData.age || !formData.device) {
+                    alert('Por favor, completa todos los campos obligatorios');
+                    return;
+                }
+
+                const newChild = {
+                    id: Date.now(),
+                    name: formData.name,
+                    age: parseInt(formData.age),
+                    device: formData.device,
+                    timeUsed: 0,
+                    timeLimit: parseInt(formData.timeLimit),
+                    blocked: false
+                };
+
+                setChildren(prev => [...prev, newChild]);
+                setFormData({ name: '', age: '', device: '', timeLimit: 120, blockInappropriate: true });
+                setShowModal(false);
+            };
+
+            const toggleBlock = (id) => {
+                setChildren(prev => prev.map(child =>
+                    child.id === id ? { ...child, blocked: !child.blocked } : child
+                ));
+            };
+
+            const stats = {
+                monitoredChildren: children.length,
+                alertsToday: alerts.length,
+                averageTime: children.length > 0 ? Math.round(children.reduce((sum, c) => sum + c.timeUsed, 0) / children.length) : 0,
+                blockedApps: 12 // Static for demo
+            };
+
+            return (
+                <>
+                    <Header />
+                    <MainContent
+                        children={children}
+                        alerts={alerts}
+                        activities={activities}
+                        stats={stats}
+                        onAddChild={() => setShowModal(true)}
+                        onToggleBlock={toggleBlock}
+                    />
+                    {showModal && (
+                        <AddChildModal
+                            formData={formData}
+                            onInputChange={handleInputChange}
+                            onAdd={addChild}
+                            onClose={() => setShowModal(false)}
+                        />
+                    )}
+                </>
+            );
+        };
+
+        const Header = () => (
+            <header>
+                <div className="container header-content">
+                    <div className="logo">
+                        <span className="logo-icon">🛡️</span>
+                        <h1>SafeNet</h1>
+                    </div>
+                    <nav>
+                        <ul>
+                            <li><a href="#" className="active">Dashboard</a></li>
+                            <li><a href="#">Reportes</a></li>
+                            <li><a href="#">Configuración</a></li>
+                            <li>
+                                <div className="user-info">
+                                    <div className="user-avatar">
+                                        <i className="fas fa-user"></i>
+                                    </div>
+                                    <span>María González</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </header>
+        );
+
+        const MainContent = ({ children, alerts, activities, stats, onAddChild, onToggleBlock }) => (
+            <div className="main-content">
+                <Sidebar />
+                <div className="content">
+                    <div className="content-header">
+                        <h1>Panel de Control</h1>
+                        <button className="btn btn-primary" onClick={onAddChild}>
+                            <i className="fas fa-plus"></i> Agregar Hijo
+                        </button>
+                    </div>
+                    <Stats stats={stats} />
+                    <DashboardGrid
+                        alerts={alerts}
+                        activities={activities}
+                        children={children}
+                        onToggleBlock={onToggleBlock}
+                    />
+                </div>
+            </div>
+        );
+
+        const Sidebar = () => (
+            <div className="sidebar">
+                <ul className="sidebar-menu">
+                    <li><a href="#" className="active"><i className="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="#"><i className="fas fa-child"></i> Mis Hijos</a></li>
+                    <li><a href="#"><i className="fas fa-shield-alt"></i> Protección</a></li>
+                    <li><a href="#"><i className="fas fa-clock"></i> Tiempo de Uso</a></li>
+                    <li><a href="#"><i className="fas fa-bell"></i> Alertas</a></li>
+                    <li><a href="#"><i className="fas fa-chart-bar"></i> Reportes</a></li>
+                    <li><a href="#"><i className="fas fa-cog"></i> Configuración</a></li>
+                    <li><a href="#"><i className="fas fa-question-circle"></i> Ayuda</a></li>
+                </ul>
+            </div>
+        );
+
+        const Stats = ({ stats }) => (
+            <div className="stats">
+                <div className="stat-card">
+                    <div className="stat-value">{stats.monitoredChildren}</div>
+                    <div className="stat-label">Hijos Monitoreados</div>
+                </div>
+                <div className="stat-card">
+                    <div className="stat-value">{stats.alertsToday}</div>
+                    <div className="stat-label">Alertas Hoy</div>
+                </div>
+                <div className="stat-card">
+                    <div className="stat-value">{Math.floor(stats.averageTime / 60)}h {stats.averageTime % 60}m</div>
+                    <div className="stat-label">Tiempo Promedio</div>
+                </div>
+                <div className="stat-card">
+                    <div className="stat-value">{stats.blockedApps}</div>
+                    <div className="stat-label">Apps Bloqueadas</div>
+                </div>
+            </div>
+        );
+
+        const DashboardGrid = ({ alerts, activities, children, onToggleBlock }) => (
+            <div className="dashboard-grid">
+                <div>
+                    <AlertsCard alerts={alerts} />
+                    <ActivityCard activities={activities} />
+                </div>
+                <div>
+                    <ChildrenCard children={children} onToggleBlock={onToggleBlock} />
+                    <AppUsageCard children={children} />
+                </div>
+            </div>
+        );
+
+        const AlertsCard = ({ alerts }) => (
+            <div className="card">
+                <div className="card-header">
+                    <h2 className="card-title">Alertas Recientes</h2>
+                    <a href="#">Ver Todas</a>
+                </div>
+                {alerts.map(alert => (
+                    <div key={alert.id} className={`alert alert-${alert.type}`}>
+                        <div>
+                            <strong>{alert.child}:</strong> {alert.message}
+                            <div className="activity-time">{alert.time}</div>
+                        </div>
+                        <button className="btn btn-primary">
+                            {alert.type === 'danger' ? 'Resolver' : alert.type === 'warning' ? 'Ver Detalles' : 'Revisar'}
+                        </button>
+                    </div>
+                ))}
+            </div>
+        );
+
+        const ActivityCard = ({ activities }) => (
+            <div className="card">
+                <div className="card-header">
+                    <h2 className="card-title">Actividad en Tiempo Real</h2>
+                    <a href="#">Ver Historial</a>
+                </div>
+                <div className="activity-list">
+                    {activities.map(activity => (
+                        <div key={activity.id} className="activity-item">
+                            <div>
+                                <span className="activity-app">{activity.app}</span>
+                                <div className="activity-time">{activity.child} - {activity.time}</div>
+                            </div>
+                            <div>{activity.duration}</div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+
+        const ChildrenCard = ({ children, onToggleBlock }) => (
+            <div className="card">
+                <div className="card-header">
+                    <h2 className="card-title">Mis Hijos</h2>
+                    <a href="#">Gestionar</a>
+                </div>
+                <div className="child-list">
+                    {children.map(child => (
+                        <div key={child.id} className="child-card">
+                            <div className="child-avatar">
+                                <i className={`fas fa-${child.name === 'Ana' ? 'female' : 'male'}`}></i>
+                            </div>
+                            <h3 className="child-name">{child.name}</h3>
+                            <div className="child-info">{child.age} años • {child.device}</div>
+                            <div className="progress-bar">
+                                <div className="progress" style={{ width: `${(child.timeUsed / child.timeLimit) * 100}%` }}></div>
+                            </div>
+                            <div>{child.timeUsed}/{child.timeLimit} minutos</div>
+                            <div style={{ marginTop: '15px' }}>
+                                <button
+                                    className={`btn ${child.blocked ? 'btn-success' : 'btn-danger'}`}
+                                    onClick={() => onToggleBlock(child.id)}
+                                >
+                                    {child.blocked ? 'Desbloquear' : 'Bloquear'}
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+
+        const AppUsageCard = ({ children }) => {
+            const appUsage = [
+                { app: "YouTube", child: "Ana", time: "1h 25m" },
+                { app: "Juegos", child: "Carlos", time: "2h 10m" },
+                { app: "Instagram", child: "Ana", time: "45m" },
+                { app: "WhatsApp", child: "Carlos", time: "35m" },
+                { app: "TikTok", child: "Ana", time: "30m (bloqueada)" }
+            ];
+
+            return (
+                <div className="card">
+                    <div className="card-header">
+                        <h2 className="card-title">Uso de Aplicaciones</h2>
+                        <a href="#">Ver Detalles</a>
+                    </div>
+                    <div className="activity-list">
+                        {appUsage.map((usage, index) => (
+                            <div key={index} className="activity-item">
+                                <div>
+                                    <span className="activity-app">{usage.app}</span>
+                                    <div>{usage.child}: {usage.time}</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        const AddChildModal = ({ formData, onInputChange, onAdd, onClose }) => (
+            <div className="modal" style={{ display: 'flex' }}>
+                <div className="modal-content">
+                    <div className="modal-header">
+                        <h2>Agregar Nuevo Hijo</h2>
+                        <button className="close-modal" onClick={onClose}>&times;</button>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="name">Nombre del Niño</label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={formData.name}
+                            onChange={onInputChange}
+                            placeholder="Ej: Juan Pérez"
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="age">Edad</label>
+                        <input
+                            type="number"
+                            id="age"
+                            name="age"
+                            value={formData.age}
+                            onChange={onInputChange}
+                            placeholder="Ej: 12"
+                            min="5"
+                            max="18"
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="device">Tipo de Dispositivo</label>
+                        <select
+                            id="device"
+                            name="device"
+                            value={formData.device}
+                            onChange={onInputChange}
+                        >
+                            <option value="">Selecciona un tipo</option>
+                            <option value="iPhone">iPhone</option>
+                            <option value="Android">Android</option>
+                            <option value="Tablet">Tablet</option>
+                            <option value="Computadora">Computadora</option>
+                        </select>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="timeLimit">Límite de Tiempo Diario (minutos)</label>
+                        <input
+                            type="number"
+                            id="timeLimit"
+                            name="timeLimit"
+                            value={formData.timeLimit}
+                            onChange={onInputChange}
+                            min="30"
+                            max="300"
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="blockInappropriate"
+                                checked={formData.blockInappropriate}
+                                onChange={onInputChange}
+                            />
+                            Bloquear contenido inapropiado automáticamente
+                        </label>
+                    </div>
+                    <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+                        <button className="btn btn-primary" onClick={onAdd}>Agregar Hijo</button>
+                        <button className="btn" onClick={onClose}>Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        );
+
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>

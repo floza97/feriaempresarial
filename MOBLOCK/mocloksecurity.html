@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MoBlock Security — Avanzando al ritmo de la tecnología</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <meta name="description" content="Soluciones de ciberseguridad móvil: bloqueo remoto, localización, cifrado y formación. Soporte 100% en español." />
+  <style>
+    :root{
+      --bg:#0f1720; /* deep charcoal */
+      --card:#0b1220;
+      --accent:#f4e9dc; /* beige */
+      --muted:#9aa4b2;
+      --glass: rgba(255,255,255,0.04);
+      --glass-2: rgba(255,255,255,0.02);
+      --accent-2: #8bd3c7; /* mint accent */
+      --radius:14px;
+      font-family: 'Inter',system-ui,Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;background:linear-gradient(180deg,var(--bg) 0%, #081019 100%);color:var(--accent);-webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      line-height:1.4;font-size:16px;
+    }
+    .container{max-width:1100px;margin:0 auto;padding:36px}
+
+    /* Header */
+    header{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#0ea5a1,#7dd3fc);display:flex;align-items:center;justify-content:center;font-weight:800;color:#021019}
+    .brand h1{margin:0;font-size:18px}
+    nav{display:flex;gap:18px;align-items:center}
+    nav a{color:var(--muted);text-decoration:none;font-weight:600}
+    .cta{background:linear-gradient(90deg,#8bd3c7 0%, #66c0ff 100%);color:#021019;padding:10px 14px;border-radius:10px;font-weight:700;text-decoration:none}
+
+    /* Hero */
+    .hero{display:grid;grid-template-columns:1fr 420px;gap:40px;align-items:center;padding:40px 0}
+    .eyebrow{color:var(--accent-2);font-weight:700;font-size:13px;margin-bottom:10px}
+    .title{font-size:36px;line-height:1.05;margin:0 0 16px}
+    .lead{color:var(--muted);margin-bottom:22px}
+    .hero-buttons{display:flex;gap:12px}
+    .btn-primary{background:linear-gradient(90deg,#f4e9dc 0%, #fff9f0 60%);color:#021019;padding:12px 18px;border-radius:12px;font-weight:700;text-decoration:none;box-shadow:0 8px 30px rgba(133,151,171,0.06)}
+    .btn-ghost{border:1px solid rgba(255,255,255,0.06);padding:12px 18px;border-radius:12px;color:var(--accent);text-decoration:none}
+
+    /* phone mockup */
+    .phone{background:linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));border-radius:28px;padding:22px;border:1px solid rgba(255,255,255,0.04);box-shadow: 0 20px 50px rgba(2,8,23,0.6);width:380px;height:720px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;position:relative;overflow:hidden}
+    .phone .screen{background:linear-gradient(180deg,#04101a, #06202a);width:100%;height:100%;border-radius:18px;padding:18px;color:var(--accent);display:flex;flex-direction:column}
+    .phone .status{width:100%;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px}
+    .card-small{background:linear-gradient(90deg, rgba(139,211,199,0.08), rgba(102,192,255,0.04));border-radius:12px;padding:12px;margin-top:18px;backdrop-filter:blur(6px)}
+    .map{flex:1;margin-top:18px;border-radius:12px;background:linear-gradient(180deg,#022a33,#042a2f);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px}
+
+    /* Features */
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:34px 0}
+    .feature{background:var(--card);padding:18px;border-radius:12px;border:1px solid var(--glass-2)}
+    .feature h4{margin:6px 0 0}
+    .feature p{color:var(--muted);font-size:14px}
+
+    /* Pricing */
+    .pricing{display:flex;gap:18px;margin:34px 0}
+    .price-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:20px;border-radius:12px;flex:1;border:1px solid var(--glass)}
+    .price-card.best{border:2px solid #66c0ff;transform:translateY(-6px)}
+    .price{font-size:28px;font-weight:800;color:var(--accent)}
+    .price small{display:block;color:var(--muted);font-weight:600}
+
+    /* Testimonials */
+    .testimonials{display:flex;gap:14px;margin:30px 0}
+    .t{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:14px;border-radius:12px;border:1px solid var(--glass-2)}
+    .t p{color:var(--muted);font-size:14px}
+
+    /* CTA band */
+    .cta-band{margin:40px 0;padding:28px;border-radius:16px;background:linear-gradient(90deg,#04232b 0%, #082034 100%);display:flex;justify-content:space-between;align-items:center}
+
+    /* Footer */
+    footer{padding:28px 0;color:var(--muted);font-size:14px}
+
+    /* Animations */
+    .fadeUp{opacity:0;transform:translateY(14px);animation:fadeUp .8s forwards}
+    @keyframes fadeUp{to{opacity:1;transform:none}}
+    .pulse{animation:pulse 2.6s infinite}
+    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.03)}100%{transform:scale(1)}}
+
+    /* Responsive */
+    @media (max-width:980px){
+      .hero{grid-template-columns:1fr;}
+      .phone{width:320px;height:640px;margin:0 auto}
+      .features{grid-template-columns:1fr 1fr}
+      .pricing{flex-direction:column}
+    }
+    @media (max-width:520px){
+      .features{grid-template-columns:1fr}
+      header{flex-direction:column;gap:12px}
+    }
+
+    /* small utilities */
+    .muted{color:var(--muted)}
+    .pill{display:inline-block;background:var(--glass);padding:6px 10px;border-radius:999px;color:var(--accent-2);font-weight:700}
+
+    form input, form textarea{width:100%;padding:12px;margin-top:8px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--accent)}
+    form label{font-weight:700;color:var(--muted);font-size:13px}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:520px){.grid-2{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">MS</div>
+        <div>
+          <h1>MoBlock Security</h1>
+          <div class="muted" style="font-size:12px">Ciberseguridad móvil • Soporte 100% en español</div>
+        </div>
+      </div>
+      <nav>
+        <a href="#features">Características</a>
+        <a href="#planes">Planes</a>
+        <a href="#contacto">Contacto</a>
+        <a class="cta" href="#prueba">Prueba gratis</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <div class="eyebrow">Lanzamiento · Hecho en Colombia</div>
+          <h2 class="title">Protege tu teléfono. Protege tu vida digital.</h2>
+          <p class="lead">Bloqueo remoto, localización GPS, cifrado de datos y borrado seguro. Soporte en español y formación para usuarios y empresas.</p>
+          <div class="hero-buttons">
+            <a class="btn-primary" id="prueba" href="#contacto">Comienza tu prueba gratuita</a>
+            <a class="btn-ghost" href="#planes">Ver planes</a>
+          </div>
+
+          <div class="features fadeUp" style="margin-top:26px">
+            <div class="feature">
+              <strong>🔒 Bloqueo remoto</strong>
+              <p>Inhabilita el dispositivo inmediatamente si se pierde o te lo roban.</p>
+            </div>
+            <div class="feature">
+              <strong>📍 Localización</strong>
+              <p>Rastreo preciso vía GPS con historial seguro de ubicaciones.</p>
+            </div>
+            <div class="feature">
+              <strong>🧰 Soporte local</strong>
+              <p>Atención 24/7 en español con asesoría y formación.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="phone pulse" aria-hidden="true">
+          <div class="screen">
+            <div class="status"><span>Moblock</span><span>🔋 82%  •  12:34</span></div>
+            <div class="card-small" style="margin-top:10px">
+              <strong>Estado:</strong> <span style="font-weight:800">Protegido</span>
+              <div class="muted" style="margin-top:6px;font-size:13px">Última actualización: hace 2 min</div>
+            </div>
+
+            <div class="map">
+              <div>
+                <strong>Dispositivo A</strong>
+                <div class="muted">Ubicación activa • 1.2 km</div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:12px">
+              <button style="flex:1;padding:10px;border-radius:10px;background:linear-gradient(90deg,#f4e9dc,#fff9f0);border:none;font-weight:800;color:#021019">Bloquear</button>
+              <button style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--accent)">Borrar</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="features">
+        <h3 style="margin:0 0 12px">¿Por qué MoBlock?</h3>
+        <p class="muted" style="margin:0 0 18px">Protección especializada para móviles + educación continua. Diseñado para usuarios, PYMES e instituciones.</p>
+
+        <div class="features">
+          <div class="feature">
+            <strong>Detección de amenazas en tiempo real</strong>
+            <p>Motor ligero que detecta apps maliciosas y comportamiento anómalo sin agotar la batería.</p>
+          </div>
+          <div class="feature">
+            <strong>Cifrado y borrado seguro</strong>
+            <p>Cifrado local y remoto con opciones de borrado seguro verificable para cumplimiento legal.</p>
+          </div>
+          <div class="feature">
+            <strong>Panel de administración</strong>
+            <p>Panel web para gestionar dispositivos, políticas y reportes de cumplimiento.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="planes">
+        <h3 style="margin:10px 0">Planes para cada necesidad</h3>
+        <div class="pricing">
+          <div class="price-card">
+            <div style="display:flex;justify-content:space-between;align-items:center"><div>
+              <h4>Gratis</h4>
+              <small class="muted">Ideal para empezar</small>
+            </div><div class="pill">Freemium</div></div>
+            <div style="margin-top:14px"><span class="price">$0</span><small class="muted"> / mes</small></div>
+            <ul style="margin-top:12px;color:var(--muted)">
+              <li>Análisis básico</li>
+              <li>Bloqueo remoto limitado</li>
+              <li>Soporte comunitario</li>
+            </ul>
+            <div style="margin-top:14px"><a class="btn-ghost" href="#contacto">Empezar</a></div>
+          </div>
+
+          <div class="price-card best">
+            <div style="display:flex;justify-content:space-between;align-items:center"><div>
+              <h4>Estándar</h4>
+              <small class="muted">Para profesionales y PYMES</small>
+            </div><div class="pill">Recomendado</div></div>
+            <div style="margin-top:14px"><span class="price">$45</span><small class="muted"> / año</small></div>
+            <ul style="margin-top:12px;color:var(--muted)">
+              <li>Localización GPS en tiempo real</li>
+              <li>Bloqueo y borrado remoto</li>
+              <li>Soporte 24/7 en español</li>
+            </ul>
+            <div style="margin-top:14px"><a class="btn-primary" href="#contacto">Contratar</a></div>
+          </div>
+
+          <div class="price-card">
+            <div style="display:flex;justify-content:space-between;align-items:center"><div>
+              <h4>Premium</h4>
+              <small class="muted">Empresas y OEM</small>
+            </div><div class="pill">Avanzado</div></div>
+            <div style="margin-top:14px"><span class="price">Consultar</span></div>
+            <ul style="margin-top:12px;color:var(--muted)">
+              <li>Integración MDM/EMM</li>
+              <li>API & SIEM</li>
+              <li>Capacitaciones y auditorías</li>
+            </ul>
+            <div style="margin-top:14px"><a class="btn-ghost" href="#contacto">Solicitar demo</a></div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h3 style="margin:6px 0">Testimonios</h3>
+        <div class="testimonials">
+          <div class="t">
+            <strong>Empresa de logística • Cali</strong>
+            <p class="muted">"Recuperamos un equipo robado en menos de 24 horas. El equipo de soporte fue impecable."</p>
+          </div>
+          <div class="t">
+            <strong>Padre de familia • Bogotá</strong>
+            <p class="muted">"La función de control parental nos dio tranquilidad. Muy fácil de usar."</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="contacto">
+        <h3 style="margin:6px 0">Contacto y prueba gratuita</h3>
+        <p class="muted">Déjanos tus datos y un asesor se comunicará en menos de 24 horas. También puedes escribirnos a <strong>hola@moblocksecurity.co</strong></p>
+
+        <form onsubmit="event.preventDefault();alert('Gracias — tu solicitud fue enviada. Un asesor se comunicará.');" style="margin-top:12px">
+          <div class="grid-2">
+            <div>
+              <label>Nombre</label>
+              <input type="text" placeholder="Tu nombre" required />
+            </div>
+            <div>
+              <label>Empresa (opcional)</label>
+              <input type="text" placeholder="Tu empresa" />
+            </div>
+          </div>
+          <label>Correo electrónico</label>
+          <input type="email" placeholder="tu@correo.com" required />
+          <label>Mensaje</label>
+          <textarea rows="4" placeholder="¿En qué podemos ayudarte?"></textarea>
+          <div style="margin-top:12px;display:flex;gap:10px;align-items:center">
+            <button class="btn-primary" type="submit">Solicitar demo</button>
+            <a class="btn-ghost" href="mailto:hola@moblocksecurity.co">Enviar correo</a>
+          </div>
+        </form>
+      </section>
+
+      <div class="cta-band" style="margin-top:28px">
+        <div>
+          <h3 style="margin:0">Listo para proteger tus dispositivos?</h3>
+          <div class="muted">Prueba gratuita por 30 días. Sin tarjeta de crédito.</div>
+        </div>
+        <div><a class="btn-primary" href="#prueba">Iniciar prueba</a></div>
+      </div>
+    </main>
+
+    <footer>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div>
+          <strong>MoBlock Security S.A.S.</strong>
+          <div class="muted">Protección móvil • Soporte en español • Cumplimiento local</div>
+        </div>
+        <div class="muted">© MoBlock Security 2025 • Política de privacidad • Términos</div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // small enhancements: smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click',e=>{
+        const href=a.getAttribute('href');
+        if(href.length>1){
+          e.preventDefault();
+          document.querySelector(href).scrollIntoView({behavior:'smooth',block:'start'});
+        }
+      })
+    })
+
+    // reveal animation on scroll
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('fadeUp');io.unobserve(e.target)}})
+    },{threshold:0.12});
+    document.querySelectorAll('section, .feature, .price-card, .t').forEach(el=>io.observe(el));
+  </script>
+</body>
+</html>

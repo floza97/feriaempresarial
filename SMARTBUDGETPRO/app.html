@@ -1,0 +1,1322 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SmartBudget Pro — Demo (Single File)</title>
+<style>
+:root{
+  --accent:#2d9d66;
+  --accent-dark:#1e7a4c;
+  --bg:#f6fbf7;
+  --card:#fff;
+  --muted:#556;
+  --danger:#e74c3c;
+  --warning:#f39c12;
+  --maxW:1100px;
+  font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#111;line-height:1.5;}
+.container{max-width:var(--maxW);margin:0 auto;padding:18px;}
+.header{background:linear-gradient(90deg,#eaf7ef,#ffffff);padding:12px 18px;border-bottom:1px solid rgba(0,0,0,0.04)}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand h1{margin:0;color:var(--accent);font-size:1.6rem}
+.topbar{display:flex;gap:8px;align-items:center}
+.topbar button{background:none;border:1px solid transparent;padding:8px 10px;border-radius:8px;cursor:pointer;transition:all 0.2s}
+.topbar button:hover{background:rgba(0,0,0,0.03)}
+.auth-area{min-width:170px;text-align:right}
+
+nav.main-nav{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+nav.main-nav button{background:#fff;border:1px solid rgba(0,0,0,0.05);padding:8px 12px;border-radius:8px;cursor:pointer;transition:all 0.2s}
+nav.main-nav button:hover{background:var(--accent);color:white}
+section.page{display:none;padding:18px 0}
+section.page.active{display:block}
+
+.card{background:var(--card);padding:18px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.04);margin-bottom:12px}
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+.summary-grid .card h3{margin:0;color:var(--muted);font-size:0.95rem}
+.summary-grid .card p{font-size:1.2rem;margin:8px 0 0;font-weight:600}
+
+.forms{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+input[type="text"],input[type="number"],input[type="date"],select{padding:10px;border-radius:6px;border:1px solid rgba(0,0,0,0.15);width:100%;font-size:14px}
+input:focus, select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(45,157,102,0.1)}
+button.primary{background:var(--accent);color:#fff;padding:10px 16px;border-radius:8px;border:none;cursor:pointer;font-weight:500;transition:background 0.2s}
+button.primary:hover{background:var(--accent-dark)}
+button.secondary{background:#eee;color:#333;padding:8px 12px;border-radius:8px;border:none;cursor:pointer;transition:background 0.2s}
+button.secondary:hover{background:#ddd}
+button.danger{background:var(--danger);color:white;padding:8px 12px;border-radius:8px;border:none;cursor:pointer;transition:background 0.2s}
+button.danger:hover{background:#c0392b}
+.table{width:100%;border-collapse:collapse;margin-top:10px}
+.table th,.table td{padding:10px 8px;border-bottom:1px solid rgba(0,0,0,0.06);text-align:left;font-size:14px}
+.table th{font-weight:600;color:var(--muted)}
+.controls{display:flex;gap:8px;align-items:center}
+.footer{padding:12px 18px;border-top:1px solid rgba(0,0,0,0.04);margin-top:18px;text-align:center;color:var(--muted)}
+
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.progress-bar{height:8px;background:#eee;border-radius:4px;overflow:hidden;margin:8px 0}
+.progress-fill{height:100%;background:var(--accent);border-radius:4px;transition:width 0.3s}
+.empty-state{padding:30px;text-align:center;color:var(--muted)}
+.empty-state p{margin:0}
+@media(max-width:900px){.summary-grid{grid-template-columns:repeat(2,1fr)}.charts{grid-template-columns:1fr}}
+@media(max-width:600px){.summary-grid{grid-template-columns:1fr}.brand{flex-direction:column;align-items:flex-start}.main-nav{width:100%;overflow:auto}.forms{grid-template-columns:1fr}}
+.small-muted{font-size:0.9rem;color:var(--muted)}
+.login-panel{display:flex;gap:8px;align-items:center}
+.badge{background:#fff;border-radius:999px;padding:6px 10px;border:1px solid rgba(0,0,0,0.06);font-size:0.95rem}
+.alert{padding:12px;border-radius:6px;margin:12px 0}
+.alert-info{background:#e8f4fd;color:#0c5460;border:1px solid #b8daff}
+.alert-success{background:#eaf7ee;color:#155724;border:1px solid #c3e6cb}
+.type-income{color:var(--accent);font-weight:500}
+.type-expense{color:var(--danger);font-weight:500}
+</style>
+</head>
+<body>
+  <header class="header">
+    <div class="container brand">
+      <div>
+        <h1>SmartBudget Pro</h1>
+        <div class="small-muted">Demo — LocalStorage · Vanilla JS</div>
+      </div>
+      <div class="topbar">
+        <nav class="main-nav" aria-label="Navegación principal">
+          <button data-show="dashboard">Dashboard</button>
+          <button data-show="transactions">Transacciones</button>
+          <button data-show="budgets">Presupuestos</button>
+          <button data-show="goals">Metas</button>
+          <button data-show="investments">Inversiones</button>
+          <button data-show="debts">Deudas</button>
+          <button data-show="reports">Reportes</button>
+        </nav>
+        <div class="auth-area" id="authArea"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" id="main">
+    <!-- Dashboard -->
+    <section id="dashboard" class="page active" aria-labelledby="dashTitle">
+      <h2 id="dashTitle">Resumen</h2>
+      <div class="alert alert-info">
+        💡 <strong>Bienvenido a SmartBudget Pro</strong> — Usa "demo/demo" para iniciar sesión o crea una nueva cuenta.
+      </div>
+      <div class="summary-grid" role="region" aria-label="Resumen financiero">
+        <div class="card">
+          <h3>Saldo</h3>
+          <p id="balance">$ 0</p>
+        </div>
+        <div class="card">
+          <h3>Ingresos (total)</h3>
+          <p id="income">$ 0</p>
+        </div>
+        <div class="card">
+          <h3>Gastos (total)</h3>
+          <p id="expense">$ 0</p>
+        </div>
+      </div>
+
+      <div class="charts">
+        <div class="card">
+          <h4>Gastos por categoría (Top 6)</h4>
+          <canvas id="catCanvas" width="600" height="300" aria-label="Gastos por categoría"></canvas>
+        </div>
+        <div class="card">
+          <h4>Ingresos vs Gastos (6 meses)</h4>
+          <canvas id="trendCanvas" width="600" height="300" aria-label="Tendencia ingresos vs gastos"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Transactions -->
+    <section id="transactions" class="page" aria-labelledby="txTitle">
+      <h2 id="txTitle">Transacciones</h2>
+      <div class="card">
+        <form id="txForm" class="forms" aria-label="Agregar transacción">
+          <select id="txType" required>
+            <option value="income">Ingreso</option>
+            <option value="expense">Gasto</option>
+          </select>
+          <input id="txAmount" type="number" placeholder="Monto" required min="0.01" step="0.01" />
+          <input id="txCategory" type="text" placeholder="Categoría (ej: Comida)" required />
+          <input id="txDate" type="date" />
+          <input id="txNote" type="text" placeholder="Nota (opcional)" />
+          <div class="controls">
+            <button type="submit" class="primary">Agregar</button>
+            <button type="button" id="clearTx" class="secondary">Limpiar</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card" id="txListCard">
+        <h3>Transacciones</h3>
+        <div id="txTableContainer">
+          <table class="table" id="txTable" aria-describedby="txTitle">
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Monto</th>
+                <th>Categoría</th>
+                <th>Fecha</th>
+                <th>Nota</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="txTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Budgets -->
+    <section id="budgets" class="page" aria-labelledby="budTitle">
+      <h2 id="budTitle">Presupuestos</h2>
+      <div class="card">
+        <form id="budForm" class="forms" aria-label="Crear presupuesto">
+          <input id="budCategory" type="text" placeholder="Categoría" required />
+          <input id="budLimit" type="number" placeholder="Límite mensual" required min="0.01" step="0.01" />
+          <div class="controls"><button type="submit" class="primary">Crear</button></div>
+        </form>
+      </div>
+      <div id="budList" class="card"><h3>Presupuestos</h3><div id="budItems"></div></div>
+    </section>
+
+    <!-- Goals -->
+    <section id="goals" class="page" aria-labelledby="goalsTitle">
+      <h2 id="goalsTitle">Metas de Ahorro</h2>
+      <div class="card">
+        <form id="goalForm" class="forms" aria-label="Crear meta">
+          <input id="goalTitle" type="text" placeholder="Título de la meta" required />
+          <input id="goalTarget" type="number" placeholder="Monto objetivo" required min="1" step="0.01" />
+          <div class="controls"><button type="submit" class="primary">Crear meta</button></div>
+        </form>
+      </div>
+      <div id="goalList" class="card"><h3>Metas</h3><div id="goalItems"></div></div>
+    </section>
+
+    <!-- Investments -->
+    <section id="investments" class="page" aria-labelledby="invTitle">
+      <h2 id="invTitle">Portafolio de Inversiones</h2>
+      <div class="card">
+        <form id="invForm" class="forms" aria-label="Agregar inversión">
+          <input id="invName" type="text" placeholder="Nombre del activo" required />
+          <select id="invType" required>
+            <option value="acciones">Acciones</option>
+            <option value="bonos">Bonos</option>
+            <option value="fondos">Fondos Mutuos</option>
+            <option value="cripto">Criptomonedas</option>
+            <option value="otros">Otros</option>
+          </select>
+          <input id="invQuantity" type="number" placeholder="Cantidad" required min="0.01" step="0.01" />
+          <input id="invPrice" type="number" placeholder="Precio por unidad" required min="0.01" step="0.01" />
+          <input id="invDate" type="date" />
+          <div class="controls"><button type="submit" class="primary">Agregar</button></div>
+        </form>
+      </div>
+      <div id="invList" class="card"><h3>Portafolio</h3><div id="invItems"></div></div>
+    </section>
+
+    <!-- Debts -->
+    <section id="debts" class="page" aria-labelledby="debtsTitle">
+      <h2 id="debtsTitle">Gestión de Deudas</h2>
+      <div class="card">
+        <form id="debtForm" class="forms" aria-label="Agregar deuda">
+          <input id="debtName" type="text" placeholder="Nombre de la deuda" required />
+          <input id="debtAmount" type="number" placeholder="Monto total" required min="0.01" step="0.01" />
+          <input id="debtBalance" type="number" placeholder="Saldo pendiente" required min="0.01" step="0.01" />
+          <input id="debtRate" type="number" placeholder="Tasa de interés (%)" required min="0" step="0.01" />
+          <input id="debtDueDate" type="date" />
+          <div class="controls"><button type="submit" class="primary">Agregar</button></div>
+        </form>
+      </div>
+      <div id="debtList" class="card"><h3>Deudas</h3><div id="debtItems"></div></div>
+    </section>
+
+    <!-- Reports -->
+    <section id="reports" class="page" aria-labelledby="reportsTitle">
+      <h2 id="reportsTitle">Reportes Financieros</h2>
+      <div class="card">
+        <h3>Resumen Ejecutivo</h3>
+        <div class="summary-grid">
+          <div class="card"><h4>Patrimonio Neto</h4><p id="netWorth">$ 0</p></div>
+          <div class="card"><h4>Valor Portafolio</h4><p id="portfolioValue">$ 0</p></div>
+          <div class="card"><h4>Deuda Total</h4><p id="totalDebt">$ 0</p></div>
+          <div class="card"><h4>Flujo de Caja</h4><p id="cashFlow">$ 0</p></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Exportar Datos</h3>
+        <div class="controls">
+          <button id="exportCSV" class="primary">Exportar CSV</button>
+          <button id="exportJSON" class="secondary">Exportar JSON</button>
+          <button id="backupData" class="secondary">Crear Respaldo</button>
+          <button id="resetData" class="danger">Resetear Datos</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Consejos Financieros</h3>
+        <div id="financialTips"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container small-muted">SmartBudget Pro — Demo local · 100% Vanilla JS</div>
+  </footer>
+
+<script>
+/* SmartBudget Pro — Single file Vanilla JS MVP
+   Features: Auth local (registro/login), transactions (CRUD), budgets, goals, dashboard + charts
+*/
+
+// ---------- Storage & Modelo ----------
+const STORAGE_KEY = 'sbp_v1_data';
+let store = (function load(){
+  try { 
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    console.log('Datos cargados:', data);
+    return data;
+  } catch(e){ 
+    console.error('Error cargando datos:', e);
+    return {} 
+  }
+})();
+
+// initialize shape
+if(!store.users) store.users = []; // {id,name,pass}
+if(!store.currentUserId) store.currentUserId = null;
+if(!store.transactions) store.transactions = []; // {id,userId,type,amount,category,date,note}
+if(!store.budgets) store.budgets = []; // {id,userId,category,limit}
+if(!store.goals) store.goals = []; // {id,userId,title,target}
+if(!store.investments) store.investments = []; // {id,userId,name,type,quantity,price,date}
+if(!store.debts) store.debts = []; // {id,userId,name,amount,balance,rate,dueDate}
+if(!store.recurring) store.recurring = []; // {id,userId,type,amount,category,frequency,nextDate}
+
+// seeded demo user (only if no users)
+if(store.users.length === 0){
+  console.log('Creando usuario demo...');
+  const demoId = 'u_' + Date.now();
+  store.users.push({ id: demoId, name: 'demo', pass: 'demo' });
+  store.currentUserId = demoId;
+  // seed a couple transactions
+  store.transactions.push({ 
+    id:'t1_'+Date.now(), 
+    userId: demoId, 
+    type:'income', 
+    amount:250000, 
+    category:'Salario', 
+    date: new Date().toISOString().slice(0,10), 
+    note:'Sueldo mensual' 
+  });
+  store.transactions.push({ 
+    id:'t2_'+Date.now(), 
+    userId: demoId, 
+    type:'expense', 
+    amount:45000, 
+    category:'Alimentos', 
+    date: new Date().toISOString().slice(0,10), 
+    note:'Mercado semanal' 
+  });
+  store.transactions.push({ 
+    id:'t3_'+Date.now(), 
+    userId: demoId, 
+    type:'expense', 
+    amount:120000, 
+    category:'Vivienda', 
+    date: new Date().toISOString().slice(0,10), 
+    note:'Arriendo' 
+  });
+  store.budgets.push({ id:'b1_'+Date.now(), userId: demoId, category:'Alimentos', limit:150000 });
+  store.budgets.push({ id:'b2_'+Date.now(), userId: demoId, category:'Transporte', limit:80000 });
+  store.goals.push({ id:'g1_'+Date.now(), userId: demoId, title:'Fondo emergencia', target:1000000 });
+  // seed investments and debts
+  store.investments.push({ 
+    id:'i1_'+Date.now(), 
+    userId: demoId, 
+    name:'Acciones ABC', 
+    type:'acciones', 
+    quantity:100, 
+    price:5000, 
+    date: new Date().toISOString().slice(0,10) 
+  });
+  store.debts.push({ 
+    id:'d1_'+Date.now(), 
+    userId: demoId, 
+    name:'Tarjeta de Crédito', 
+    amount:5000000, 
+    balance:1200000, 
+    rate:2.5, 
+    dueDate: '2025-12-31' 
+  });
+  save();
+}
+
+function save(){ 
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+    console.log('Datos guardados correctamente');
+  } catch(e) {
+    console.error('Error guardando datos:', e);
+    alert('Error guardando datos. Verifica que tienes espacio suficiente.');
+  }
+}
+
+// ---------- Utils ----------
+const qs = s => document.querySelector(s);
+const qsa = s => Array.from(document.querySelectorAll(s));
+const fmtCurrency = v => new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(v||0);
+const todayISO = () => new Date().toISOString().slice(0,10);
+function uid(prefix='id'){ return prefix + '_' + Math.random().toString(36).slice(2,9); }
+function escapeHtml(s){ 
+  if (typeof s !== 'string') return '';
+  return s.replace(/[&<>"']/g, c => 
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])
+  ); 
+}
+
+// ---------- Auth UI ----------
+const authArea = qs('#authArea');
+
+function renderAuth(){
+  const user = currentUser();
+  console.log('Render auth, usuario actual:', user);
+  if(user){
+    authArea.innerHTML = `
+      <div class="login-panel">
+        <span class="badge">Hola, ${escapeHtml(user.name)}</span>
+        <div style="margin-left:8px">
+          <button id="btnLogout" class="secondary">Cerrar sesión</button>
+        </div>
+      </div>`;
+    qs('#btnLogout').onclick = () => { 
+      store.currentUserId = null; 
+      save(); 
+      renderAuth(); 
+      renderAll();
+      showSection('dashboard');
+    };
+  } else {
+    // show login/register buttons
+    authArea.innerHTML = `
+      <div>
+        <button id="btnShowLogin" class="primary">Iniciar sesión</button>
+        <button id="btnShowRegister" class="secondary">Registrar</button>
+      </div>`;
+    qs('#btnShowLogin').onclick = showLogin;
+    qs('#btnShowRegister').onclick = showRegister;
+  }
+}
+
+function currentUser(){ 
+  return store.users.find(u=>u.id===store.currentUserId) || null; 
+}
+
+// simple prompts for login/register (keeps file simple)
+function showLogin(){
+  const name = prompt('Usuario: (ej: demo)');
+  if(!name) return;
+  const pass = prompt('Contraseña: (ej: demo)');
+  if(!pass) return;
+  const u = store.users.find(x=>x.name===name && x.pass===pass);
+  if(u){ 
+    store.currentUserId = u.id; 
+    save(); 
+    alert('¡Sesión iniciada correctamente!'); 
+    renderAuth(); 
+    renderAll();
+    showSection('dashboard');
+  } else {
+    alert('Credenciales inválidas. Usa "demo/demo" para la cuenta de demostración.');
+  }
+}
+
+function showRegister(){
+  const name = prompt('Nuevo usuario (ej: juan)');
+  if(!name) return;
+  if(store.users.some(x=>x.name===name)){ 
+    alert('Usuario ya existe'); 
+    return; 
+  }
+  const pass = prompt('Contraseña');
+  if(!pass) return;
+  const id = uid('u');
+  store.users.push({ id, name, pass });
+  store.currentUserId = id;
+  save();
+  alert('¡Cuenta creada e iniciada correctamente!');
+  renderAuth();
+  renderAll();
+  showSection('dashboard');
+}
+
+// ---------- Navigation ----------
+qsa('nav.main-nav button').forEach(btn => {
+  btn.addEventListener('click', ()=>showSection(btn.dataset.show));
+});
+
+function showSection(id){
+  console.log('Mostrando sección:', id);
+  qsa('section.page').forEach(s=>s.classList.remove('active'));
+  const section = qs('#'+id);
+  if (section) {
+    section.classList.add('active');
+    // focus first heading
+    section.querySelector('h2')?.scrollIntoView({behavior:'smooth',block:'start'});
+    renderAll(); // ensure content up-to-date
+  } else {
+    console.error('Sección no encontrada:', id);
+  }
+
+  // Special handling for reports section
+  if(id === 'reports'){
+    updateReports();
+  }
+}
+
+// ---------- Investments CRUD ----------
+const invForm = qs('#invForm'); 
+const invName = qs('#invName'); 
+const invType = qs('#invType');
+const invQuantity = qs('#invQuantity'); 
+const invPrice = qs('#invPrice'); 
+const invDate = qs('#invDate'); 
+const invItems = qs('#invItems');
+
+if (invDate) invDate.value = todayISO();
+
+if (invForm) {
+  invForm.addEventListener('submit', e=>{
+    e.preventDefault();
+    const user = currentUser();
+    if(!user){ alert('Inicia sesión para agregar inversiones.'); return; }
+    const name = invName.value.trim(); 
+    const type = invType.value; 
+    const qty = parseFloat(invQuantity.value);
+    const price = parseFloat(invPrice.value); 
+    const date = invDate.value || todayISO();
+    if(!name || isNaN(qty) || qty<=0 || isNaN(price) || price<=0){ 
+      alert('Por favor completa todos los campos correctamente.'); 
+      return; 
+    }
+    store.investments.push({ 
+      id: uid('i'), 
+      userId: user.id, 
+      name, 
+      type, 
+      quantity: qty, 
+      price, 
+      date 
+    });
+    save(); 
+    invForm.reset(); 
+    if (invDate) invDate.value = todayISO(); 
+    renderInvestments();
+    renderDashboard();
+  });
+}
+
+function renderInvestments(){
+  if (!invItems) return;
+  
+  const user = currentUser();
+  invItems.innerHTML = '';
+  if(!user){ 
+    invItems.innerHTML = '<div class="empty-state"><p>Inicia sesión para gestionar inversiones.</p></div>'; 
+    return; 
+  }
+  
+  const items = store.investments.filter(i=>i.userId===user.id);
+  if(items.length===0){ 
+    invItems.innerHTML = '<div class="empty-state"><p>No hay inversiones registradas.</p></div>'; 
+    return; 
+  }
+  
+  items.forEach(i=>{
+    const totalValue = i.quantity * i.price;
+    const div = document.createElement('div'); 
+    div.className='card';
+    div.innerHTML = `
+      <div style="display:flex; justify-content:between; align-items:start; margin-bottom:8px">
+        <div style="flex:1">
+          <strong>${escapeHtml(i.name)}</strong> 
+          <span class="small-muted">(${escapeHtml(i.type)})</span>
+        </div>
+        <div style="text-align:right">
+          <strong>${fmtCurrency(totalValue)}</strong>
+        </div>
+      </div>
+      <div class="small-muted">
+        Cantidad: ${i.quantity} · Precio unitario: ${fmtCurrency(i.price)} · Fecha: ${i.date}
+      </div>
+      <div style="margin-top:12px">
+        <button class="danger" data-del="${i.id}">Eliminar</button>
+      </div>`;
+    invItems.appendChild(div);
+  });
+  
+  invItems.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.onclick = (e)=>{
+      if(confirm('¿Estás seguro de eliminar esta inversión?')){ 
+        store.investments = store.investments.filter(x=>x.id!==e.target.dataset.del); 
+        save(); 
+        renderInvestments(); 
+        renderDashboard(); 
+      }
+    };
+  });
+}
+
+// ---------- Debts CRUD ----------
+const debtForm = qs('#debtForm'); 
+const debtName = qs('#debtName'); 
+const debtAmount = qs('#debtAmount');
+const debtBalance = qs('#debtBalance'); 
+const debtRate = qs('#debtRate'); 
+const debtDueDate = qs('#debtDueDate'); 
+const debtItems = qs('#debtItems');
+
+if (debtForm) {
+  debtForm.addEventListener('submit', e=>{
+    e.preventDefault();
+    const user = currentUser();
+    if(!user){ alert('Inicia sesión para agregar deudas.'); return; }
+    const name = debtName.value.trim(); 
+    const amount = parseFloat(debtAmount.value);
+    const balance = parseFloat(debtBalance.value); 
+    const rate = parseFloat(debtRate.value);
+    const dueDate = debtDueDate.value;
+    if(!name || isNaN(amount) || amount<=0 || isNaN(balance) || balance<0 || isNaN(rate) || rate<0){ 
+      alert('Por favor completa todos los campos correctamente.'); 
+      return; 
+    }
+    store.debts.push({ 
+      id: uid('d'), 
+      userId: user.id, 
+      name, 
+      amount, 
+      balance, 
+      rate, 
+      dueDate 
+    });
+    save(); 
+    debtForm.reset(); 
+    renderDebts();
+    renderDashboard();
+  });
+}
+
+function renderDebts(){
+  if (!debtItems) return;
+  
+  const user = currentUser();
+  debtItems.innerHTML = '';
+  if(!user){ 
+    debtItems.innerHTML = '<div class="empty-state"><p>Inicia sesión para gestionar deudas.</p></div>'; 
+    return; 
+  }
+  
+  const items = store.debts.filter(d=>d.userId===user.id);
+  if(items.length===0){ 
+    debtItems.innerHTML = '<div class="empty-state"><p>No hay deudas registradas.</p></div>'; 
+    return; 
+  }
+  
+  items.forEach(d=>{
+    const progress = ((d.amount - d.balance) / d.amount) * 100;
+    const div = document.createElement('div'); 
+    div.className='card';
+    div.innerHTML = `
+      <div style="display:flex; justify-content:between; align-items:start; margin-bottom:8px">
+        <div style="flex:1">
+          <strong>${escapeHtml(d.name)}</strong>
+        </div>
+        <div style="text-align:right">
+          <strong>${fmtCurrency(d.balance)}</strong>
+          <div class="small-muted">de ${fmtCurrency(d.amount)}</div>
+        </div>
+      </div>
+      <div class="small-muted">
+        Tasa de interés: ${d.rate}% · Fecha límite: ${d.dueDate || 'Sin fecha'}
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: ${Math.min(progress, 100)}%"></div>
+      </div>
+      <div style="margin-top:12px">
+        <button class="danger" data-del="${d.id}">Eliminar</button>
+      </div>`;
+    debtItems.appendChild(div);
+  });
+  
+  debtItems.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.onclick = (e)=>{
+      if(confirm('¿Estás seguro de eliminar esta deuda?')){ 
+        store.debts = store.debts.filter(x=>x.id!==e.target.dataset.del); 
+        save(); 
+        renderDebts(); 
+        renderDashboard(); 
+      }
+    };
+  });
+}
+
+// ---------- Transactions CRUD ----------
+const txForm = qs('#txForm');
+const txType = qs('#txType'); 
+const txAmount = qs('#txAmount'); 
+const txCategory = qs('#txCategory');
+const txDate = qs('#txDate'); 
+const txNote = qs('#txNote'); 
+const txTableBody = qs('#txTable tbody');
+
+if (txDate) txDate.value = todayISO();
+
+if (txForm) {
+  txForm.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const user = currentUser();
+    if(!user){ 
+      alert('Inicia sesión o registra una cuenta para agregar transacciones.'); 
+      return; 
+    }
+    const amount = parseFloat(txAmount.value);
+    if(isNaN(amount) || amount<=0){ 
+      alert('Por favor ingresa un monto válido.'); 
+      return; 
+    }
+    const category = txCategory.value.trim();
+    if(!category){ 
+      alert('La categoría es requerida.'); 
+      return; 
+    }
+    const tx = {
+      id: uid('t'),
+      userId: user.id,
+      type: txType.value,
+      amount,
+      category,
+      date: txDate.value || todayISO(),
+      note: txNote.value || ''
+    };
+    store.transactions.push(tx); 
+    save();
+    txForm.reset(); 
+    if (txDate) txDate.value = todayISO();
+    renderAll();
+    showSection('transactions');
+  });
+}
+
+if (qs('#clearTx')) {
+  qs('#clearTx').addEventListener('click', ()=>{ 
+    if (txForm) {
+      txForm.reset(); 
+      if (txDate) txDate.value = todayISO(); 
+    }
+  });
+}
+
+// render transactions list
+function renderTransactions(){
+  if (!txTableBody) return;
+  
+  const user = currentUser();
+  txTableBody.innerHTML = '';
+  if(!user){ 
+    txTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px">Inicia sesión para ver y crear transacciones.</td></tr>'; 
+    return; 
+  }
+  
+  const list = store.transactions
+    .filter(t=>t.userId===user.id)
+    .sort((a,b)=>new Date(b.date)-new Date(a.date));
+    
+  if(list.length===0){ 
+    txTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px">No hay transacciones registradas.</td></tr>'; 
+    return; 
+  }
+  
+  list.forEach(tx=>{
+    const tr = document.createElement('tr');
+    const typeClass = tx.type === 'income' ? 'type-income' : 'type-expense';
+    const typeText = tx.type === 'income' ? 'Ingreso' : 'Gasto';
+    
+    tr.innerHTML = `
+      <td><span class="${typeClass}">${escapeHtml(typeText)}</span></td>
+      <td>${fmtCurrency(tx.amount)}</td>
+      <td>${escapeHtml(tx.category)}</td>
+      <td>${escapeHtml(tx.date)}</td>
+      <td>${escapeHtml(tx.note||'')}</td>
+      <td>
+        <button class="secondary btn-edit" data-id="${tx.id}">Editar</button>
+        <button class="danger btn-del" data-id="${tx.id}">Eliminar</button>
+      </td>`;
+    txTableBody.appendChild(tr);
+  });
+  
+  // attach events
+  txTableBody.querySelectorAll('.btn-del').forEach(b=>{
+    b.onclick = (e)=>{
+      if(!confirm('¿Estás seguro de eliminar esta transacción?')) return;
+      const id = e.target.dataset.id;
+      store.transactions = store.transactions.filter(t=>t.id !== id);
+      save(); 
+      renderAll();
+    };
+  });
+  
+  txTableBody.querySelectorAll('.btn-edit').forEach(b=>{
+    b.onclick = (e)=>{
+      const id = e.target.dataset.id;
+      const tx = store.transactions.find(t=>t.id===id);
+      if(!tx) return;
+      
+      // Use a more user-friendly edit approach
+      const newAmount = parseFloat(prompt('Nuevo monto:', tx.amount));
+      if(isNaN(newAmount) || newAmount<=0) { 
+        alert('Monto inválido'); 
+        return; 
+      }
+      const newCategory = prompt('Nueva categoría:', tx.category) || tx.category;
+      const newDate = prompt('Nueva fecha (YYYY-MM-DD):', tx.date) || tx.date;
+      const newNote = prompt('Nueva nota:', tx.note) || tx.note;
+      
+      tx.amount = newAmount; 
+      tx.category = newCategory; 
+      tx.date = newDate; 
+      tx.note = newNote;
+      save(); 
+      renderAll();
+    };
+  });
+}
+
+// ---------- Budgets CRUD ----------
+const budForm = qs('#budForm'); 
+const budCategory = qs('#budCategory'); 
+const budLimit = qs('#budLimit'); 
+const budItems = qs('#budItems');
+
+if (budForm) {
+  budForm.addEventListener('submit', e=>{
+    e.preventDefault();
+    const user = currentUser();
+    if(!user){ alert('Inicia sesión para crear presupuestos.'); return; }
+    const cat = budCategory.value.trim(); 
+    const lim = parseFloat(budLimit.value);
+    if(!cat || isNaN(lim) || lim<=0){ 
+      alert('Por favor completa todos los campos correctamente.'); 
+      return; 
+    }
+    store.budgets.push({ 
+      id: uid('b'), 
+      userId: user.id, 
+      category: cat, 
+      limit: lim 
+    });
+    save(); 
+    budForm.reset(); 
+    renderBudgets();
+  });
+}
+
+function renderBudgets(){
+  if (!budItems) return;
+  
+  const user = currentUser();
+  budItems.innerHTML = '';
+  if(!user){ 
+    budItems.innerHTML = '<div class="empty-state"><p>Inicia sesión para gestionar presupuestos.</p></div>'; 
+    return; 
+  }
+  
+  const items = store.budgets.filter(b=>b.userId===user.id);
+  if(items.length===0){ 
+    budItems.innerHTML = '<div class="empty-state"><p>No hay presupuestos creados.</p></div>'; 
+    return; 
+  }
+  
+  items.forEach(b=>{
+    const spent = store.transactions
+      .filter(t=>t.userId===user.id && t.type==='expense' && t.category.toLowerCase()===b.category.toLowerCase())
+      .reduce((s,t)=>s+t.amount,0);
+    const percentage = Math.min((spent / b.limit) * 100, 100);
+    const isOver = spent > b.limit;
+    
+    const div = document.createElement('div'); 
+    div.className='card';
+    div.innerHTML = `
+      <div style="display:flex; justify-content:between; align-items:start; margin-bottom:8px">
+        <div style="flex:1">
+          <strong>${escapeHtml(b.category)}</strong>
+        </div>
+        <div style="text-align:right">
+          <strong class="${isOver ? 'type-expense' : ''}">${fmtCurrency(spent)}</strong>
+          <div class="small-muted">de ${fmtCurrency(b.limit)}</div>
+        </div>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill ${isOver ? 'type-expense' : ''}" 
+             style="width: ${percentage}%; background: ${isOver ? 'var(--danger)' : ''}"></div>
+      </div>
+      <div class="small-muted" style="margin-top:4px">
+        ${percentage.toFixed(1)}% utilizado
+        ${isOver ? ' · <strong class="type-expense">Presupuesto excedido</strong>' : ''}
+      </div>
+      <div style="margin-top:12px">
+        <button class="danger" data-del="${b.id}">Eliminar</button>
+      </div>`;
+    budItems.appendChild(div);
+  });
+  
+  budItems.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.onclick = (e)=>{
+      if(confirm('¿Estás seguro de eliminar este presupuesto?')){ 
+        store.budgets = store.budgets.filter(x=>x.id!==e.target.dataset.del); 
+        save(); 
+        renderBudgets(); 
+      }
+    };
+  });
+}
+
+// ---------- Goals CRUD ----------
+const goalForm = qs('#goalForm'); 
+const goalTitle = qs('#goalTitle'); 
+const goalTarget = qs('#goalTarget'); 
+const goalItems = qs('#goalItems');
+
+if (goalForm) {
+  goalForm.addEventListener('submit', e=>{
+    e.preventDefault();
+    const user = currentUser(); 
+    if(!user){ alert('Inicia sesión para crear metas.'); return; }
+    const title = goalTitle.value.trim(); 
+    const target = parseFloat(goalTarget.value);
+    if(!title || isNaN(target) || target<=0){ 
+      alert('Por favor completa todos los campos correctamente.'); 
+      return; 
+    }
+    store.goals.push({ 
+      id: uid('g'), 
+      userId: user.id, 
+      title, 
+      target 
+    });
+    save(); 
+    goalForm.reset(); 
+    renderGoals();
+  });
+}
+
+function renderGoals(){
+  if (!goalItems) return;
+  
+  const user = currentUser(); 
+  goalItems.innerHTML='';
+  if(!user){ 
+    goalItems.innerHTML = '<div class="empty-state"><p>Inicia sesión para gestionar metas.</p></div>'; 
+    return; 
+  }
+  
+  const items = store.goals.filter(g=>g.userId===user.id);
+  if(items.length===0){ 
+    goalItems.innerHTML='<div class="empty-state"><p>No hay metas creadas.</p></div>'; 
+    return; 
+  }
+  
+  items.forEach(g=>{
+    // compute progress: sum of income transactions whose category equals goal title
+    const progress = store.transactions
+      .filter(t=>t.userId===user.id && t.type==='income' && t.category===g.title)
+      .reduce((s,t)=>s+t.amount,0);
+    const pct = Math.min(Math.round((progress / g.target) * 100), 100);
+    
+    const div = document.createElement('div'); 
+    div.className='card';
+    div.innerHTML = `
+      <div style="display:flex; justify-content:between; align-items:start; margin-bottom:8px">
+        <div style="flex:1">
+          <strong>${escapeHtml(g.title)}</strong>
+        </div>
+        <div style="text-align:right">
+          <strong>${fmtCurrency(progress)}</strong>
+          <div class="small-muted">de ${fmtCurrency(g.target)}</div>
+        </div>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: ${pct}%"></div>
+      </div>
+      <div class="small-muted" style="margin-top:4px">
+        ${pct}% completado
+      </div>
+      <div style="margin-top:12px">
+        <button class="secondary" data-id="${g.id}">Aportar</button>
+        <button class="danger" data-del="${g.id}">Eliminar</button>
+      </div>`;
+    goalItems.appendChild(div);
+  });
+  
+  goalItems.querySelectorAll('[data-id]').forEach(btn=>{
+    btn.onclick = (e)=>{
+      const gId = e.target.dataset.id;
+      const goal = store.goals.find(g => g.id === gId);
+      if (!goal) return;
+      
+      const val = parseFloat(prompt(`¿Cuánto deseas aportar a "${goal.title}"? (COP)`));
+      if(isNaN(val) || val<=0) return alert('Valor inválido');
+      
+      const user = currentUser();
+      store.transactions.push({ 
+        id: uid('t'), 
+        userId: user.id, 
+        type:'income', 
+        amount: val, 
+        category: goal.title, 
+        date: todayISO(), 
+        note: 'Aporte a meta' 
+      });
+      save(); 
+      renderAll();
+    };
+  });
+  
+  goalItems.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.onclick = (e)=>{
+      if(confirm('¿Estás seguro de eliminar esta meta?')){ 
+        store.goals = store.goals.filter(x=>x.id!==e.target.dataset.del); 
+        save(); 
+        renderGoals(); 
+      }
+    };
+  });
+}
+
+// ---------- Dashboard Calculations & Charts ----------
+const balanceEl = qs('#balance');
+const incomeEl = qs('#income'); 
+const expenseEl = qs('#expense');
+const catCanvas = qs('#catCanvas'); 
+const trendCanvas = qs('#trendCanvas');
+
+function renderDashboard(){
+  const user = currentUser();
+  if(!user){
+    if (balanceEl) balanceEl.textContent = '$ 0'; 
+    if (incomeEl) incomeEl.textContent = '$ 0'; 
+    if (expenseEl) expenseEl.textContent = '$ 0';
+    clearCanvas(catCanvas); 
+    clearCanvas(trendCanvas);
+    return;
+  }
+  
+  const txs = store.transactions.filter(t=>t.userId===user.id);
+  const income = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const expense = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const balance = income - expense;
+
+  // Calculate investments and debts
+  const investments = store.investments.filter(i=>i.userId===user.id);
+  const portfolioValue = investments.reduce((s,i)=>s+(i.quantity*i.price),0);
+  const debts = store.debts.filter(d=>d.userId===user.id);
+  const totalDebt = debts.reduce((s,d)=>s+d.balance,0);
+  const netWorth = balance + portfolioValue - totalDebt;
+
+  if (balanceEl) balanceEl.textContent = fmtCurrency(balance);
+  if (incomeEl) incomeEl.textContent = fmtCurrency(income);
+  if (expenseEl) expenseEl.textContent = fmtCurrency(expense);
+
+  // Update reports section if visible
+  updateReports();
+
+  drawCategoryChart(user.id);
+  drawTrendChart(user.id);
+}
+
+function updateReports() {
+  const user = currentUser();
+  if (!user) return;
+  
+  const txs = store.transactions.filter(t=>t.userId===user.id);
+  const income = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const expense = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const balance = income - expense;
+
+  const investments = store.investments.filter(i=>i.userId===user.id);
+  const portfolioValue = investments.reduce((s,i)=>s+(i.quantity*i.price),0);
+  const debts = store.debts.filter(d=>d.userId===user.id);
+  const totalDebt = debts.reduce((s,d)=>s+d.balance,0);
+  const netWorth = balance + portfolioValue - totalDebt;
+
+  const netWorthEl = qs('#netWorth');
+  const portfolioEl = qs('#portfolioValue');
+  const debtEl = qs('#totalDebt');
+  const cashFlowEl = qs('#cashFlow');
+  
+  if(netWorthEl) netWorthEl.textContent = fmtCurrency(netWorth);
+  if(portfolioEl) portfolioEl.textContent = fmtCurrency(portfolioValue);
+  if(debtEl) debtEl.textContent = fmtCurrency(totalDebt);
+  if(cashFlowEl) cashFlowEl.textContent = fmtCurrency(balance);
+}
+
+function clearCanvas(canvas){
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d'); 
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = '#666'; 
+  ctx.font='14px sans-serif'; 
+  ctx.textAlign = 'center';
+  ctx.fillText('Sin datos para mostrar', canvas.width/2, canvas.height/2);
+}
+
+// Simple category bar chart (top 6)
+function drawCategoryChart(userId){
+  if (!catCanvas) return;
+  
+  const ctx = catCanvas.getContext('2d'); 
+  ctx.clearRect(0,0,catCanvas.width,catCanvas.height);
+  const txs = store.transactions.filter(t=>t.userId===userId && t.type==='expense');
+  
+  if (txs.length === 0) {
+    clearCanvas(catCanvas);
+    return;
+  }
+  
+  const map = {};
+  txs.forEach(t=> map[t.category] = (map[t.category]||0) + t.amount);
+  const entries = Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  
+  if(entries.length===0){ 
+    clearCanvas(catCanvas); 
+    return; 
+  }
+  
+  const w = catCanvas.width, h = catCanvas.height, pad=40;
+  const max = Math.max(...entries.map(e=>e[1]));
+  const barW = (w - pad*2) / entries.length * 0.6;
+  
+  // Draw bars
+  entries.forEach((e,i)=>{
+    const x = pad + i * ((w - pad*2)/entries.length) + (((w - pad*2)/entries.length) - barW)/2;
+    const barH = (e[1]/max) * (h - pad*2 - 20);
+    ctx.fillStyle = '#2d9d66';
+    ctx.fillRect(x, h - pad - barH, barW, barH);
+    
+    // Labels
+    ctx.fillStyle = '#111'; 
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'center';
+    
+    // Category name
+    ctx.fillText(e[0], x + barW/2, h - pad + 16);
+    
+    // Amount
+    ctx.fillText(fmtCurrency(e[1]), x + barW/2, h - pad - barH - 8);
+  });
+}
+
+// Trend line chart (6 months)
+function drawTrendChart(userId){
+  if (!trendCanvas) return;
+  
+  const ctx = trendCanvas.getContext('2d'); 
+  ctx.clearRect(0,0,trendCanvas.width,trendCanvas.height);
+  const months = 6; 
+  const now = new Date();
+  const labels = [], incs = [], exps = [];
+  
+  for(let i=months-1;i>=0;i--){
+    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+    labels.push(d.toLocaleString('es-CO',{month:'short',year:'2-digit'}));
+    const start = new Date(d.getFullYear(),d.getMonth(),1); 
+    const end = new Date(d.getFullYear(),d.getMonth()+1,1);
+    const txs = store.transactions.filter(t=>
+      t.userId===userId && 
+      new Date(t.date) >= start && 
+      new Date(t.date) < end
+    );
+    incs.push(txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0));
+    exps.push(txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0));
+  }
+  
+  // Check if we have any data
+  const hasData = incs.some(v => v > 0) || exps.some(v => v > 0);
+  if (!hasData) {
+    clearCanvas(trendCanvas);
+    return;
+  }
+  
+  const w = trendCanvas.width, h = trendCanvas.height, pad=30;
+  const maxVal = Math.max(...incs.concat(exps),1);
+  
+  // grid
+  ctx.strokeStyle='rgba(0,0,0,0.06)'; 
+  ctx.beginPath();
+  for(let i=0;i<=4;i++){ 
+    const y = pad + (h - pad*2) * (i/4); 
+    ctx.moveTo(pad,y); 
+    ctx.lineTo(w-pad,y); 
+  }
+  ctx.stroke();
+  
+  // draw line function
+  function drawLine(data,color){
+    ctx.beginPath(); 
+    ctx.strokeStyle=color; 
+    ctx.lineWidth=2;
+    data.forEach((v,i)=>{
+      const x = pad + i * ((w - pad*2)/(labels.length-1));
+      const y = h - pad - (v/maxVal)*(h - pad*2);
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    
+    // Draw points
+    data.forEach((v,i)=>{
+      const x = pad + i * ((w - pad*2)/(labels.length-1));
+      const y = h - pad - (v/maxVal)*(h - pad*2);
+      ctx.beginPath(); 
+      ctx.fillStyle=color; 
+      ctx.arc(x,y,3,0,Math.PI*2); 
+      ctx.fill();
+    });
+  }
+  
+  drawLine(incs,'#2d9d66'); 
+  drawLine(exps,'#ff6b6b');
+  
+  // labels
+  ctx.fillStyle='#333'; 
+  ctx.textAlign='center'; 
+  ctx.font='12px sans-serif';
+  labels.forEach((lab,i)=>{ 
+    const x = pad + i * ((w - pad*2)/(labels.length-1)); 
+    ctx.fillText(lab, x, h - 6); 
+  });
+  
+  // Legend
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#2d9d66';
+  ctx.fillText('Ingresos', 10, 20);
+  ctx.fillStyle = '#ff6b6b';
+  ctx.fillText('Gastos', 10, 40);
+}
+
+// ---------- Export Functions ----------
+if (qs('#exportCSV')) {
+  qs('#exportCSV').addEventListener('click', ()=>{
+    const user = currentUser();
+    if(!user){ alert('Inicia sesión para exportar datos.'); return; }
+    const txs = store.transactions.filter(t=>t.userId===user.id);
+    let csv = 'Tipo,Monto,Categoría,Fecha,Nota\n';
+    txs.forEach(t=> csv += `${t.type},${t.amount},${t.category},${t.date},"${t.note||''}"\n`);
+    const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; 
+    a.download = 'transacciones.csv'; 
+    a.click();
+    URL.revokeObjectURL(url);
+    alert('Archivo CSV descargado correctamente.');
+  });
+}
+
+if (qs('#exportJSON')) {
+  qs('#exportJSON').addEventListener('click', ()=>{
+    const user = currentUser();
+    if(!user){ alert('Inicia sesión para exportar datos.'); return; }
+    const data = {
+      transactions: store.transactions.filter(t=>t.userId===user.id),
+      budgets: store.budgets.filter(b=>b.userId===user.id),
+      goals: store.goals.filter(g=>g.userId===user.id),
+      investments: store.investments.filter(i=>i.userId===user.id),
+      debts: store.debts.filter(d=>d.userId===user.id),
+      exportDate: new Date().toISOString()
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; 
+    a.download = 'datos-financieros.json'; 
+    a.click();
+    URL.revokeObjectURL(url);
+    alert('Archivo JSON descargado correctamente.');
+  });
+}
+
+if (qs('#backupData')) {
+  qs('#backupData').addEventListener('click', ()=>{
+    const user = currentUser();
+    if(!user){ alert('Inicia sesión para crear respaldos.'); return; }
+    const backup = JSON.stringify(store, null, 2);
+    const blob = new Blob([backup], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; 
+    a.download = `respaldo-${new Date().toISOString().slice(0,10)}.json`; 
+    a.click();
+    URL.revokeObjectURL(url);
+    alert('Respaldo creado exitosamente.');
+  });
+}
+
+if (qs('#resetData')) {
+  qs('#resetData').addEventListener('click', ()=>{
+    if(confirm('¿Estás seguro de resetear todos los datos? Esto no se puede deshacer.')) {
+      localStorage.removeItem(STORAGE_KEY);
+      location.reload();
+    }
+  });
+}
+
+// ---------- Financial Tips ----------
+function renderFinancialTips(){
+  const tips = [
+    "💡 Mantén al menos 3-6 meses de gastos en ahorros de emergencia",
+    "📈 Invierte en tu educación financiera continuamente",
+    "🏠 No gastes más del 30% de tus ingresos en vivienda",
+    "🚗 Evita deudas de consumo; usa efectivo para compras menores",
+    "📊 Revisa tus gastos mensualmente y ajusta presupuestos",
+    "🎯 Establece metas SMART (Específicas, Medibles, Alcanzables, Relevantes, Temporales)",
+    "💰 El interés compuesto es tu mejor amigo para inversiones a largo plazo",
+    "📱 Automatiza tus ahorros desde que recibes tu salario",
+    "💳 Paga siempre el saldo completo de tus tarjetas de crédito",
+    "📝 Registra cada transacción para tener control total de tus finanzas"
+  ];
+  const tipsEl = qs('#financialTips');
+  if(tipsEl){
+    tipsEl.innerHTML = tips.map(tip => 
+      `<div class="card small-muted" style="margin-bottom:8px">${tip}</div>`
+    ).join('');
+  }
+}
+
+// ---------- Render all ----------
+function renderAll(){
+  console.log('Renderizando toda la aplicación...');
+  renderAuth();
+  renderDashboard();
+  renderTransactions();
+  renderBudgets();
+  renderGoals();
+  renderInvestments();
+  renderDebts();
+  renderFinancialTips();
+}
+
+// initial render
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM cargado, iniciando aplicación...');
+  renderAll();
+  
+  // Auto-login demo user if no one is logged in
+  if (!currentUser() && store.users.length > 0) {
+    const demoUser = store.users.find(u => u.name === 'demo');
+    if (demoUser) {
+      store.currentUserId = demoUser.id;
+      save();
+      renderAll();
+    }
+  }
+});
+
+</script>
+</body>
+</html>

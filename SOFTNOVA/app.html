@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SoftNova - Demo App (Vanilla JS)</title>
+  <meta name="description" content="Demo app para SoftNova S.A.S. - Gestión de clientes, proyectos y propuestas (vanilla JS)">
+  <style>
+    /* -------------------------
+       Variables y reset
+    -------------------------*/
+    :root{
+      --bg:#f8fbff; --card:#ffffff; --primary:#0b3b66; --accent:#2aa198; --muted:#6b7280; --success:#16a34a;
+      --radius:12px; --shadow: 0 6px 18px rgba(11,59,102,0.07);
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box}
+    html,body,#app{height:100%}
+    body{margin:0;background:linear-gradient(180deg,var(--bg),#ffffff 60%);color:var(--primary);}
+    .container{max-width:1100px;margin:24px auto;padding:18px}
+
+    /* Layout */
+    header{display:flex;gap:12px;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:56px;height:56px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
+    nav{display:flex;gap:8px;align-items:center}
+    button, .btn{background:var(--primary);color:white;border:0;padding:10px 14px;border-radius:10px;cursor:pointer}
+    .btn.ghost{background:transparent;color:var(--primary);border:1px solid rgba(11,59,102,0.08)}
+
+    main{display:grid;grid-template-columns:260px 1fr;gap:18px;margin-top:18px}
+    aside{background:var(--card);padding:16px;border-radius:var(--radius);box-shadow:var(--shadow)}
+    .content{padding:18px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow)}
+
+    /* Sidebar */
+    .navlist{display:flex;flex-direction:column;gap:8px}
+    .navitem{padding:10px;border-radius:8px;display:flex;align-items:center;gap:10px;cursor:pointer}
+    .navitem.active{background:linear-gradient(90deg,rgba(11,59,102,0.06),rgba(42,161,152,0.04));font-weight:600}
+
+    /* Dashboard widgets */
+    .row{display:flex;gap:12px}
+    .card{flex:1;padding:14px;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfbff);box-shadow:0 4px 12px rgba(11,59,102,0.04)}
+    .small{font-size:12px;color:var(--muted)}
+
+    /* Forms and lists */
+    form{display:grid;gap:10px}
+    label{font-size:13px}
+    input,textarea,select{padding:10px;border-radius:8px;border:1px solid #e6eef8;background:#fff}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:8px;border-bottom:1px solid #f0f4fb;text-align:left}
+    tr:hover td{background:#fbfcff}
+
+    /* Responsive */
+    @media (max-width:900px){main{grid-template-columns:1fr}aside{order:2}.content{order:1}}
+
+    /* Accessibility focus */
+    :focus{outline:3px solid rgba(42,161,152,0.18);outline-offset:2px}
+
+    /* Tiny helpers */
+    .muted{color:var(--muted)}
+    .align-right{text-align:right}
+    .gap-8{gap:8px}
+    .mb-8{margin-bottom:8px}
+
+  </style>
+</head>
+<body>
+  <div id="app" class="container" aria-live="polite">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden>SN</div>
+        <div>
+          <div style="font-weight:700;font-size:18px">SoftNova <span class="muted" style="font-weight:400">Demo</span></div>
+          <div class="small muted">Impulsamos tu futuro digital</div>
+        </div>
+      </div>
+      <nav id="top-actions">
+        <div id="auth-info" class="small muted" aria-live="polite"></div>
+        <button id="btn-new" class="btn ghost" aria-haspopup="dialog">+ Nuevo</button>
+        <button id="btn-logout" class="btn">Cerrar sesión</button>
+      </nav>
+    </header>
+
+    <main>
+      <aside aria-label="Navegación principal">
+        <div class="navlist" role="navigation">
+          <div class="navitem active" data-view="dashboard" tabindex="0">📊 Dashboard</div>
+          <div class="navitem" data-view="clients" tabindex="0">👥 Clientes</div>
+          <div class="navitem" data-view="projects" tabindex="0">🗂 Proyectos</div>
+          <div class="navitem" data-view="proposals" tabindex="0">✉️ Propuestas</div>
+          <div class="navitem" data-view="settings" tabindex="0">⚙️ Configuración</div>
+        </div>
+        <hr style="margin:12px 0" />
+        <div class="small muted">Atajos</div>
+        <div style="display:flex;flex-direction:column;margin-top:8px;gap:6px">
+          <button id="shortcut-client" class="btn ghost">Agregar cliente</button>
+          <button id="shortcut-project" class="btn ghost">Crear proyecto</button>
+        </div>
+      </aside>
+
+      <section class="content" id="view-root" tabindex="0">
+        <!-- Views will be injected here -->
+      </section>
+    </main>
+
+    <!-- Templates (hidden) -->
+    <template id="tpl-dashboard">
+      <div>
+        <h2>Panel</h2>
+        <div class="row mb-8">
+          <div class="card">
+            <div class="small">Clientes</div>
+            <div id="stat-clients" style="font-size:24px;font-weight:700">0</div>
+            <div class="small muted">Clientes registrados</div>
+          </div>
+          <div class="card">
+            <div class="small">Proyectos</div>
+            <div id="stat-projects" style="font-size:24px;font-weight:700">0</div>
+            <div class="small muted">Proyectos totales</div>
+          </div>
+          <div class="card">
+            <div class="small">Propuestas</div>
+            <div id="stat-proposals" style="font-size:24px;font-weight:700">0</div>
+            <div class="small muted">Propuestas emitidas</div>
+          </div>
+        </div>
+
+        <h3>Últimos proyectos</h3>
+        <div id="list-recent-projects"></div>
+      </div>
+    </template>
+
+    <template id="tpl-clients">
+      <div>
+        <h2>Clientes</h2>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div class="small muted">Administra tu cartera de clientes</div>
+          <div>
+            <button id="btn-add-client" class="btn">Nuevo cliente</button>
+          </div>
+        </div>
+        <div id="clients-area"></div>
+      </div>
+    </template>
+
+    <template id="tpl-projects">
+      <div>
+        <h2>Proyectos</h2>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div class="small muted">Seguimiento de proyectos</div>
+          <div>
+            <button id="btn-add-project" class="btn">Nuevo proyecto</button>
+          </div>
+        </div>
+        <div id="projects-area"></div>
+      </div>
+    </template>
+
+    <template id="tpl-proposals">
+      <div>
+        <h2>Propuestas</h2>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div class="small muted">Cotizaciones y propuestas</div>
+          <div>
+            <button id="btn-add-proposal" class="btn">Generar propuesta</button>
+          </div>
+        </div>
+        <div id="proposals-area"></div>
+      </div>
+    </template>
+
+    <template id="tpl-settings">
+      <div>
+        <h2>Configuración</h2>
+        <div class="card">
+          <h4>Empresa</h4>
+          <div class="small muted">Define los datos básicos</div>
+          <form id="form-company">
+            <label for="company-name">Nombre</label>
+            <input id="company-name" aria-label="Nombre de la empresa" />
+            <label for="company-slogan">Slogan</label>
+            <input id="company-slogan" />
+            <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+              <button type="submit" class="btn">Guardar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </template>
+
+    <!-- Modals: simple accessible dialogs -->
+    <div id="modal-root" aria-hidden="true"></div>
+
+    <script>
+      /* ======================================================
+         SoftNova - Single-file vanilla JS app
+         Structure: simple MVC-like modules within IIFE
+         Features implemented (minimal viable demo):
+         - Simulated Authentication (localStorage)
+         - CRUD: Clients, Projects, Proposals
+         - Dashboard with stats and recent items
+         - Local persistence using localStorage
+         - Accessibility friendly and responsive UI
+      =======================================================*/
+
+      (function(){
+        // ---- Utilities ----
+        const $ = selector => document.querySelector(selector);
+        const el = (tag, attrs={}, ...children) => {
+          const node = document.createElement(tag);
+          Object.entries(attrs).forEach(([k,v])=>{ if(k==='class') node.className=v; else if(k.startsWith('data-')) node.setAttribute(k,v); else node[k]=v; });
+          children.flat().forEach(c=>{ if(typeof c==='string') node.appendChild(document.createTextNode(c)); else if(c) node.appendChild(c); });
+          return node;
+        }
+
+        // ---- Storage layer (Model) ----
+        const DB = (function(){
+          const KEY = 'softnova_demo_v1';
+          const defaultState = {
+            users:[{id:'u-1',email:'admin@softnova.com',name:'Admin SoftNova',password:'demo123'}],
+            company:{name:'SoftNova S.A.S.',slogan:'Impulsamos tu futuro digital'},
+            clients:[],projects:[],proposals:[],settings:{}
+          };
+          function load(){
+            try{const raw=localStorage.getItem(KEY); if(!raw){localStorage.setItem(KEY,JSON.stringify(defaultState)); return JSON.parse(JSON.stringify(defaultState));} return JSON.parse(raw);}catch(e){console.error('db load',e);localStorage.setItem(KEY,JSON.stringify(defaultState));return JSON.parse(JSON.stringify(defaultState));}
+          }
+          function save(state){localStorage.setItem(KEY,JSON.stringify(state));}
+          function reset(){localStorage.removeItem(KEY); return load();}
+          return {load,save,reset};
+        })();
+
+        // ---- App State & Controller ----
+        const App = (function(){
+          let state = DB.load();
+          let currentUser = null;
+
+          // seed small demo data if empty
+          if(state.clients.length===0){
+            const now = Date.now();
+            state.clients.push({id:'c-1',name:'Panaderia Sol',contact:'María',email:'maria@panaderia.co',phone:'3120001111',notes:'Cliente local',created:now});
+            state.clients.push({id:'c-2',name:'Distribuciones Andes',contact:'Carlos',email:'carlos@andes.co',phone:'3150002222',notes:'Interesados en ERP',created:now-86400000});
+            state.projects.push({id:'p-1',clientId:'c-1',title:'Tienda online Panaderia',status:'propuesta',budget:1200000,created:now});
+            state.proposals.push({id:'pr-1',projectId:'p-1',title:'Propuesta básica tienda online',amount:1200000,status:'enviada',created:now});
+            DB.save(state);
+          }
+
+          // Authentication
+          function login(email,password){
+            const user = state.users.find(u=>u.email===email && u.password===password);
+            if(user){currentUser = {id:user.id,name:user.name,email:user.email}; return true;} return false;
+          }
+          function logout(){currentUser=null;}
+          function getCurrentUser(){return currentUser;}
+
+          // CRUD helpers
+          function list(entity){return state[entity] ? [...state[entity]] : []}
+
+          function find(entity,id){return (state[entity]||[]).find(x=>x.id===id)}
+
+          function create(entity,obj){ obj.id = entity.substr(0,1)+'-'+Math.random().toString(36).slice(2,9); obj.created = Date.now(); state[entity].push(obj); DB.save(state); return obj }
+
+          function update(entity,id,patch){ const idx=state[entity].findIndex(x=>x.id===id); if(idx===-1) return null; state[entity][idx]=Object.assign({},state[entity][idx],patch); DB.save(state); return state[entity][idx]; }
+
+          function remove(entity,id){ const idx=state[entity].findIndex(x=>x.id===id); if(idx===-1) return false; state[entity].splice(idx,1); DB.save(state); return true }
+
+          function saveCompany(payload){ state.company = Object.assign({},state.company||{},payload); DB.save(state); }
+
+          function getCompany(){ return state.company }
+
+          function stats(){ return {clients:state.clients.length,projects:state.projects.length,proposals:state.proposals.length} }
+
+          return {login,logout,getCurrentUser,list,find,create,update,remove,saveCompany,getCompany,stats,reset:()=>{state=DB.reset()}}
+        })();
+
+        // ---- View Renderer ----
+        const Router = (function(){
+          const root = $('#view-root');
+          const templates = {
+            dashboard:$('#tpl-dashboard'),clients:$('#tpl-clients'),projects:$('#tpl-projects'),proposals:$('#tpl-proposals'),settings:$('#tpl-settings')
+          };
+
+          function render(view){
+            root.innerHTML='';
+            const tmpl = templates[view];
+            if(!tmpl){ root.appendChild(el('div',{},'Página no encontrada')); return; }
+            root.appendChild(tmpl.content.cloneNode(true));
+            attachViewEvents(view);
+          }
+
+          function attachViewEvents(view){
+            if(view==='dashboard') renderDashboard();
+            if(view==='clients') renderClients();
+            if(view==='projects') renderProjects();
+            if(view==='proposals') renderProposals();
+            if(view==='settings') renderSettings();
+          }
+
+          // Dashboard
+          function renderDashboard(){
+            const st = App.stats();
+            $('#stat-clients').textContent = st.clients;
+            $('#stat-projects').textContent = st.projects;
+            $('#stat-proposals').textContent = st.proposals;
+
+            const recent = App.list('projects').slice().sort((a,b)=>b.created-a.created).slice(0,5);
+            const container = $('#list-recent-projects'); container.innerHTML='';
+            if(recent.length===0) container.appendChild(el('div',{'class':'small muted'},'Sin proyectos recientes'));
+            recent.forEach(p=>{
+              const tr = el('div',{}, el('div',{className:'small',innerText: (p.title)}), el('div',{className:'muted small',innerText: 'Estado: '+p.status}));
+              container.appendChild(tr);
+            })
+          }
+
+          // Clients
+          function renderClients(){
+            const area = $('#clients-area'); area.innerHTML='';
+            const list = App.list('clients');
+            const table = el('table');
+            const thead = el('thead'); thead.innerHTML='<tr><th>Nombre</th><th>Contacto</th><th>Email</th><th>Tel</th><th></th></tr>'; table.appendChild(thead);
+            const tbody = el('tbody');
+            list.forEach(c=>{
+              const tr = el('tr');
+              tr.innerHTML = `<td>${escapeHtml(c.name)}</td><td>${escapeHtml(c.contact||'')}</td><td>${escapeHtml(c.email||'')}</td><td>${escapeHtml(c.phone||'')}</td><td class="align-right"><button data-id="${c.id}" class="btn ghost btn-edit-client">Editar</button> <button data-id="${c.id}" class="btn" style="background:#ef4444">Eliminar</button></td>`;
+              tbody.appendChild(tr);
+            });
+            table.appendChild(tbody);
+            area.appendChild(table);
+
+            $('#btn-add-client').addEventListener('click',()=>openClientModal());
+            area.querySelectorAll('.btn-edit-client').forEach(b=>b.addEventListener('click',e=>{ const id=e.target.dataset.id; openClientModal(App.find('clients',id)); }));
+            area.querySelectorAll('button[style]').forEach(b=>b.addEventListener('click',e=>{ const id=e.target.dataset.id; if(confirm('Eliminar cliente?')){ App.remove('clients',id); renderClients(); renderStatsAndUser(); }}));
+          }
+
+          // Projects
+          function renderProjects(){
+            const area = $('#projects-area'); area.innerHTML='';
+            const list = App.list('projects');
+            const table = el('table');
+            table.innerHTML = `<thead><tr><th>Título</th><th>Cliente</th><th>Estado</th><th>Presupuesto</th><th></th></tr></thead>`;
+            const tbody = el('tbody');
+            list.forEach(p=>{
+              const client = App.find('clients',p.clientId);
+              const tr = el('tr');
+              tr.innerHTML = `<td>${escapeHtml(p.title)}</td><td>${escapeHtml(client?client.name:'-')}</td><td>${escapeHtml(p.status)}</td><td>${formatMoney(p.budget||0)}</td><td class="align-right"><button data-id="${p.id}" class="btn ghost btn-edit-project">Editar</button> <button data-id="${p.id}" class="btn" style="background:#ef4444">Eliminar</button></td>`;
+              tbody.appendChild(tr);
+            });
+            table.appendChild(tbody); area.appendChild(table);
+            $('#btn-add-project').addEventListener('click',()=>openProjectModal());
+            area.querySelectorAll('.btn-edit-project').forEach(b=>b.addEventListener('click',e=>{ const id=e.target.dataset.id; openProjectModal(App.find('projects',id)); }));
+            area.querySelectorAll('button[style]').forEach(b=>b.addEventListener('click',e=>{ const id=e.target.dataset.id; if(confirm('Eliminar proyecto?')){ App.remove('projects',id); renderProjects(); renderStatsAndUser(); }}));
+          }
+
+          // Proposals
+          function renderProposals(){
+            const area = $('#proposals-area'); area.innerHTML='';
+            const list = App.list('proposals');
+            if(list.length===0) area.appendChild(el('div',{className:'small muted'},'Sin propuestas')); else {
+              const table = el('table'); table.innerHTML = `<thead><tr><th>Propuesta</th><th>Proyecto</th><th>Monto</th><th>Estado</th><th></th></tr></thead>`;
+              const tbody = el('tbody');
+              list.forEach(p=>{
+                const project = App.find('projects',p.projectId);
+                const tr = el('tr'); tr.innerHTML = `<td>${escapeHtml(p.title)}</td><td>${escapeHtml(project?project.title:'-')}</td><td>${formatMoney(p.amount||0)}</td><td>${escapeHtml(p.status)}</td><td class="align-right"><button data-id="${p.id}" class="btn ghost btn-edit-proposal">Editar</button> <button data-id="${p.id}" class="btn" style="background:#ef4444">Eliminar</button></td>`;
+                tbody.appendChild(tr);
+              })
+              table.appendChild(tbody); area.appendChild(table);
+
+              $('#btn-add-proposal').addEventListener('click',()=>openProposalModal());
+              area.querySelectorAll('.btn-edit-proposal').forEach(b=>b.addEventListener('click',e=>openProposalModal(App.find('proposals',e.target.dataset.id))));
+              area.querySelectorAll('button[style]').forEach(b=>b.addEventListener('click',e=>{ const id=e.target.dataset.id; if(confirm('Eliminar propuesta?')){ App.remove('proposals',id); renderProposals(); renderStatsAndUser(); }}));
+            }
+          }
+
+          // Settings
+          function renderSettings(){
+            const form = $('#form-company');
+            const company = App.getCompany();
+            $('#company-name').value = company.name || '';
+            $('#company-slogan').value = company.slogan || '';
+            form.addEventListener('submit',e=>{ e.preventDefault(); App.saveCompany({name:$('#company-name').value,slogan:$('#company-slogan').value}); alert('Guardado'); renderStatsAndUser(); });
+          }
+
+          // helper modal openers
+          function openClientModal(client){
+            const modal = createModal('Cliente', (container)=>{
+              const form = el('form');
+              form.innerHTML = `
+                <label>Nombre</label><input id="m-name" required />
+                <label>Contacto</label><input id="m-contact" />
+                <label>Email</label><input id="m-email" type="email" />
+                <label>Teléfono</label><input id="m-phone" />
+                <label>Notas</label><textarea id="m-notes"></textarea>
+                <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px"><button type="submit" class="btn">Guardar</button><button type="button" class="btn ghost">Cancelar</button></div>
+              `;
+              container.appendChild(form);
+              if(client){ $('#m-name',).value=client.name; $('#m-contact').value=client.contact||''; $('#m-email').value=client.email||''; $('#m-phone').value=client.phone||''; $('#m-notes').value=client.notes||'' }
+              form.addEventListener('submit',e=>{ e.preventDefault(); const payload={name:$('#m-name').value.trim(),contact:$('#m-contact').value.trim(),email:$('#m-email').value.trim(),phone:$('#m-phone').value.trim(),notes:$('#m-notes').value.trim()}; if(!payload.name){alert('Nombre es requerido');return;} if(client){ App.update('clients',client.id,payload); } else { App.create('clients',payload); } closeModal(); renderClients(); renderStatsAndUser(); });
+              form.querySelector('button.ghost').addEventListener('click',()=>closeModal());
+            });
+            modal.show();
+          }
+
+          function openProjectModal(project){
+            const modal = createModal('Proyecto', (container)=>{
+              const clients = App.list('clients');
+              const form = el('form');
+              form.innerHTML = `
+                <label>Título</label><input id="m-title" required />
+                <label>Cliente</label><select id="m-client"></select>
+                <label>Estado</label><select id="m-status"><option value="propuesta">Propuesta</option><option value="en progreso">En progreso</option><option value="finalizado">Finalizado</option></select>
+                <label>Presupuesto (COP)</label><input id="m-budget" type="number" />
+                <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px"><button type="submit" class="btn">Guardar</button><button type="button" class="btn ghost">Cancelar</button></div>
+              `;
+              container.appendChild(form);
+              const sel = form.querySelector('#m-client'); sel.appendChild(el('option',{value:''},'-- seleccione --'));
+              clients.forEach(c=> sel.appendChild(el('option',{value:c.id},c.name)));
+              if(project){ $('#m-title').value=project.title; $('#m-client').value=project.clientId||''; $('#m-status').value=project.status||'propuesta'; $('#m-budget').value=project.budget||'' }
+              form.addEventListener('submit',e=>{ e.preventDefault(); const payload={title:$('#m-title').value.trim(),clientId:$('#m-client').value,status:$('#m-status').value,budget:parseFloat($('#m-budget').value||0)}; if(!payload.title || !payload.clientId){alert('Título y cliente son requeridos');return;} if(project){ App.update('projects',project.id,payload); } else { App.create('projects',payload); } closeModal(); renderProjects(); renderStatsAndUser(); });
+              form.querySelector('button.ghost').addEventListener('click',()=>closeModal());
+            }); modal.show();
+          }
+
+          function openProposalModal(proposal){
+            const modal = createModal('Propuesta', (container)=>{
+              const projects = App.list('projects');
+              const form = el('form');
+              form.innerHTML = `
+                <label>Título</label><input id="m-title" required />
+                <label>Proyecto</label><select id="m-project"></select>
+                <label>Monto (COP)</label><input id="m-amount" type="number" />
+                <label>Estado</label><select id="m-status"><option value="borrador">Borrador</option><option value="enviada">Enviada</option><option value="aceptada">Aceptada</option><option value="rechazada">Rechazada</option></select>
+                <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px"><button type="submit" class="btn">Guardar</button><button type="button" class="btn ghost">Cancelar</button></div>
+              `;
+              container.appendChild(form);
+              const sel = form.querySelector('#m-project'); sel.appendChild(el('option',{value:''},'-- seleccione --'));
+              projects.forEach(p=> sel.appendChild(el('option',{value:p.id},p.title)));
+              if(proposal){ $('#m-title').value=proposal.title; $('#m-project').value=proposal.projectId||''; $('#m-amount').value=proposal.amount||''; $('#m-status').value=proposal.status||'borrador'; }
+              form.addEventListener('submit',e=>{ e.preventDefault(); const payload={title:$('#m-title').value.trim(),projectId:$('#m-project').value,amount:parseFloat($('#m-amount').value||0),status:$('#m-status').value}; if(!payload.title || !payload.projectId){alert('Título y proyecto son requeridos');return;} if(proposal){ App.update('proposals',proposal.id,payload); } else { App.create('proposals',payload); } closeModal(); renderProposals(); renderStatsAndUser(); });
+              form.querySelector('button.ghost').addEventListener('click',()=>closeModal());
+            }); modal.show();
+          }
+
+          // modal helpers
+          function createModal(title,build){
+            const root = $('#modal-root'); root.innerHTML=''; root.setAttribute('aria-hidden','false');
+            const overlay = el('div',{className:''}); overlay.style.position='fixed'; overlay.style.inset=0; overlay.style.background='rgba(11,59,102,0.28)'; overlay.style.display='flex'; overlay.style.alignItems='center'; overlay.style.justifyContent='center'; overlay.tabIndex=-1;
+            const dialog = el('div',{role:'dialog',ariaLabel:title}); dialog.style.width='min(760px,96%)'; dialog.style.maxHeight='80vh'; dialog.style.overflow='auto'; dialog.style.background= 'var(--card)'; dialog.style.padding='18px'; dialog.style.borderRadius='12px'; dialog.style.boxShadow= '0 14px 40px rgba(11,59,102,0.12)';
+            const header = el('div',{className:'row',innerHTML:`<div style="flex:1"><h3>${title}</h3></div>`});
+            dialog.appendChild(header);
+            const content = el('div'); dialog.appendChild(content);
+            build(content);
+            overlay.appendChild(dialog); root.appendChild(overlay);
+
+            function show(){ root.style.display='block'; root.focus(); }
+            function close(){ root.innerHTML=''; root.setAttribute('aria-hidden','true'); }
+            return {show,close:()=>close()};
+          }
+
+          function closeModal(){ $('#modal-root').innerHTML=''; $('#modal-root').setAttribute('aria-hidden','true'); }
+
+          function renderStatsAndUser(){ const user = App.getCurrentUser(); $('#auth-info').textContent = user? user.name+' ('+user.email+')':'No autenticado'; }
+
+          return {render,renderStatsAndUser,openClientModal,openProjectModal,openProposalModal};
+        })();
+
+        // ---- Simple Router & Events ----
+        (function wire(){
+          // navigation
+          document.querySelectorAll('.navitem').forEach(it=>it.addEventListener('click',e=>{ setActiveNav(e.target.dataset.view); }));
+          document.getElementById('btn-new').addEventListener('click',()=>{ openQuickCreate(); });
+          document.getElementById('btn-logout').addEventListener('click',()=>{ App.logout(); showLogin(); });
+          document.getElementById('shortcut-client').addEventListener('click',()=> Router.openClientModal());
+          document.getElementById('shortcut-project').addEventListener('click',()=> Router.openProjectModal());
+
+          function setActiveNav(view){ document.querySelectorAll('.navitem').forEach(n=>n.classList.toggle('active', n.dataset.view===view)); Router.render(view); }
+
+          // initial state: check auth
+          if(!App.getCurrentUser()){
+            showLogin();
+          } else {
+            Router.render('dashboard'); Router.renderStatsAndUser();
+          }
+
+          // small helpers
+          function openQuickCreate(){
+            const menu = confirm('Crear cliente? OK = cliente, Cancel = proyecto'); if(menu) Router.openClientModal(); else Router.openProjectModal();
+          }
+
+          // login flow
+          function showLogin(){
+            const root = $('#view-root'); root.innerHTML = '';
+            const card = el('div',{className:''}); card.style.maxWidth='520px'; card.style.margin='18px auto'; card.style.padding='18px';
+            card.innerHTML = `<h2>Ingreso demo</h2><div class="small muted">Usa admin@softnova.com / demo123</div>`;
+            const form = el('form'); form.innerHTML = `<label>Email</label><input id="i-email" type="email" required /><label>Contraseña</label><input id="i-pass" type="password" required /><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px"><button class="btn">Entrar</button></div>`;
+            card.appendChild(form); root.appendChild(card);
+            form.addEventListener('submit',e=>{ e.preventDefault(); const email = $('#i-email').value.trim(); const pass = $('#i-pass').value; if(App.login(email,pass)){ Router.render('dashboard'); Router.renderStatsAndUser(); document.querySelectorAll('.navitem').forEach(n=>n.classList.toggle('active', n.dataset.view==='dashboard')); } else { alert('Credenciales inválidas. Usa admin@softnova.com / demo123'); } });
+          }
+
+          // expose globals for debug (in demo only)
+          window.App = App; window.Router = Router; window.setActiveNav = setActiveNav;
+        })();
+
+        // ---- small utilities used in templates ----
+        function escapeHtml(s){ if(!s && s!==0) return ''; return String(s).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];}); }
+        function formatMoney(n){ return new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(n||0); }
+
+      })();
+    </script>
+  </div>
+</body>
+</html>

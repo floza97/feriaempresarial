@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoftCare S.A.S. - Gestión de Clínicas</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1>SoftCare S.A.S.</h1>
+                <p>Digitalizando la salud, cuidando tu bienestar</p>
+            </div>
+            <nav class="nav">
+                <div class="user-menu">
+                    <span>Usuario: Administrador</span>
+                    <span id="current-time"></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Sistema Principal -->
+    <main class="main-system">
+        <div class="container">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="#dashboard" class="nav-link active">Dashboard</a></li>
+                        <li><a href="#pacientes" class="nav-link">Pacientes</a></li>
+                        <li><a href="#citas" class="nav-link">Citas Médicas</a></li>
+                        <li><a href="#facturacion" class="nav-link">Facturación</a></li>
+                        <li><a href="#inventario" class="nav-link">Inventario</a></li>
+                        <li><a href="#reportes" class="nav-link">Reportes</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- Contenido Principal -->
+            <div class="content">
+                <!-- Dashboard -->
+                <section id="dashboard" class="module active">
+                    <h2>Dashboard Principal</h2>
+                    <div class="welcome-banner">
+                        <h3>¡Bienvenido al Sistema SoftCare S.A.S.!</h3>
+                        <p>Sistema integral de gestión para clínicas y consultorios médicos</p>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Pacientes Registrados</h3>
+                            <p id="total-pacientes">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Citas del Día</h3>
+                            <p id="citas-hoy">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Facturación Mensual</h3>
+                            <p id="facturacion-mes">$0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Inventario Bajo</h3>
+                            <p id="inventario-bajo">0</p>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions">
+                        <h3>Acciones Rápidas</h3>
+                        <div class="actions-grid">
+                            <button class="action-btn" onclick="softCareApp.showModule('pacientes')">
+                                <span>➕</span>
+                                Nuevo Paciente
+                            </button>
+                            <button class="action-btn" onclick="softCareApp.showModule('citas')">
+                                <span>📅</span>
+                                Programar Cita
+                            </button>
+                            <button class="action-btn" onclick="softCareApp.showModule('facturacion')">
+                                <span>🧾</span>
+                                Nueva Factura
+                            </button>
+                            <button class="action-btn" onclick="softCareApp.showModule('inventario')">
+                                <span>📦</span>
+                                Gestionar Inventario
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Gestión de Pacientes -->
+                <section id="pacientes" class="module">
+                    <div class="module-header">
+                        <h2>Gestión de Pacientes</h2>
+                        <button id="nuevo-paciente" class="btn-primary">Nuevo Paciente</button>
+                    </div>
+                    
+                    <div class="search-bar">
+                        <input type="text" id="search-paciente" placeholder="Buscar paciente por nombre, email o teléfono...">
+                        <button id="clear-search" class="btn-secondary">Limpiar</button>
+                    </div>
+
+                    <div class="table-container">
+                        <table id="tabla-pacientes">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Teléfono</th>
+                                    <th>Fecha Nac.</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pacientes-body">
+                                <!-- Datos cargados dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Modal para nuevo/editar paciente -->
+                    <div id="paciente-modal" class="modal">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <h3 id="modal-paciente-title">Nuevo Paciente</h3>
+                            <form id="form-paciente">
+                                <input type="hidden" id="paciente-id">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="paciente-nombre">Nombre Completo *</label>
+                                        <input type="text" id="paciente-nombre" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="paciente-fecha-nacimiento">Fecha de Nacimiento</label>
+                                        <input type="date" id="paciente-fecha-nacimiento">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="paciente-email">Email</label>
+                                        <input type="email" id="paciente-email">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="paciente-telefono">Teléfono</label>
+                                        <input type="tel" id="paciente-telefono">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="paciente-direccion">Dirección</label>
+                                    <textarea id="paciente-direccion" rows="3"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="paciente-alergias">Alergias</label>
+                                    <textarea id="paciente-alergias" rows="2" placeholder="Lista de alergias conocidas"></textarea>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn-primary">Guardar Paciente</button>
+                                    <button type="button" class="btn-secondary cancel">Cancelar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Gestión de Citas -->
+                <section id="citas" class="module">
+                    <div class="module-header">
+                        <h2>Gestión de Citas Médicas</h2>
+                        <button id="nueva-cita" class="btn-primary">Nueva Cita</button>
+                    </div>
+
+                    <div class="citas-layout">
+                        <div class="calendar-section">
+                            <div class="calendar-header">
+                                <button id="prev-month" class="btn-secondary">&lt; Anterior</button>
+                                <h3 id="current-month"></h3>
+                                <button id="next-month" class="btn-secondary">Siguiente &gt;</button>
+                            </div>
+                            <div id="calendar" class="calendar">
+                                <!-- Calendario generado dinámicamente -->
+                            </div>
+                        </div>
+
+                        <div class="citas-list">
+                            <h4>Citas del Día Seleccionado</h4>
+                            <div id="citas-del-dia" class="citas-container">
+                                <!-- Lista de citas del día -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal para nueva cita -->
+                    <div id="cita-modal" class="modal">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <h3>Programar Nueva Cita</h3>
+                            <form id="form-cita">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="cita-paciente">Paciente *</label>
+                                        <select id="cita-paciente" required>
+                                            <option value="">Seleccionar paciente</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cita-medico">Médico *</label>
+                                        <select id="cita-medico" required>
+                                            <option value="">Seleccionar médico</option>
+                                            <option value="dr_garcia">Dr. Juan García</option>
+                                            <option value="dra_maria">Dra. María López</option>
+                                            <option value="dr_carlos">Dr. Carlos Rodríguez</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="cita-fecha">Fecha *</label>
+                                        <input type="date" id="cita-fecha" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cita-hora">Hora *</label>
+                                        <input type="time" id="cita-hora" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cita-motivo">Motivo de la Consulta *</label>
+                                    <textarea id="cita-motivo" required placeholder="Describa el motivo de la consulta"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cita-observaciones">Observaciones</label>
+                                    <textarea id="cita-observaciones" placeholder="Observaciones adicionales"></textarea>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn-primary">Programar Cita</button>
+                                    <button type="button" class="btn-secondary cancel">Cancelar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Módulo de Facturación -->
+                <section id="facturacion" class="module">
+                    <div class="module-header">
+                        <h2>Gestión de Facturación</h2>
+                        <button id="nueva-factura" class="btn-primary">Nueva Factura</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="tabla-facturas">
+                            <thead>
+                                <tr>
+                                    <th>N° Factura</th>
+                                    <th>Paciente</th>
+                                    <th>Fecha</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="facturas-body">
+                                <!-- Datos cargados dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Módulo de Inventario -->
+                <section id="inventario" class="module">
+                    <div class="module-header">
+                        <h2>Gestión de Inventario</h2>
+                        <button id="nuevo-medicamento" class="btn-primary">Nuevo Medicamento</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="tabla-inventario">
+                            <thead>
+                                <tr>
+                                    <th>Medicamento</th>
+                                    <th>Categoría</th>
+                                    <th>Stock</th>
+                                    <th>Stock Mínimo</th>
+                                    <th>Precio</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventario-body">
+                                <!-- Datos cargados dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Módulo de Reportes -->
+                <section id="reportes" class="module">
+                    <h2>Reportes y Estadísticas</h2>
+                    <div class="reportes-grid">
+                        <div class="reporte-card">
+                            <h3>Pacientes por Mes</h3>
+                            <div class="chart-placeholder">
+                                <p>Gráfico de pacientes registrados por mes</p>
+                            </div>
+                        </div>
+                        <div class="reporte-card">
+                            <h3>Citas por Estado</h3>
+                            <div class="chart-placeholder">
+                                <p>Gráfico de citas por estado</p>
+                            </div>
+                        </div>
+                        <div class="reporte-card">
+                            <h3>Ingresos Mensuales</h3>
+                            <div class="chart-placeholder">
+                                <p>Gráfico de ingresos mensuales</p>
+                            </div>
+                        </div>
+                        <div class="reporte-card">
+                            <h3>Medicamentos Más Usados</h3>
+                            <div class="chart-placeholder">
+                                <p>Gráfico de medicamentos más utilizados</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/app.js"></script>
+    <script src="js/pacientes.js"></script>
+    <script src="js/citas.js"></script>
+    <script src="js/facturacion.js"></script>
+    <script src="js/inventario.js"></script>
+    <script src="js/reportes.js"></script>
+</body>
+</html>

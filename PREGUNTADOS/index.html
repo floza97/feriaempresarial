@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quiz Feria Escolar — ¡Reto Colombia!</title>
+  <style>
+    :root{--bg:#f0f8ff;--card:#ffffff;--accent:#87ceeb;--muted:#708090;--glass:rgba(0,0,0,0.05);--correct:#98fb98;--wrong:#ffb6c1}
+    *{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#038d0f 0%, #08034b 60%);color:#2f4f4f}
+    .wrap{max-width:980px;margin:28px auto;padding:20px}
+    header{display:flex;gap:16px;align-items:center;justify-content:space-between}
+    h1{font-size:22px;margin:0;color: aliceblue;}
+    p.lead{margin:4px 0;color:var(--muted);font-size:13px;color: #f0f0f8;}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.8));border-radius:12px;padding:18px;box-shadow:0 6px 30px rgba(0,0,0,0.1);border:1px solid rgba(173,216,230,0.5)}
+    .top-row{display:flex;gap:12px;align-items:center}
+    .controls{display:flex;gap:12px;align-items:center}
+    input[type=text]{padding:10px 12px;border-radius:10px;border:1px solid rgba(173,216,230,0.5);background:var(--glass);color:inherit;min-width:200px}
+    button{background:var(--accent);border:none;padding:10px 14px;border-radius:10px;color:#2f4f4f;cursor:pointer;font-weight:600}
+    button.ghost{background:transparent;border:1px solid rgba(173,216,230,0.5);color:var(--muted)}
+    main{display:grid;grid-template-columns:1fr 360px;gap:16px;margin-top:18px}
+    @media(max-width:960px){main{grid-template-columns:1fr} .right{order:2}}
+    .question-box{padding:18px;border-radius:12px}
+    .q-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .q-text{font-size:18px;margin-bottom:14px}
+    .options{display:grid;gap:10px}
+    .opt{background:rgba(255,255,255,0.8);padding:12px;border-radius:10px;border:1px solid rgba(173,216,230,0.5);cursor:pointer}
+    .opt.correct{outline:3px solid var(--correct);background:linear-gradient(90deg, rgba(152,251,152,0.3), transparent)}
+    .opt.wrong{outline:3px solid var(--wrong);background:linear-gradient(90deg, rgba(255,182,193,0.3), transparent)}
+    .meta{font-size:13px;color:var(--muted)}
+    .progress{height:10px;background:rgba(173,216,230,0.3);border-radius:999px;overflow:hidden}
+    .bar{height:100%;background:linear-gradient(90deg,var(--accent),#add8e6);width:0%}
+    .right{position:relative}
+    .leader h3{margin:0 0 8px 0}
+    .board{max-height:420px;overflow:auto}
+    .entry{display:flex;justify-content:space-between;padding:8px;border-radius:8px;margin-bottom:6px;background:rgba(255,255,255,0.8);border:1px solid rgba(173,216,230,0.5)}
+    small.gray{color:var(--muted)}
+    .hint{font-size:13px;color:var(--muted);margin-top:8px}
+    .footer{margin-top:16px;display:flex;gap:10px;align-items:center}
+    .confetti-canvas{position:fixed;left:0;top:0;pointer-events:none;z-index:9999}
+    .share{background:transparent;border:1px dashed rgba(173,216,230,0.5);padding:8px;border-radius:8px;color:var(--muted);cursor:pointer}
+    .small{font-size:13px}
+  </style>
+</head>
+<body>
+  <audio id="bgMusic" loop>
+    <source src="https://www.soundjay.com/misc/sounds/game-show-music-1.wav" type="audio/wav">
+    Your browser does not support the audio element.
+  </audio>
+  <canvas id="confetti" class="confetti-canvas"></canvas>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Quiz Feria Escolar — ¡Reto Colombia!</h1>
+        <p class="lead">Juego rápido de preguntas (Verdadero/Falso + opción múltiple). Guarda puntajes en tu navegador — compite por el Top 10.</p>
+      </div>
+      <div class="top-row">
+        <div class="controls card">
+          <input id="playerName" type="text" placeholder="Escribe tu nombre (ej: Valentina)" />
+          <button id="startBtn">Empezar</button>
+          <button id="viewBoardBtn" class="ghost">Ver Ranking</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="card question-box">
+        <div class="q-header">
+          <div>
+            <div class="meta">Pregunta <span id="qIndex">-</span> / <span id="qTotal">-</span></div>
+            <div class="progress" style="width:240px;margin-top:8px"><div class="bar" id="progressBar"></div></div>
+          </div>
+          <div class="meta small">Puntaje: <strong id="score">0</strong></div>
+        </div>
+
+        <div id="gameArea" style="display:none">
+          <div class="q-text" id="questionText">Pulsa "Empezar" para iniciar el reto.</div>
+          <div class="options" id="options"></div>
+          <div class="hint" id="explain"></div>
+          <div class="footer">
+            <button id="nextBtn" class="ghost">Siguiente</button>
+            <button id="endBtn" class="ghost">Terminar</button>
+            <div style="flex:1"></div>
+            <div class="meta small">Tiempo: <span id="timer">--</span></div>
+          </div>
+        </div>
+
+        <div id="prePlay" style="display:block">
+          <p class="meta">Consejos: Sé rápido y preciso. Responde todas las preguntas para maximizar tu puntuación. ¡Ideal para feria escolar!</p>
+          <div style="margin-top:12px">
+            <label class="meta">Modo: </label>
+            <select id="modeSelect" style="padding:8px;border-radius:8px;background:var(--glass);border:1px solid rgba(173,216,230,0.5);color:inherit">
+              <option value="normal">Normal (10 preguntas)</option>
+              <option value="extremo">Extremo (15 preguntas, menos tiempo)</option>
+              <option value="rapidito">Rapidito (7 preguntas, ideal para grupos)</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <aside class="right">
+        <div class="card leader">
+          <h3>Top 10 — Ranking</h3>
+          <div class="board" id="leaderboard"></div>
+          <div style="margin-top:10px;display:flex;gap:8px">
+            <button id="clearBtn" class="ghost">Borrar Ranking</button>
+            <button id="exportBtn" class="ghost">Exportar</button>
+            <button id="importBtn" class="ghost">Importar</button>
+          </div>
+          <p class="hint">Los puntajes se guardan en <code>localStorage</code>. Puedes exportar para compartir.</p>
+        </div>
+
+        <div style="height:12px"></div>
+
+        <div class="card">
+          <h4>Instrucciones rápidas</h4>
+          <ol class="small">
+            <li>Escribe tu nombre y pulsa <strong>Empezar</strong>.</li>
+            <li>Responde preguntas: algunas son Verdadero/Falso, otras múltiples opciones.</li>
+            <li>Obtienes <strong>+10</strong> por correcta. <strong>0</strong> por incorrecta. Bonus por velocidad.</li>
+            <li>Comparte tu puntaje y compite por el Top 10.</li>
+          </ol>
+          <div style="margin-top:8px;display:flex;gap:8px">
+            <button id="shareBtn" class="share">Compartir resultado</button>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+(function(){
+  // --- Datos del juego: preguntas (Colombia, básica secundaria - expandido a 100 con mayor dificultad)
+  const QUESTIONS = [
+    {q:'La capital de Colombia es Bogotá.', type:'tf', a:true, explain:'Bogotá es la capital desde la época republicana.'},
+    {q:'¿Cuál es el río más caudaloso de Colombia?', type:'mc', choices:['Río Magdalena','Río Amazonas','Río Cauca','Río Atrato'], a:'Río Magdalena', explain:'El Magdalena recorre gran parte del país y es muy importante.'},
+    {q:'La fiesta de la Independencia de Colombia se celebra el 20 de julio.', type:'tf', a:true, explain:'El 20 de julio de 1810 se considera el Grito de Independencia.'},
+    {q:'¿Cuál es la montaña más alta de Colombia?', type:'mc', choices:['Pico Cristóbal Colón','Pico Simón Bolívar','Nevado del Tolima','Ritacuba Blanco'], a:'Pico Cristóbal Colón', explain:'Pico Cristóbal Colón (Sierra Nevada de Santa Marta) es la cima más alta del país.'},
+    {q:'Los seres vivos realizan fotosíntesis en presencia de luz.', type:'tf', a:true, explain:'La fotosíntesis ocurre en organismos fotosintéticos como plantas y algunas algas.'},
+    {q:'¿Cuál es la unidad básica de la vida?', type:'mc', choices:['Molécula','Célula','Tejido','Órgano'], a:'Célula', explain:'La célula es la unidad estructural y funcional de los seres vivos.'},
+    {q:'El número pi (π) es aproximadamente igual a 3.1416.', type:'tf', a:true, explain:'Pi es la relación entre la circunferencia y el diámetro.'},
+    {q:'¿Cómo se dice "biblioteca" en inglés?', type:'mc', choices:['Library','Bookstore','Shelf','Reading room'], a:'Library', explain:'"Library" significa biblioteca en inglés.'},
+    {q:'La capital de Antioquia es Medellín.', type:'tf', a:true, explain:'Medellín es la capital del departamento de Antioquia.'},
+    {q:'¿Cuál es el océano al oeste de Colombia?', type:'mc', choices:['Océano Atlántico','Océano Pacífico','Océano Índico','Mar Caribe'], a:'Océano Pacífico', explain:'Colombia tiene costa en el Pacífico y en el Caribe (Atlántico).'},
+
+    {q:'La independencia de Cartagena se celebra el 11 de noviembre.', type:'tf', a:true, explain:'Cartagena se independizó el 11 de noviembre de 1811.'},
+    {q:'¿Quién fue Simón Bolívar?', type:'mc', choices:['Un explorador','Un libertador','Un músico','Un pintor'], a:'Un libertador', explain:'Bolívar lideró la independencia de varios países sudamericanos.'},
+    {q:'El número 0 es un número natural según algunos sistemas matemáticos.', type:'tf', a:true, explain:'En matemáticas la inclusión del 0 varía según la convención.'},
+    {q:'¿Cuál es la lengua indígena más hablada en Colombia?', type:'mc', choices:['Wayuunaiki','Nasa Yuwe','Embera','Guambiano'], a:'Wayuunaiki', explain:'Wayuunaiki (wayuu) es una de las lenguas indígenas con más hablantes.'},
+    {q:'El Quindío es reconocido por su producción de café.', type:'tf', a:true, explain:'El eje cafetero —incluye Quindío— es famoso por su café.'},
+    {q:'¿Cuál es la capital de la región Caribe colombiana?', type:'mc', choices:['Cartagena','Barranquilla','Santa Marta','Sincelejo'], a:'Barranquilla', explain:'Barranquilla es una de las principales capitales del Caribe colombiano.'},
+    {q:'La capa de ozono protege a la Tierra de radiación ultravioleta.', type:'tf', a:true, explain:'La capa de ozono absorbe gran parte de los rayos UV.'},
+    {q:'¿Qué instrumento se usa para medir la masa?', type:'mc', choices:['Termómetro','Balanza','Barómetro','Reloj'], a:'Balanza', explain:'La balanza (o báscula) mide masa/peso.'},
+    {q:'¿Cuál es el símbolo químico del oro?', type:'mc', choices:['Au','Ag','Fe','Cu'], a:'Au', explain:'El símbolo químico del oro es Au, del latín aurum.'},
+    {q:'La Revolución Industrial comenzó en el siglo XVIII.', type:'tf', a:true, explain:'La Revolución Industrial se inició en Gran Bretaña alrededor de 1760-1840.'},
+
+    {q:'¿Cuál es el planeta más cercano al Sol?', type:'mc', choices:['Mercurio','Venus','Tierra','Marte'], a:'Mercurio', explain:'Mercurio es el planeta más cercano al Sol en nuestro sistema solar.'},
+    {q:'El ADN contiene la información genética de los seres vivos.', type:'tf', a:true, explain:'El ADN (ácido desoxirribonucleico) almacena la información genética.'},
+    {q:'¿Cuál es la fórmula química del agua?', type:'mc', choices:['H2O','CO2','O2','NaCl'], a:'H2O', explain:'El agua está compuesta por dos átomos de hidrógeno y uno de oxígeno.'},
+    {q:'La fotosíntesis produce oxígeno como subproducto.', type:'tf', a:true, explain:'Durante la fotosíntesis, las plantas liberan oxígeno al ambiente.'},
+    {q:'¿Cuál es el hueso más largo del cuerpo humano?', type:'mc', choices:['Fémur','Tibia','Húmero','Radio'], a:'Fémur', explain:'El fémur es el hueso más largo del esqueleto humano.'},
+    {q:'La velocidad de la luz en el vacío es de aproximadamente 300,000 km/s.', type:'tf', a:true, explain:'La velocidad de la luz es una constante fundamental de la física.'},
+    {q:'¿Cuál es el metal más abundante en la corteza terrestre?', type:'mc', choices:['Aluminio','Hierro','Cobre','Oro'], a:'Aluminio', explain:'El aluminio es el metal más abundante en la corteza terrestre.'},
+    {q:'Los mamíferos son animales de sangre caliente.', type:'tf', a:true, explain:'Los mamíferos regulan su temperatura corporal internamente.'},
+    {q:'¿Cuál es la capital de Francia?', type:'mc', choices:['París','Londres','Roma','Madrid'], a:'París', explain:'París es la capital y ciudad más poblada de Francia.'},
+    {q:'La energía solar proviene de la fusión nuclear en el Sol.', type:'tf', a:true, explain:'El Sol genera energía mediante la fusión de hidrógeno en helio.'},
+
+    {q:'¿Cuál es el río más largo del mundo?', type:'mc', choices:['Amazonas','Nilo','Yangtsé','Misisipi'], a:'Nilo', explain:'El río Nilo es considerado el más largo del mundo con aproximadamente 6,650 km.'},
+    {q:'Los virus son considerados seres vivos por algunos científicos.', type:'tf', a:false, explain:'Los virus no cumplen con todas las características de los seres vivos, como el metabolismo independiente.'},
+    {q:'¿Cuál es la unidad de medida de la fuerza?', type:'mc', choices:['Newton','Joule','Watt','Volt'], a:'Newton', explain:'El newton (N) es la unidad del Sistema Internacional para medir fuerza.'},
+    {q:'La Tierra gira alrededor del Sol en aproximadamente 365 días.', type:'tf', a:true, explain:'Un año solar dura aproximadamente 365.25 días.'},
+    {q:'¿Cuál es el océano más grande del mundo?', type:'mc', choices:['Pacífico','Atlántico','Índico','Ártico'], a:'Pacífico', explain:'El océano Pacífico cubre aproximadamente el 46% de la superficie del agua del planeta.'},
+    {q:'La mitosis es el proceso de división celular en organismos eucariotas.', type:'tf', a:true, explain:'La mitosis produce dos células hijas idénticas a la célula madre.'},
+    {q:'¿Cuál es el elemento químico con número atómico 1?', type:'mc', choices:['Hidrógeno','Helio','Litio','Berilio'], a:'Hidrógeno', explain:'El hidrógeno tiene el número atómico 1 en la tabla periódica.'},
+    {q:'Los continentes se mueven debido a la tectónica de placas.', type:'tf', a:true, explain:'La teoría de la tectónica de placas explica el movimiento de los continentes.'},
+    {q:'¿Cuál es la capital de Japón?', type:'mc', choices:['Tokio','Pekín','Seúl','Bangkok'], a:'Tokio', explain:'Tokio es la capital de Japón y una de las ciudades más pobladas del mundo.'},
+    {q:'La gravedad es una fuerza que atrae objetos hacia el centro de la Tierra.', type:'tf', a:true, explain:'La gravedad es la fuerza de atracción entre masas.'},
+
+    {q:'¿Cuál es el animal más rápido del mundo?', type:'mc', choices:['Guepardo','León','Tigre','Lobo'], a:'Guepardo', explain:'El guepardo puede alcanzar velocidades de hasta 100-120 km/h.'},
+    {q:'El carbono es el elemento base de la vida orgánica.', type:'tf', a:true, explain:'El carbono forma la base de todas las moléculas orgánicas.'},
+    {q:'¿Cuál es la fórmula del área de un círculo?', type:'mc', choices:['πr²','2πr','πr','r²'], a:'πr²', explain:'El área de un círculo se calcula multiplicando π por el radio al cuadrado.'},
+    {q:'Los dinosaurios se extinguieron hace aproximadamente 65 millones de años.', type:'tf', a:true, explain:'La extinción masiva del Cretácico-Paleógeno acabó con los dinosaurios no aviares.'},
+    {q:'¿Cuál es el metal líquido a temperatura ambiente?', type:'mc', choices:['Mercurio','Plomo','Estaño','Zinc'], a:'Mercurio', explain:'El mercurio es el único metal líquido a temperatura ambiente.'},
+    {q:'La meiosis produce células sexuales haploides.', type:'tf', a:true, explain:'La meiosis reduce el número de cromosomas a la mitad.'},
+    {q:'¿Cuál es la capital de Brasil?', type:'mc', choices:['Brasilia','Río de Janeiro','São Paulo','Salvador'], a:'Brasilia', explain:'Brasilia es la capital de Brasil desde 1960.'},
+    {q:'La energía cinética depende de la masa y la velocidad del objeto.', type:'tf', a:true, explain:'La fórmula de la energía cinética es (1/2)mv².'},
+    {q:'¿Cuál es el proceso por el cual las plantas pierden agua?', type:'mc', choices:['Transpiración','Evaporación','Condensación','Precipitación'], a:'Transpiración', explain:'La transpiración es la pérdida de agua en forma de vapor a través de las hojas.'},
+    {q:'Los electrones orbitan alrededor del núcleo atómico.', type:'tf', a:true, explain:'El modelo atómico actual describe electrones en orbitales alrededor del núcleo.'},
+
+    {q:'¿Cuál es el hueso más pequeño del cuerpo humano?', type:'mc', choices:['Estribo','Martillo','Yunque','Cóndilo'], a:'Estribo', explain:'El estribo es el hueso más pequeño del oído medio.'},
+    {q:'La entropía tiende a aumentar en sistemas aislados.', type:'tf', a:true, explain:'La segunda ley de la termodinámica establece que la entropía aumenta.'},
+    {q:'¿Cuál es la capital de Argentina?', type:'mc', choices:['Buenos Aires','Córdoba','Rosario','Mendoza'], a:'Buenos Aires', explain:'Buenos Aires es la capital y ciudad más poblada de Argentina.'},
+    {q:'Los ácidos tienen un pH menor a 7.', type:'tf', a:true, explain:'La escala de pH va de 0 a 14, siendo ácidos los valores menores a 7.'},
+    {q:'¿Cuál es el proceso de conversión de gas a líquido?', type:'mc', choices:['Condensación','Evaporación','Sublimación','Fusión'], a:'Condensación', explain:'La condensación es el cambio de estado de gas a líquido.'},
+    {q:'La teoría de la relatividad fue propuesta por Albert Einstein.', type:'tf', a:true, explain:'Einstein desarrolló la teoría de la relatividad especial en 1905 y general en 1915.'},
+    {q:'¿Cuál es el órgano más grande del cuerpo humano?', type:'mc', choices:['Piel','Hígado','Pulmón','Corazón'], a:'Piel', explain:'La piel es el órgano más grande del cuerpo humano.'},
+    {q:'Los quarks son partículas fundamentales que constituyen los protones y neutrones.', type:'tf', a:true, explain:'Los quarks son componentes elementales de la materia hadrónica.'},
+    {q:'¿Cuál es la capital de México?', type:'mc', choices:['Ciudad de México','Guadalajara','Monterrey','Puebla'], a:'Ciudad de México', explain:'La Ciudad de México es la capital de México.'},
+    {q:'La fotosíntesis requiere dióxido de carbono y agua.', type:'tf', a:true, explain:'La reacción fotosintética utiliza CO2, H2O y luz para producir glucosa y oxígeno.'},
+
+    {q:'¿Cuál es el número primo más pequeño?', type:'mc', choices:['1','2','3','5'], a:'2', explain:'El 2 es el único número primo par.'},
+    {q:'La superconductividad permite la conducción eléctrica sin resistencia.', type:'tf', a:true, explain:'Los superconductores pierden toda resistencia eléctrica por debajo de una temperatura crítica.'},
+    {q:'¿Cuál es la capital de España?', type:'mc', choices:['Madrid','Barcelona','Valencia','Sevilla'], a:'Madrid', explain:'Madrid es la capital de España.'},
+    {q:'Los glóbulos rojos transportan oxígeno en la sangre.', type:'tf', a:true, explain:'La hemoglobina en los glóbulos rojos se une al oxígeno.'},
+    {q:'¿Cuál es el proceso de división nuclear?', type:'mc', choices:['Fisión','Fusión','Desintegración','Radiación'], a:'Fisión', explain:'La fisión nuclear es la división de un núcleo atómico pesado.'},
+    {q:'La teoría del Big Bang explica el origen del universo.', type:'tf', a:true, explain:'El Big Bang describe la expansión del universo desde un estado inicial caliente y denso.'},
+    {q:'¿Cuál es el metal más duro?', type:'mc', choices:['Tungsteno','Acero','Diamante','Oro'], a:'Tungsteno', explain:'El tungsteno tiene el punto de fusión más alto de todos los metales.'},
+    {q:'Los anticuerpos son producidos por el sistema inmunológico.', type:'tf', a:true, explain:'Los anticuerpos son proteínas que ayudan a combatir infecciones.'},
+    {q:'¿Cuál es la capital de Italia?', type:'mc', choices:['Roma','Milán','Venecia','Florencia'], a:'Roma', explain:'Roma es la capital de Italia y fue el centro del Imperio Romano.'},
+    {q:'La ley de Coulomb describe la fuerza entre cargas eléctricas.', type:'tf', a:true, explain:'La fuerza es proporcional al producto de las cargas e inversamente proporcional al cuadrado de la distancia.'},
+
+    {q:'¿Cuál es el animal con el cuello más largo?', type:'mc', choices:['Jirafa','Elefante','Camello','Caballo'], a:'Jirafa', explain:'La jirafa tiene el cuello más largo de todos los animales terrestres.'},
+    {q:'La termodinámica estudia la relación entre calor y trabajo.', type:'tf', a:true, explain:'La termodinámica es la rama de la física que estudia el calor y sus transformaciones.'},
+    {q:'¿Cuál es la capital de Canadá?', type:'mc', choices:['Ottawa','Toronto','Vancouver','Montreal'], a:'Ottawa', explain:'Ottawa es la capital de Canadá.'},
+    {q:'Los neutrones no tienen carga eléctrica.', type:'tf', a:true, explain:'Los neutrones son partículas neutras en el núcleo atómico.'},
+    {q:'¿Cuál es el proceso de cambio de sólido a gas?', type:'mc', choices:['Sublimación','Evaporación','Fusión','Condensación'], a:'Sublimación', explain:'La sublimación es el paso directo de sólido a gas sin pasar por líquido.'},
+    {q:'La teoría cuántica explica el comportamiento de las partículas subatómicas.', type:'tf', a:true, explain:'La mecánica cuántica describe el mundo subatómico.'},
+    {q:'¿Cuál es el órgano responsable de bombear sangre?', type:'mc', choices:['Corazón','Pulmón','Hígado','Riñón'], a:'Corazón', explain:'El corazón es el músculo que bombea sangre a todo el cuerpo.'},
+    {q:'Los isótopos tienen el mismo número atómico pero diferente masa atómica.', type:'tf', a:true, explain:'Los isótopos difieren en el número de neutrones.'},
+    {q:'¿Cuál es la capital de Australia?', type:'mc', choices:['Canberra','Sídney','Melbourne','Brisbane'], a:'Canberra', explain:'Canberra es la capital de Australia.'},
+    {q:'La presión atmosférica disminuye con la altitud.', type:'tf', a:true, explain:'La presión del aire es menor a mayor altura.'},
+
+    {q:'¿Cuál es el polígono con más lados?', type:'mc', choices:['Hexágono','Octágono','Dodecágono','Megágono'], a:'Megágono', explain:'Un megágono tiene un millón de lados.'},
+    {q:'La superconductividad fue descubierta por Heike Kamerlingh Onnes.', type:'tf', a:true, explain:'Onnes descubrió la superconductividad del mercurio en 1911.'},
+    {q:'¿Cuál es la capital de Alemania?', type:'mc', choices:['Berlín','Múnich','Hamburgo','Fráncfort'], a:'Berlín', explain:'Berlín es la capital de Alemania.'},
+    {q:'Los glóbulos blancos combaten infecciones.', type:'tf', a:true, explain:'Los leucocitos son células del sistema inmunológico.'},
+    {q:'¿Cuál es el proceso de unión de núcleos atómicos ligeros?', type:'mc', choices:['Fusión','Fisión','Desintegración','Radiación'], a:'Fusión', explain:'La fusión nuclear combina núcleos ligeros liberando energía.'},
+    {q:'La teoría de cuerdas propone que las partículas fundamentales son cuerdas vibrantes.', type:'tf', a:true, explain:'La teoría de cuerdas unifica la relatividad y la mecánica cuántica.'},
+    {q:'¿Cuál es el metal más ligero?', type:'mc', choices:['Litio','Sodio','Potasio','Rubidio'], a:'Litio', explain:'El litio es el metal más ligero de la tabla periódica.'},
+    {q:'Los neurotransmisores transmiten señales en el sistema nervioso.', type:'tf', a:true, explain:'Los neurotransmisores son químicos que permiten la comunicación neuronal.'},
+    {q:'¿Cuál es la capital de Reino Unido?', type:'mc', choices:['Londres','Edimburgo','Cardiff','Belfast'], a:'Londres', explain:'Londres es la capital del Reino Unido.'},
+    {q:'La ley de Ohm relaciona voltaje, corriente y resistencia.', type:'tf', a:true, explain:'V = I × R es la ley de Ohm.'},
+
+    {q:'¿Cuál es el ave más grande del mundo?', type:'mc', choices:['Águila','Cóndor','Albatros','Avestruz'], a:'Albatros', explain:'El albatros viajero tiene la mayor envergadura de alas.'},
+    {q:'La termodinámica tiene cuatro leyes fundamentales.', type:'tf', a:true, explain:'Las leyes de la termodinámica describen el comportamiento del calor y el trabajo.'},
+    {q:'¿Cuál es la capital de China?', type:'mc', choices:['Pekín','Shanghái','Hong Kong','Cantón'], a:'Pekín', explain:'Pekín es la capital de la República Popular China.'},
+    {q:'Los protones tienen carga positiva.', type:'tf', a:true, explain:'Los protones tienen una carga elemental positiva.'},
+    {q:'¿Cuál es el estado de la materia con volumen definido pero forma variable?', type:'mc', choices:['Sólido','Líquido','Gas','Plasma'], a:'Líquido', explain:'Los líquidos toman la forma del recipiente pero mantienen volumen constante.'},
+    {q:'La teoría de la evolución fue propuesta por Charles Darwin.', type:'tf', a:true, explain:'Darwin publicó "El origen de las especies" en 1859.'},
+    {q:'¿Cuál es el órgano que filtra la sangre?', type:'mc', choices:['Hígado','Riñón','Pulmón','Páncreas'], a:'Riñón', explain:'Los riñones filtran desechos de la sangre.'},
+    {q:'Los electrones tienen carga negativa.', type:'tf', a:true, explain:'Los electrones tienen una carga elemental negativa.'},
+    {q:'¿Cuál es la capital de India?', type:'mc', choices:['Nueva Delhi','Bombay','Calcuta','Bangalore'], a:'Nueva Delhi', explain:'Nueva Delhi es la capital de India.'},
+    {q:'La densidad es masa dividida por volumen.', type:'tf', a:true, explain:'La fórmula de la densidad es ρ = m/V.'},
+
+    {q:'¿Cuál es el mamífero más grande?', type:'mc', choices:['Elefante','Ballena azul','Rinoceronte','Hipopótamo'], a:'Ballena azul', explain:'La ballena azul es el animal más grande que ha existido.'},
+    {q:'La entropía es una medida del desorden en un sistema.', type:'tf', a:true, explain:'Mayor entropía significa mayor desorden molecular.'},
+    {q:'¿Cuál es la capital de Rusia?', type:'mc', choices:['Moscú','San Petersburgo','Kiev','Varsovia'], a:'Moscú', explain:'Moscú es la capital de Rusia.'},
+    {q:'Los ácidos reaccionan con bases para formar sales.', type:'tf', a:true, explain:'La neutralización produce sal y agua.'},
+    {q:'¿Cuál es el proceso de cambio de líquido a sólido?', type:'mc', choices:['Solidificación','Evaporación','Sublimación','Fusión'], a:'Solidificación', explain:'La solidificación es el cambio de estado de líquido a sólido.'},
+    {q:'La teoría de la relatividad especial trata sobre velocidades cercanas a la luz.', type:'tf', a:true, explain:'La relatividad especial se aplica cuando las velocidades son comparables a c.'},
+    {q:'¿Cuál es el sentido que detecta el oído?', type:'mc', choices:['Sonido','Luz','Olor','Sabor'], a:'Sonido', explain:'El oído detecta ondas sonoras.'},
+    {q:'Los fotones son partículas de luz.', type:'tf', a:true, explain:'Los fotones son cuantos de energía electromagnética.'},
+    {q:'¿Cuál es la capital de Egipto?', type:'mc', choices:['El Cairo','Alejandría','Luxor','Aswan'], a:'El Cairo', explain:'El Cairo es la capital de Egipto.'},
+    {q:'La fuerza centrípeta mantiene objetos en movimiento circular.', type:'tf', a:true, explain:'La fuerza centrípeta apunta hacia el centro de la trayectoria circular.'}
+  ];
+
+  // --- DOM
+  const playerName = document.getElementById('playerName');
+  const startBtn = document.getElementById('startBtn');
+  const qIndexEl = document.getElementById('qIndex');
+  const qTotalEl = document.getElementById('qTotal');
+  const questionText = document.getElementById('questionText');
+  const optionsEl = document.getElementById('options');
+  const scoreEl = document.getElementById('score');
+  const progressBar = document.getElementById('progressBar');
+  const nextBtn = document.getElementById('nextBtn');
+  const endBtn = document.getElementById('endBtn');
+  const explainEl = document.getElementById('explain');
+  const gameArea = document.getElementById('gameArea');
+  const prePlay = document.getElementById('prePlay');
+  const qTotalSelect = document.getElementById('modeSelect');
+  const leaderboardEl = document.getElementById('leaderboard');
+  const clearBtn = document.getElementById('clearBtn');
+  const viewBoardBtn = document.getElementById('viewBoardBtn');
+  const exportBtn = document.getElementById('exportBtn');
+  const importBtn = document.getElementById('importBtn');
+  const shareBtn = document.getElementById('shareBtn');
+  const bgMusic = document.getElementById('bgMusic');
+
+  // --- Estado
+  let questions = [];
+  let current = 0;
+  let score = 0;
+  let totalQuestions = 10;
+  let answered = false;
+  let timerInterval = null;
+  let timeLeft = 0; // seconds
+
+  // localStorage key
+  const LS_KEY = 'feria_quiz_top10_v1';
+
+  // --- util
+  function shuffle(arr){return arr.sort(()=>Math.random()-0.5)}
+
+  function loadQuestions(mode){
+    // base copy and shuffle all 100 questions
+    let pool = JSON.parse(JSON.stringify(QUESTIONS));
+    shuffle(pool);
+    if(mode==='normal') totalQuestions = 10;
+    if(mode==='extremo') totalQuestions = 15;
+    if(mode==='rapidito') totalQuestions = 7;
+    questions = pool.slice(0,totalQuestions).map(q=>{
+      if(q.type==='mc') q.choices = shuffle(q.choices.slice());
+      return q;
+    });
+  }
+
+  function startGame(){
+    const name = (playerName.value||'Anonimo').trim();
+    if(!name){playerName.focus();return}
+    score = 0; current = 0; answered=false; scoreEl.textContent = score; explainEl.textContent='';
+    const mode = qTotalSelect.value;
+    loadQuestions(mode);
+    qTotalEl.textContent = totalQuestions;
+    prePlay.style.display='none';
+    gameArea.style.display='block';
+    bgMusic.play();
+    renderQuestion();
+    startTimerForMode(mode);
+  }
+
+  function startTimerForMode(mode){
+    clearInterval(timerInterval);
+    // time per question
+    let perQ = 20;
+    if(mode==='extremo') perQ = 12;
+    if(mode==='rapidito') perQ = 10;
+    timeLeft = perQ;
+    document.getElementById('timer').textContent = formatTime(timeLeft);
+    timerInterval = setInterval(()=>{
+      timeLeft--;
+      document.getElementById('timer').textContent = formatTime(timeLeft);
+      if(timeLeft<=0){
+        clearInterval(timerInterval);
+        // auto move as incorrect
+        if(!answered){
+          revealAnswer(null);
+        }
+      }
+    },1000);
+  }
+
+  function formatTime(s){return s<10?('0'+s+'s'):(s+'s')}
+
+  function renderQuestion(){
+    answered=false;
+    explainEl.textContent='';
+    const q = questions[current];
+    qIndexEl.textContent = current+1;
+    qTotalEl.textContent = totalQuestions;
+    progressBar.style.width = ((current)/totalQuestions*100)+'%';
+    questionText.textContent = q.q;
+    optionsEl.innerHTML='';
+    if(q.type==='tf'){
+      ['Verdadero','Falso'].forEach(val=>{
+        const b = document.createElement('div');b.className='opt';b.textContent=val;
+        b.onclick = ()=> handlePick(val=== 'Verdadero');
+        optionsEl.appendChild(b);
+      });
+    } else if(q.type==='mc'){
+      q.choices.forEach(choice=>{
+        const b = document.createElement('div');b.className='opt';b.textContent=choice;
+        b.onclick = ()=> handlePick(choice);
+        optionsEl.appendChild(b);
+      });
+    }
+    // reset timer for next question
+    clearInterval(timerInterval);
+    startTimerForMode(qTotalSelect.value);
+  }
+
+  function handlePick(answer){
+    if(answered) return; answered=true; clearInterval(timerInterval);
+    revealAnswer(answer);
+  }
+
+  function revealAnswer(given){
+    const q = questions[current];
+    const opts = Array.from(optionsEl.children);
+    // mark
+    opts.forEach(node=>{
+      node.classList.remove('correct','wrong');
+      const txt = node.textContent;
+      let correctVal = (q.type==='tf') ? (q.a? 'Verdadero':'Falso') : q.a;
+      if(txt === String(correctVal)) node.classList.add('correct');
+      if(given!==null && txt === String(given) && txt !== String(correctVal)) node.classList.add('wrong');
+    });
+    // scoring
+    if((q.type==='tf' && given===q.a) || (q.type==='mc' && given===q.a)){
+      // base + speed bonus
+      let bonus = Math.max(0, Math.floor(timeLeft/3));
+      score += 10 + bonus;
+      animateScore();
+    }
+    // show explanation
+    explainEl.textContent = q.explain || '';
+  }
+
+  function animateScore(){scoreEl.textContent = score}
+
+  function nextQuestion(){
+    if(!answered){
+      // treat as skipped -> reveal
+      revealAnswer(null);
+    }
+    if(current < totalQuestions-1){
+      current++; renderQuestion();
+    } else {
+      endGame();
+    }
+  }
+
+  function endGame(){
+    clearInterval(timerInterval);
+    progressBar.style.width = '100%';
+    gameArea.style.display='none';
+    prePlay.style.display='block';
+    bgMusic.pause();
+    // save score
+    const name = (playerName.value||'Anonimo').trim();
+    saveScore(name, score);
+    showLeaderboard();
+    // celebrate if score is 80% or higher
+    const percentage = (score / (totalQuestions * 10)) * 100;
+    if(percentage >= 80) runConfetti();
+    alert('Juego terminado. ' + name + ' obtuvo ' + score + ' puntos. ¡Revisa el ranking!');
+  }
+
+  // --- Leaderboard storage
+  function getBoard(){
+    try{const raw = localStorage.getItem(LS_KEY); return raw?JSON.parse(raw):[];}catch(e){return []}
+  }
+  function saveBoard(board){localStorage.setItem(LS_KEY, JSON.stringify(board));}
+
+  function saveScore(name, score){
+    const board = getBoard();
+    board.push({name:name,score:score,date:new Date().toISOString()});
+    board.sort((a,b)=>b.score - a.score || new Date(a.date) - new Date(b.date));
+    const top = board.slice(0,10);
+    saveBoard(top);
+  }
+
+  function showLeaderboard(){
+    const board = getBoard();
+    leaderboardEl.innerHTML='';
+    if(board.length===0){leaderboardEl.innerHTML='<p class="meta">Sin puntajes todavía. Juega y sé el primero!</p>';return}
+    board.forEach((e,i)=>{
+      const div = document.createElement('div');div.className='entry';
+      div.innerHTML = `<div><strong>#${i+1} ${escapeHtml(e.name)}</strong><br><small class=\"gray\">${new Date(e.date).toLocaleString()}</small></div><div><strong>${e.score}</strong></div>`;
+      leaderboardEl.appendChild(div);
+    });
+  }
+
+  function clearBoard(){ if(confirm('¿Borrar todo el ranking?')){ localStorage.removeItem(LS_KEY); showLeaderboard(); }}
+
+  function exportBoard(){
+    const b = getBoard();
+    const blob = new Blob([JSON.stringify(b,null,2)],{type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download='ranking-feria.json'; a.click(); URL.revokeObjectURL(url);
+  }
+
+  function importBoard(){
+    const inp = document.createElement('input'); inp.type='file'; inp.accept='.json,application/json';
+    inp.onchange = e=>{
+      const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = ev=>{
+        try{const data = JSON.parse(ev.target.result); if(Array.isArray(data)){ saveBoard(data.slice(0,10)); showLeaderboard(); alert('Importado OK'); } else alert('Archivo inválido') }catch(err){alert('Error al leer archivo')}
+      }; r.readAsText(f);
+    };
+    inp.click();
+  }
+
+  function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+  // --- confetti simple
+  function runConfetti(){
+    const canvas = document.getElementById('confetti'); const ctx = canvas.getContext('2d');
+    let w=canvas.width=window.innerWidth; let h=canvas.height=window.innerHeight; let pieces = [];
+    function rand(min,max){return Math.random()*(max-min)+min}
+    for(let i=0;i<120;i++){pieces.push({x:rand(0,w),y:rand(-h,0),r:rand(2,8),d:rand(2,5),color:`hsl(${Math.floor(rand(0,360))},80%,60%)`,tilt:rand(-10,10)})}
+    let ticks=0;
+    function loop(){ctx.clearRect(0,0,w,h); pieces.forEach(p=>{p.y += p.d; p.x += Math.sin(ticks/10)+0.5; p.tilt = Math.sin((p.x+p.y)/50)*15; ctx.save(); ctx.fillStyle=p.color; ctx.translate(p.x,p.y); ctx.rotate(p.tilt*Math.PI/180); ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*2); ctx.restore();}); ticks++; if(ticks<240) requestAnimationFrame(loop); else ctx.clearRect(0,0,w,h);
+    }
+    loop();
+  }
+
+  // --- events
+  startBtn.addEventListener('click', startGame);
+  nextBtn.addEventListener('click', nextQuestion);
+  endBtn.addEventListener('click', endGame);
+  clearBtn.addEventListener('click', clearBoard);
+  viewBoardBtn.addEventListener('click', showLeaderboard);
+  exportBtn.addEventListener('click', exportBoard);
+  importBtn.addEventListener('click', importBoard);
+  shareBtn.addEventListener('click', ()=>{
+    const name = (playerName.value||'Anonimo').trim(); const b = getBoard(); const pos = b.findIndex(x=>x.name===name);
+    const top = b.slice(0,3).map((e,i)=>`${i+1}. ${e.name} ${e.score}`).join('\n');
+    const txt = `Mi resultado en Quiz Feria: ${score} pts. Top: \n${top}`;
+    if(navigator.share){navigator.share({title:'Mi puntaje',text:txt}).catch(()=>alert('Compartir no disponible'))} else {prompt('Copia y comparte tu puntaje:',txt)}
+  });
+
+  // show leaderboard on load
+  showLeaderboard();
+
+})();
+  </script>
+</body>
+</html>

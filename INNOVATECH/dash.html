@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INNOVA TECH S.A.S. | Avanzando al ritmo de la tecnología</title>
+  <style>
+    :root {
+      --azul: #0d47a1;
+      --celeste: #64b5f6;
+      --blanco: #ffffff;
+      --gris: #f5f7fa;
+      --negro: #222;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      background: var(--gris);
+      color: var(--negro);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--azul), var(--celeste));
+      color: var(--blanco);
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    nav {
+      background: var(--blanco);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      margin: 0;
+      padding: 10px 0;
+    }
+
+    nav ul li {
+      margin: 0 20px;
+    }
+
+    nav ul li a {
+      color: var(--azul);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    nav ul li a:hover {
+      color: var(--celeste);
+    }
+
+    section {
+      padding: 80px 20px;
+      text-align: center;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    section h2 {
+      color: var(--azul);
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      background: var(--azul);
+      color: var(--blanco);
+      padding: 12px 24px;
+      border-radius: 25px;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 20px;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: var(--celeste);
+    }
+
+    .servicios {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--blanco);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .contacto {
+      background: var(--azul);
+      color: var(--blanco);
+      padding: 60px 20px;
+    }
+
+    .contacto form {
+      max-width: 600px;
+      margin: auto;
+    }
+
+    .contacto input, .contacto textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+    }
+
+    .contacto button {
+      background: var(--celeste);
+      color: var(--blanco);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+
+    .contacto button:hover {
+      background: #90caf9;
+    }
+
+    footer {
+      background: var(--negro);
+      color: var(--blanco);
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>INNOVA TECH S.A.S.</h1>
+    <p>“Avanzando al ritmo de la tecnología”</p>
+    <a href="#contacto" class="btn">Contáctanos</a>
+    <a href="index.html" class="btn">Demo</a>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="#nosotros">Nosotros</a></li>
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#clientes">Clientes</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+      
+    </ul>
+  </nav>
+
+  <section id="nosotros">
+    <h2>Quiénes Somos</h2>
+    <p>Somos una empresa joven y comprometida con el desarrollo tecnológico del Caribe colombiano. Creamos soluciones digitales personalizadas que impulsan la productividad, competitividad y sostenibilidad de las pequeñas y medianas empresas.</p>
+  </section>
+
+  <section id="servicios">
+    <h2>Servicios</h2>
+    <div class="servicios">
+      <div class="card">
+        <h3>Desarrollo de Software a Medida</h3>
+        <p>Diseñamos e implementamos soluciones digitales personalizadas que se ajustan a los flujos de trabajo y necesidades de tu empresa.</p>
+      </div>
+      <div class="card">
+        <h3>Consultoría Tecnológica</h3>
+        <p>Te acompañamos en tu proceso de transformación digital con asesorías estratégicas y diagnósticos personalizados.</p>
+      </div>
+      <div class="card">
+        <h3>Soporte Técnico y Mantenimiento</h3>
+        <p>Brindamos soporte postventa y mantenimiento continuo para garantizar el funcionamiento óptimo de tus sistemas.</p>
+      </div>
+      <div class="card">
+        <h3>Capacitación Empresarial</h3>
+        <p>Formamos a tus equipos para aprovechar al máximo las herramientas tecnológicas que impulsarán su desempeño.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="clientes">
+    <h2>Nuestro Compromiso</h2>
+    <p>Más que desarrolladores, somos tus aliados estratégicos. En INNOVA TECH acompañamos cada etapa de tu transformación digital, generando confianza y resultados medibles.</p>
+  </section>
+
+  <section class="contacto" id="contacto">
+    <h2>Contáctanos</h2>  
+    <p>¿Listo para transformar tu empresa con tecnología?</p>
+    <form onsubmit="enviarFormulario(event)">
+      <input type="text" id="nombre" placeholder="Tu nombre" required>
+      <input type="email" id="email" placeholder="Correo electrónico" required>
+      <textarea id="mensaje" rows="5" placeholder="Escribe tu mensaje" required></textarea>
+      <button type="submit">Enviar Mensaje</button>
+    </form>
+    <p id="msg"></p>
+  </section>
+
+  <footer>
+    &copy; 2025 INNOVA TECH S.A.S. | Todos los derechos reservados.
+  </footer>
+
+  <script>
+    function enviarFormulario(e){
+      e.preventDefault();
+      const nombre = document.getElementById('nombre').value;
+      document.getElementById('msg').innerText = `¡Gracias ${nombre}! Nos pondremos en contacto contigo pronto.`;
+      e.target.reset();
+    }
+  </script>
+
+</body>
+</html>
