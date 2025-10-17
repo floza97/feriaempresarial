@@ -490,10 +490,6 @@
     </div>
 
     <script>
-
-
-
-
         // BANCO DE PREGUNTAS AMATEUR (Nivel Básico)
         const questionBankAmateur = [
             // GEOGRAFÍA
@@ -624,17 +620,83 @@
         let timeLeft = 15;
         let timerInterval;
         let answered = false;
-        // CONFIGURACIÃ"N GITHUB GIST (Reemplaza estos valores)
-        const GIST_ID = 'bbcdec288d1b0920a886dc7dffacb11d.js'; // Ejemplo: 'abc123def456'
-        const GITHUB_TOKEN = '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'; // Token de GitHub con permisos de gist
+
+        // CONFIGURACIÓN GITHUB GIST - ¡REEMPLAZA CON TUS DATOS!
+        const GIST_ID = 'bbcdec288d1b0920a886dc7dffacb11d'; // SIN .js al final
+        const GITHUB_TOKEN = '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';
         const GIST_FILENAME = 'quiz-colombia-leaderboard.json';
-        // Almacenamiento en memoria (reemplaza localStorage)
+
         // Almacenamiento en memoria
         let leaderboardData = [];
         let isLoadingData = false;
+
         // Audio contexts
         let audioContext;
 
+        // Cargar datos al iniciar la página
+        window.addEventListener('DOMContentLoaded', () => {
+            loadLeaderboardFromGist();
+        });
+
+        // ========== FUNCIONES PARA GITHUB GIST ==========
+        async function loadLeaderboardFromGist() {
+            if (!GIST_ID || GIST_ID === 'TU_GIST_ID_AQUI') {
+                console.log('⚠️ Configurar GIST_ID para persistencia');
+                return;
+            }
+            
+            isLoadingData = true;
+            try {
+                const response = await fetch(`https://api.github.com/gists/${GIST_ID}`);
+                if (response.ok) {
+                    const gist = await response.json();
+                    const content = gist.files[GIST_FILENAME]?.content;
+                    if (content) {
+                        leaderboardData = JSON.parse(content);
+                        console.log('✅ Datos cargados desde GitHub Gist:', leaderboardData.length, 'registros');
+                    }
+                } else {
+                    console.error('❌ Error al cargar datos:', response.status);
+                }
+            } catch (error) {
+                console.error('❌ Error cargando datos:', error);
+            }
+            isLoadingData = false;
+        }
+
+        async function saveLeaderboardToGist() {
+            if (!GIST_ID || GIST_ID === 'TU_GIST_ID_AQUI' || !GITHUB_TOKEN || GITHUB_TOKEN === 'TU_TOKEN_AQUI') {
+                console.log('⚠️ Configurar GIST_ID y GITHUB_TOKEN para persistencia');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        files: {
+                            [GIST_FILENAME]: {
+                                content: JSON.stringify(leaderboardData, null, 2)
+                            }
+                        }
+                    })
+                });
+                
+                if (response.ok) {
+                    console.log('✅ Datos guardados en GitHub Gist');
+                } else {
+                    console.error('❌ Error guardando datos:', response.status, await response.text());
+                }
+            } catch (error) {
+                console.error('❌ Error guardando datos:', error);
+            }
+        }
+
+        // ========== FUNCIONES DE AUDIO ==========
         function initAudio() {
             try {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -685,6 +747,7 @@
             oscillator.stop(audioContext.currentTime + 0.3);
         }
 
+        // ========== FUNCIONES DEL JUEGO ==========
         function selectDifficulty(level) {
             difficulty = level;
             document.getElementById('diffAmateur').classList.remove('selected');
@@ -741,7 +804,6 @@
             currentQuestionIndex = 0;
             answered = false;
 
-            // Seleccionar banco de preguntas según dificultad
             const questionBank = difficulty === 'experto' ? questionBankExperto : questionBankAmateur;
             selectedQuestions = shuffleArray([...questionBank]).slice(0, 10);
 
@@ -799,7 +861,6 @@
                 if (index === question.correct) {
                     options[index].classList.remove('selected');
                     options[index].classList.add('correct');
-                    // Multiplicador de puntos según dificultad
                     const multiplier = difficulty === 'experto' ? 2 : 1;
                     const points = Math.max(50, timeLeft * 10) * multiplier;
                     score += points;
@@ -871,17 +932,11 @@
             showScreen('resultsScreen');
             document.getElementById('finalScore').textContent = score;
 
-            // Mostrar puntaje máximo según dificultad
             const maxScore = difficulty === 'experto' ? 3000 : 1500;
             document.getElementById('maxScoreText').textContent = 'de ' + maxScore + ' puntos';
 
-            // Guardar puntaje
             saveScore(playerName, score);
-
-            // Mostrar confeti
             createConfetti();
-
-            // Mostrar leaderboard
             displayLeaderboard();
         }
 
@@ -898,6 +953,9 @@
             });
             leaderboardData.sort((a, b) => b.score - a.score);
             leaderboardData = leaderboardData.slice(0, 10);
+            
+            // Guardar en GitHub Gist
+            saveLeaderboardToGist();
         }
 
         function displayLeaderboard() {
@@ -948,7 +1006,9 @@
             });
         }
 
-        function showLeaderboard() {
+        async function showLeaderboard() {
+            // Recargar datos antes de mostrar
+            await loadLeaderboardFromGist();
             showScreen('resultsScreen');
             document.getElementById('finalScore').textContent = '🏆';
             document.getElementById('maxScoreText').textContent = 'Ranking Nacional';
